@@ -1,0 +1,262 @@
+<!DOCTYPE HTML>
+<html class="no-js" lang="zh-CN">
+
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lte IE 9]>
+<meta http-equiv="refresh" content="0;url=http://heolis.info/warn.html">
+<![endif]-->
+<meta charset="utf-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+<meta http-equiv="mobile-agent" content="format=html5; url=http://heolis.info">
+<meta name="author" content="HeoLis(http://heolis.info/)">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/SimpleStyle.min.css">
+
+<link rel="shortcut icon" href="/images/favicon.jpg">
+
+
+<title>c++常用库函数以及stl - Gain</title>
+
+<meta name="keywords" content="机器瞎学/数据掩埋/模式混淆/人工智障/深度遗忘/神经掉线/计算机幻觉">
+
+<meta name="description " content="这里将记录我的学习历程。个人公众号(机器视觉于算法建模）"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="nav">
+    <nav class="nav-menu">
+        <a class="site-name current" href="/" title="Epoch">Epoch</a>
+        <a class="site-index current" href="/"><i class="fa fa-home"></i><span>首页</span></a>
+        <a href="/archives" title="归档"><i class="fa fa-archives"></i><span>归档</span></a>
+        <a href="/tags" title="标签"><i class="fa fa-tags"></i><span>标签</span></a>
+        <!-- custom single page of menus -->
+        
+    </nav>
+</div>
+
+<div class="nav-user">
+    <a class="btn-search" href="#"><i class="fa fa-search"></i></a>
+    <a class="btn-read-mode" href="#"><i class="fa fa-sun-o"></i></a>
+    <a class="btn-sns-qr" href="javascript:"><i class="fa fa-telegram"></i></a>
+</div>
+
+<div id="wrapper" class="clearfix">
+    <div id="body">
+        <div class="main" id="main">
+            <div id="cover">
+    <div class="cover-img"></div>
+    <div class="cover-info">
+        
+        <h1 class="cover-siteName">MachineEpoch</h1>
+        <h3 class="cover-siteTitle">学习、记录、分享、获得</h3>
+        <p class="cover-siteDesc">一个技术新人的博客</p>
+        <div class="cover-sns">
+            
+            <div class="btn btn-github">
+                <a href="https://github.com/wmpscc" target="_blank" title="github" ref="friend">
+                    <i class="fa fa-github"></i>
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</div>
+            <div class="page-title">
+    <ul>
+        <li><a href="/">最新</a></li>
+        
+            
+                <li class="">
+                    <a href="/categories/machinelearning" data-name="人工智障">人工智障</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/CV" data-name="计算机幻觉">计算机幻觉</a>
+                </li>
+            
+                <li class="active">
+                    <a href="/categories/language" data-name="编程语言">编程语言</a>
+                </li>
+            
+        
+        <li class="page-search">
+    <form id="search" class="search-form">
+        <label for="s" class="sr-only">请输入关键字</label>
+        <input class="search-field" type="text" name="s" class="text" placeholder="请输入关键字" />
+        <button type="submit" class="search-form-submit" title="搜索"><i class="fa fa-search"></i></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..."/>
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+</li>
+
+    </ul>
+</div>
+<div class="main-inner">
+    <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <div class="post-header">
+            <div class="post-author clearfix">
+                <a class="avatar fleft" href="https://github.com/wmpscc" target="_blank">
+                    <img width="48" src="/images/favicon.png" alt="avatar"/>
+                </a>
+                <p><span class="label">作者</span>
+                    <a href="https://github.com/wmpscc" target="_blank">wmpscc</a>
+                    <span title="最后编辑于2017-12-02">2017-12-02</span>
+                </p>
+                <p>Why become a pirate if you can join the Navy?</p>
+            </div>
+            <h2 class="post-title">C++常用库函数以及STL</h2>
+            <div class="post-meta">
+                本文总共1576个字 | 您是第<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
+            </div>
+        </div>
+        <div class="post-content markdown-body">
+            <h2 id="常用库函数"><a href="#常用库函数" class="headerlink" title="常用库函数"></a>常用库函数</h2><h3 id="sort"><a href="#sort" class="headerlink" title="sort"></a>sort</h3><p>位置：algorithm<br>功能：给一个数组（或者一个 STL，这个会在第三章介绍）排序。<br>格式：sort(a+1,a+n+1,cmp);<br>说明：<br>a 是数组的名称，同时也是指向数组首地址的指针。<br>+1 或者+n+1 为地址偏移量，表示需要排序的范围。<br>也可以替换为其他 STL 迭代器。<br>cmp 是自己写的函数，格式如下：<br>bool cmp(Type a, Type b)<br>{<br>//比较方法，如果 a 应该在 b 前则返回 true。<br>}</p>
+<h3 id="unique"><a href="#unique" class="headerlink" title="unique"></a>unique</h3><p>位置：algorithm<br>功能：去除一个容器（也可以是数组）内的所有重复元素。<br>格式：unique(a+1,a+n+1);<br>说明：<br>与 sort 函数类似。</p>
+<h3 id="gcd"><a href="#gcd" class="headerlink" title="__gcd"></a>__gcd</h3><p>位置：algorithm<br>功能：求两个整数的最大公约数。<br>格式：__gcd(a,b);<br>说明：两个参数的类型必须相同。</p>
+<h3 id="next-permutation"><a href="#next-permutation" class="headerlink" title="next_permutation"></a>next_permutation</h3><p>位置：algorithm<br>功能：求下一个（字典序）排列<br>格式：next_permutation(s+1,s+n+1);<br>说明：<br>一定要保证参数 s 是一个排列。</p>
+<h3 id="strcmp"><a href="#strcmp" class="headerlink" title="strcmp"></a>strcmp</h3><p>位置：cstring<br>功能：比较两个字符串<br>格式：strcmp(s1,s2)<br>说明：<br>相等返回 0，s1 字典序较小返回-1，较大返回 1。</p>
+<h3 id="memset"><a href="#memset" class="headerlink" title="memset"></a>memset</h3><p>位置：cstring<br>功能：将内存区间的每一个字节（注意是字节而不是变量）赋值为给定数。<br>格式：memset(a,0,sizeof(a));<br>说明：<br>只能为整数数组赋值为 0/-1。<br>可以对字符数组任意赋值。</p>
+<h3 id="memcpy"><a href="#memcpy" class="headerlink" title="memcpy"></a>memcpy</h3><p>位置：cstring<br>功能：将一个内存区间复制。<br>格式：memcpy(to,from,sizeof(to));</p>
+<h2 id="STL"><a href="#STL" class="headerlink" title="STL"></a>STL</h2><h3 id="lower-bound"><a href="#lower-bound" class="headerlink" title="lower_bound"></a>lower_bound</h3><p>功能：返回一个非递减序列[first, last)中的第一个大于等于值val的位置。<br>声明：lower_bound(ForwardIter first, ForwardIter last,const _Tp&amp; val)  -arraylistname</p>
+<h3 id="upper-bound"><a href="#upper-bound" class="headerlink" title="upper_bound"></a>upper_bound</h3><p>功能：算法返回一个非递减序列[first, last)中第一个大于val的位置。<br>声明：upper_bound(ForwardIter first, ForwardIter last, const _Tp&amp; val)</p>
+<h3 id="vector"><a href="#vector" class="headerlink" title="vector"></a>vector</h3><p>功能：一个可变大小的数组。<br>声明：vector&lt;类型&gt; 变量名;<br>访问：变量名[位置]（当数组用即可）<br>插入：变量名.push_back(变量);<br>说明：<br>它的本体是一个对象。</p>
+<h3 id="priority-queue"><a href="#priority-queue" class="headerlink" title="priority_queue"></a>priority_queue</h3><p>功能：堆<br>声明：priority_queue&lt;类型&gt; 变量名;<br>访问：变量名.top();（仅能访问堆顶元素）<br>插入：变量名.push(变量);<br>删除：变量名.pop();<br>说明：<br>类型需要定义&lt;运算符。<br>注意 pq 实现的是反人类的大根堆，自定义&lt;号时需要注意实际上是&gt;。</p>
+<h3 id="set"><a href="#set" class="headerlink" title="set"></a>set</h3><p>功能：集合<br>声明：set&lt;类型&gt; 变量名;<br>访问：变量名.find(值);<br>插入：变量名.insert(值);<br>删除：变量名.erase(迭代器);<br>变量名.erase(值);<br>说明：<br>单次操作复杂度 O(logn)。</p>
+<h3 id="map"><a href="#map" class="headerlink" title="map"></a>map</h3><p>功能：映射<br>声明：map&lt;源类型,目标类型&gt; 变量名;<br>访问：变量名[源类型值]（如果不存在该值则会进行插入。）<br>说明：<br>单次操作复杂度 O(logn)。</p>
+<h3 id="string"><a href="#string" class="headerlink" title="string"></a>string</h3><p>功能：灵活的字符串对象<br>声明：string 变量名;<br>赋值：变量名=”C 风格字符串常量”;<br>合并：变量名+变量名 2（例如 s1=”a”,s2=”b”,s1+s2=”ab”）<br>求长：变量名.length();（其余 STL 求大小均为变量名.size()）<br>访问：变量名[位置]（当数组用）<br>说明：不能作为 C 风格函数的参数。</p>
+
+        </div>
+        <div class="post-tool">
+            <a class="btn-thumbs-up" href="javascript:void(0);" data-cid="52" title="95">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i> 打赏
+            </a>
+        </div>
+        
+        <div class="post-tags">标签：
+            
+            <a href="/tags/C-C/">C/C++</a>
+            
+        </div>
+        
+    </article>
+    
+    <p>新手上路，若有不恰当之处，望不吝赐教！</p>
+    
+    
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    var disqus_config = function () {
+        this.page.url = 'http://heolis.info/language/C-常用库函数以及STL.html';
+        this.page.identifier = 'language/C-常用库函数以及STL.html';
+    };
+    (function () { // DON'T EDIT BELOW THIS LINE
+        var d = document, disqus_shortname = 'HeoLis', s = d.createElement('script');
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by
+        Disqus.</a></noscript>
+
+</div>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        </div><!-- end #main-->
+    </div><!-- end #body -->
+    <footer class="footer">
+    <div class="footer-inner">
+        <p>
+            <a href="/links" title="友情链接">友情链接</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            本站已建立<a id="siteBuildingTime"></a>天&nbsp<em>·</em>&nbsp;
+        <span id="busuanzi_container_site_uv">
+            总访客数为
+            <span id="busuanzi_value_site_uv"></span>人次
+        </span>
+        </p>
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    </div>
+</footer>
+
+<!-- Tencent Analytics
+<script type="text/javascript" src="//tajs.qq.com/stats?sId=66072444" charset="UTF-8"></script> -->
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?1762d61c140d8360105c1f427350ad71";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="/js/InsightSearch.js"></script>
+<script src="/js/SimpleCore.js"></script>
+
+</div>
+<div class="fixed-btn">
+    <a class="btn-gotop" href="javascript:"> <i class="fa fa-angle-up"></i></a>
+</div>
+<script>
+    $(function () {
+        SimpleCore.init({
+            buildingTime: '11/26/2017',
+            current: $('.post-tags').length > 0 ? 'post' : 'archive',
+            snsQRCode: '/images/sns-qrcode.png',
+            donateImg: '/images/donate-qr.png',
+        });
+    });
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("MathJax config");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

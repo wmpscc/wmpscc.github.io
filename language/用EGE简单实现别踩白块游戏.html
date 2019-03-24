@@ -1,0 +1,504 @@
+<!DOCTYPE HTML>
+<html class="no-js" lang="zh-CN">
+
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lte IE 9]>
+<meta http-equiv="refresh" content="0;url=http://heolis.info/warn.html">
+<![endif]-->
+<meta charset="utf-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+<meta http-equiv="mobile-agent" content="format=html5; url=http://heolis.info">
+<meta name="author" content="HeoLis(http://heolis.info/)">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/SimpleStyle.min.css">
+
+<link rel="shortcut icon" href="/images/favicon.jpg">
+
+
+<title>用ege简单实现别踩白块游戏 - Gain</title>
+
+<meta name="keywords" content="机器瞎学/数据掩埋/模式混淆/人工智障/深度遗忘/神经掉线/计算机幻觉">
+
+<meta name="description " content="这里将记录我的学习历程。个人公众号(机器视觉于算法建模）"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="nav">
+    <nav class="nav-menu">
+        <a class="site-name current" href="/" title="Epoch">Epoch</a>
+        <a class="site-index current" href="/"><i class="fa fa-home"></i><span>首页</span></a>
+        <a href="/archives" title="归档"><i class="fa fa-archives"></i><span>归档</span></a>
+        <a href="/tags" title="标签"><i class="fa fa-tags"></i><span>标签</span></a>
+        <!-- custom single page of menus -->
+        
+    </nav>
+</div>
+
+<div class="nav-user">
+    <a class="btn-search" href="#"><i class="fa fa-search"></i></a>
+    <a class="btn-read-mode" href="#"><i class="fa fa-sun-o"></i></a>
+    <a class="btn-sns-qr" href="javascript:"><i class="fa fa-telegram"></i></a>
+</div>
+
+<div id="wrapper" class="clearfix">
+    <div id="body">
+        <div class="main" id="main">
+            <div id="cover">
+    <div class="cover-img"></div>
+    <div class="cover-info">
+        
+        <h1 class="cover-siteName">MachineEpoch</h1>
+        <h3 class="cover-siteTitle">学习、记录、分享、获得</h3>
+        <p class="cover-siteDesc">一个技术新人的博客</p>
+        <div class="cover-sns">
+            
+            <div class="btn btn-github">
+                <a href="https://github.com/wmpscc" target="_blank" title="github" ref="friend">
+                    <i class="fa fa-github"></i>
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</div>
+            <div class="page-title">
+    <ul>
+        <li><a href="/">最新</a></li>
+        
+            
+                <li class="">
+                    <a href="/categories/machinelearning" data-name="人工智障">人工智障</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/CV" data-name="计算机幻觉">计算机幻觉</a>
+                </li>
+            
+                <li class="active">
+                    <a href="/categories/language" data-name="编程语言">编程语言</a>
+                </li>
+            
+        
+        <li class="page-search">
+    <form id="search" class="search-form">
+        <label for="s" class="sr-only">请输入关键字</label>
+        <input class="search-field" type="text" name="s" class="text" placeholder="请输入关键字" />
+        <button type="submit" class="search-form-submit" title="搜索"><i class="fa fa-search"></i></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..."/>
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+</li>
+
+    </ul>
+</div>
+<div class="main-inner">
+    <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <div class="post-header">
+            <div class="post-author clearfix">
+                <a class="avatar fleft" href="https://github.com/wmpscc" target="_blank">
+                    <img width="48" src="/images/favicon.png" alt="avatar"/>
+                </a>
+                <p><span class="label">作者</span>
+                    <a href="https://github.com/wmpscc" target="_blank">wmpscc</a>
+                    <span title="最后编辑于2017-12-30">2017-12-30</span>
+                </p>
+                <p>Why become a pirate if you can join the Navy?</p>
+            </div>
+            <h2 class="post-title">用EGE简单实现别踩白块游戏</h2>
+            <div class="post-meta">
+                本文总共22608个字 | 您是第<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
+            </div>
+        </div>
+        <div class="post-content markdown-body">
+            <p>本项目已开源：<a href="https://github.com/wmpscc/AvoidBlank">https://github.com/wmpscc/AvoidBlank</a></p>
+<h3 id="关于EGE"><a href="#关于EGE" class="headerlink" title="关于EGE"></a>关于EGE</h3><ul>
+<li>介绍：EGE（Easy Graphics Engine），是windows下的简易绘图库，是一个类似BGI(graphics.h)的面向C/C++语言新手的图形库，它的目标也是为了替代TC的BGI库而存在。<br>详情见<a href="http://xege.org/">EGE官网</a>   </li>
+<li>下载：<a href="https://pan.baidu.com/s/1qWxAgeK#list/path=%2F">官网提供的下载地址</a></li>
+<li><a href="http://xege.org/%e6%96%b0%e6%89%8b%e5%85%a5%e9%97%a8%e3%80%8e%e4%b8%80%e3%80%8fege%e7%9a%84%e4%bb%8b%e7%bb%8d%e3%80%81%e5%ae%89%e8%a3%85%e5%92%8c%e4%bd%bf%e7%94%a8.html">安装方法一</a></li>
+<li><img src="http://ox5bam95j.bkt.clouddn.com/EGE_install.jpg" alt="安装方法二"></li>
+<li>简单示例<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;graphics.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="comment">//初始化为640*480大小</span></span><br><span class="line">        initgraph(<span class="number">640</span>, <span class="number">480</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//等待用户按键</span></span><br><span class="line">        getch();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//关闭图形界面</span></span><br><span class="line">        closegraph();</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="别踩白块-准备篇"><a href="#别踩白块-准备篇" class="headerlink" title="别踩白块 -准备篇"></a>别踩白块 -准备篇</h1><p>开始之前先介绍一下相关点。</p>
+<blockquote>
+<p>本篇文章假定你已经准备好游戏每个按键对应的音频文件和游戏关卡的歌词按键谱。</p>
+</blockquote>
+<h3 id="绘图函数"><a href="#绘图函数" class="headerlink" title="绘图函数"></a>绘图函数</h3><ul>
+<li>setinitmode(RENDER_MANUAL);   //设置窗口模式<blockquote>
+<ul>
+<li><p>功能：<br>这个函数用于设置初始化图形的选项和模式。</p>
+</li>
+<li><p>声明：<br>void setinitmode(int mode, int x = CW_USEDEFAULT, int y = CW_USEDEFAULT);</p>
+</li>
+</ul>
+<ul>
+<li><p>参数：<br>mode<br>初始化模式，是二进制组合的值。如果为INIT_DEFAULT 表示使用默认值。<br>可以使用的值的组合：<br>INIT_NOBORDER 为无边框窗口<br>INIT_CHILD 为子窗口（需要使用attachHWND指定要依附的父窗口，此函数不另说明）<br>INIT_TOPMOST 使窗口总在最前<br>INIT_RENDERMANUAL 手动更新标志，即调用delay_fps/delay_ms等会等待操作的函数时会更新窗口，否则保持窗口内容<br>INIT_WITHLOGO 使initgraph的时候显示开场动画logo<br>INIT_NOFORCEEXIT 使关闭窗口的时候不强制退出程序，但窗口会消失，需要配合is_run函数<br>INIT_DEFAULT 默认参数，不调用本函数时即使用此参数<br>INIT_ANIMATION 是INIT_DEFAULT, INIT_RENDERMANUAL, INIT_NOFORCEEXIT的组合，用于动画编写</p>
+</li>
+<li><p>x, y<br>初始化时窗口左上角在屏幕的坐标，默认为系统分配。</p>
+</li>
+<li><p>返回值：<br>（无）</p>
+</li>
+<li><p>说明：<br>本函数只能在initgraph前调用。</p>
+</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li>initgraph(WINDOW_WIDTH, WINDOW_HIGHT, INIT_RENDERMANUAL);    //初始化窗口</li>
+</ul>
+<blockquote>
+<ul>
+<li><p>功能：<br>这个函数用于初始化绘图环境。</p>
+</li>
+<li><p>声明：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">initgraph</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> Width,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> Height,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> Flag = INIT_DEFAULT</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">initgraph</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span>* gdriver,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span>* gmode,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">char</span>* path</span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>; <span class="comment">// 兼容 Borland C++ 3.1 的重载，不建议使用。</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>参数：</li>
+<li><ul>
+<li>Width<br>绘图环境的宽度。如果为-1，则使用屏幕的宽度</li>
+</ul>
+</li>
+<li><ul>
+<li>Height<br>绘图环境的高度。如果为-1，则使用屏幕的高度</li>
+</ul>
+</li>
+<li><ul>
+<li>Style<br>请留空，为保留参数</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>返回值：<br>（无）</li>
+</ul>
+</blockquote>
+<ul>
+<li>setbkcolor(EGERGB(0xff, 0xff, 0xff));    //背景色</li>
+</ul>
+<blockquote>
+<ul>
+<li><p>功能：<br>这个函数用于设置当前背景色。并且会把当前图片上是原背景色的像素，转变为新的背景色。</p>
+</li>
+<li><p>声明：</p>
+<figure class="highlight c"><figcaption><span>void setbkcolor(</span></figcaption><table><tr><td class="code"><pre><span class="line">    <span class="keyword">color_t</span> color,</span><br><span class="line">    PIMAGE pimg = <span class="literal">NULL</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><p>参数：<br>color<br>指定要设置的背景颜色。注意，该设置会同时影响文字背景色。</p>
+</li>
+<li><p>返回值：<br>（无）</p>
+</li>
+<li>setfillstyle(SOLID_FILL, Blank_COLOR);    //设置方块颜色</li>
+<li><p>功能：<br>这个函数用于设置当前填充类型。该函数的自定义填充部分尚不支持。</p>
+</li>
+<li><p>声明：</p>
+<figure class="highlight c"><figcaption><span>void setfillstyle(</span></figcaption><table><tr><td class="code"><pre><span class="line">    <span class="keyword">int</span> pattern,</span><br><span class="line">    <span class="keyword">color_t</span> color,</span><br><span class="line">    PIMAGE pimg = <span class="literal">NULL</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>参数：</li>
+<li><ul>
+<li>pattern<br>填充类型，可以是以下宏或值：</li>
+</ul>
+</li>
+</ul>
+<p>NULL_FILL    不填充</p>
+<p>SOLID_FILL 固实填充</p>
+<p>pupattern<br>color<br>填充颜色。</p>
+<ul>
+<li>返回值：<br>（无）</li>
+</ul>
+</blockquote>
+<ul>
+<li>fillpoly(4, point, totalimg);    //绘制方块</li>
+</ul>
+<blockquote>
+<ul>
+<li><p>功能：<br>这个函数用于画填充的多边形。边线颜色由setcolor函数决定，填充颜色由setfillstyle函数决定</p>
+</li>
+<li><p>声明：</p>
+<figure class="highlight c"><figcaption><span>void fillpoly(</span></figcaption><table><tr><td class="code"><pre><span class="line">    <span class="keyword">int</span> numpoints,</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> *polypoints,</span><br><span class="line">    PIMAGE pimg = <span class="literal">NULL</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>参数：<br>numpoints<br>多边形点的个数。</li>
+</ul>
+<p>polypoints<br>每个点的坐标，数组元素个数为 numpoints * 2。<br>该函数会自动连接多边形首尾。</p>
+<ul>
+<li>返回值：<br>（无）</li>
+</ul>
+</blockquote>
+<ul>
+<li>setfont(40, 0, “宋体”);        //设定字体样式</li>
+</ul>
+<blockquote>
+<ul>
+<li><p>功能：<br>这个函数用于设置当前字体样式。</p>
+</li>
+<li><p>声明：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setfont</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> nHeight,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> nWidth,</span></span></span><br><span class="line"><span class="function"><span class="params">    LPCSTR lpszFace,</span></span></span><br><span class="line"><span class="function"><span class="params">    PIMAGE pimg = <span class="literal">NULL</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setfont</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> nHeight,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> nWidth,</span></span></span><br><span class="line"><span class="function"><span class="params">    LPCSTR lpszFace,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> nEscapement,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> nOrientation,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> nWeight,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">bool</span> bItalic,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">bool</span> bUnderline,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">bool</span> bStrikeOut,</span></span></span><br><span class="line"><span class="function"><span class="params">    PIMAGE pimg = <span class="literal">NULL</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setfont</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> nHeight,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> nWidth,</span></span></span><br><span class="line"><span class="function"><span class="params">    LPCSTR lpszFace,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> nEscapement,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> nOrientation,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> nWeight,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">bool</span> bItalic,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">bool</span> bUnderline,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">bool</span> bStrikeOut,</span></span></span><br><span class="line"><span class="function"><span class="params">    BYTE fbCharSet,</span></span></span><br><span class="line"><span class="function"><span class="params">    BYTE fbOutPrecision,</span></span></span><br><span class="line"><span class="function"><span class="params">    BYTE fbClipPrecision,</span></span></span><br><span class="line"><span class="function"><span class="params">    BYTE fbQuality,</span></span></span><br><span class="line"><span class="function"><span class="params">    BYTE fbPitchAndFamily,</span></span></span><br><span class="line"><span class="function"><span class="params">    PIMAGE pimg = <span class="literal">NULL</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setfont</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">const</span> LOGFONT *font,</span></span></span><br><span class="line"><span class="function"><span class="params">    PIMAGE pimg = <span class="literal">NULL</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</blockquote>
+<ul>
+<li>sprintf(mCharsScore, “%d”, mScore);        //int转char*</li>
+<li>setfontbkcolor(EGERGB(0xff, 0x00, 0x00));    //设置字体背景色</li>
+<li>outtextxy(WINDOW_WIDTH / 2, 0, mCharsScore);    //在窗口输出字体<blockquote>
+<ul>
+<li><p>功能：<br>这个函数用于在指定位置输出字符串。</p>
+</li>
+<li><p>声明：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">outtextxy</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> x,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> y,</span></span></span><br><span class="line"><span class="function"><span class="params">    LPCSTR textstring,</span></span></span><br><span class="line"><span class="function"><span class="params">    PIMAGE pimg = <span class="literal">NULL</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">outtextxy</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> x,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> y,</span></span></span><br><span class="line"><span class="function"><span class="params">    CHAR c,</span></span></span><br><span class="line"><span class="function"><span class="params">    PIMAGE pimg = <span class="literal">NULL</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">outtextxy</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> x,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> y,</span></span></span><br><span class="line"><span class="function"><span class="params">    LPCWSTR textstring,</span></span></span><br><span class="line"><span class="function"><span class="params">    PIMAGE pimg = <span class="literal">NULL</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">outtextxy</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> x,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">int</span> y,</span></span></span><br><span class="line"><span class="function"><span class="params">    WCHAR c,</span></span></span><br><span class="line"><span class="function"><span class="params">    PIMAGE pimg = <span class="literal">NULL</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li><p>参数：<br>x<br>字符串输出时头字母的 x 轴的坐标值<br>y<br>字符串输出时头字母的 y 轴的坐标值。<br>textstring<br>要输出的字符串的指针。<br>c<br>要输出的字符。</p>
+</li>
+<li><p>返回值：<br>（无）</p>
+</li>
+<li>cleardevice();    //清屏</li>
+<li>setcaption(“别踩白块”);        //设置窗口标题</li>
+</ul>
+</blockquote>
+<h3 id="时间和随机数"><a href="#时间和随机数" class="headerlink" title="时间和随机数"></a>时间和随机数</h3><ul>
+<li>api_sleep(500);    //传入参数为延时多少毫秒，注意只有该函数可在线程中使用</li>
+<li>delay_fps(FPS)   //根据FPS设置延迟</li>
+<li>randomize();     //初始化随机数</li>
+<li>random(max);     //产生[0,max)的随机数，注意不包括最大值<h3 id="mp3音频播放"><a href="#mp3音频播放" class="headerlink" title="mp3音频播放"></a>mp3音频播放</h3><blockquote>
+<p><a href="http://blog.csdn.net/a812073479/article/details/19098755">以下两种方法具体介绍看这里</a></p>
+</blockquote>
+</li>
+</ul>
+<p>filename 为要播放的文件的路径名</p>
+<ul>
+<li><p>方法一：mciSendString</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">mciSendString(filename, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="literal">NULL</span>); <span class="comment">//低效播放方式</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>方法二：mciSendCommand</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">   <span class="comment">//高效率无阻塞播放</span></span><br><span class="line">ThreadParameter *tp = (ThreadParameter *)pParam;</span><br><span class="line">MCI_OPEN_PARMS open;<span class="comment">//定义打开结构体变量</span></span><br><span class="line"></span><br><span class="line">open.lpstrElementName = filename;<span class="comment">//填充参数</span></span><br><span class="line"></span><br><span class="line">mciSendCommand(<span class="number">0</span>, MCI_OPEN, MCI_OPEN_ELEMENT, DWORD_PTR(&amp;open));<span class="comment">//打开</span></span><br><span class="line">MCI_PLAY_PARMS play;<span class="comment">//定义播放结构题变量</span></span><br><span class="line">mciSendCommand(open.wDeviceID, MCI_PLAY, <span class="number">0</span>, DWORD_PTR(&amp;play));<span class="comment">//非阻塞式播放</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h3><p>举个例子<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">ThreadParameter</span> &#123;</span>	<span class="comment">//音频播放线程参数</span></span><br><span class="line">	<span class="keyword">char</span> filename[<span class="number">200</span>];</span><br><span class="line">	<span class="keyword">char</span> key[<span class="number">30</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ThreadParameter tpp;	<span class="comment">//音频播放线程传参结构体&lt;全局变量&gt;</span></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">music_play</span><span class="params">(LPVOID pParam)</span>	<span class="comment">//播放音乐</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">//高效率无阻塞播放</span></span><br><span class="line">	ThreadParameter *tp = (ThreadParameter *)pParam;</span><br><span class="line">	MCI_OPEN_PARMS open;<span class="comment">//定义打开结构体变量</span></span><br><span class="line">	open.lpstrElementName = tp-&gt;filename;<span class="comment">//填充参数</span></span><br><span class="line">	mciSendCommand(<span class="number">0</span>, MCI_OPEN, MCI_OPEN_ELEMENT, DWORD_PTR(&amp;open));<span class="comment">//打开</span></span><br><span class="line">	MCI_PLAY_PARMS play;<span class="comment">//定义播放结构题变量</span></span><br><span class="line">	mciSendCommand(open.wDeviceID, MCI_PLAY, <span class="number">0</span>, DWORD_PTR(&amp;play));<span class="comment">//非阻塞式播放</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>启动线程<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)music_play, &amp;tpp, <span class="number">0</span>, <span class="literal">NULL</span>);	<span class="comment">//启动音乐播放线程</span></span><br></pre></td></tr></table></figure></p>
+<p>解释如下：<br>结构体是用来传参数的，线程函数返回值类型必须为DWORD WINAPI，函数参数必须为LPVOID 类型。形式如下：</p>
+<ul>
+<li>DWORD WINAPI ==functionName==(LPVOID pParam){}</li>
+</ul>
+<p>启动函数第四个参数传入传参结构体指针，此处为&amp;tpp。形式如下：</p>
+<ul>
+<li>CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)==functionName==, &amp;tpp, 0, NULL);    //启动音乐播放线程</li>
+</ul>
+<h3 id="文件读入"><a href="#文件读入" class="headerlink" title="文件读入"></a>文件读入</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">   FILE *fp = <span class="literal">NULL</span>;</span><br><span class="line">fp = fopen(filename, <span class="string">"r"</span>);  <span class="comment">//filename为要打开的文件路径</span></span><br></pre></td></tr></table></figure>
+<h3 id="无回显读取按键"><a href="#无回显读取按键" class="headerlink" title="无回显读取按键"></a>无回显读取按键</h3><ul>
+<li>getch();  //返回值为按下的键对应ASII码</li>
+</ul>
+<h1 id="别踩白块-启程"><a href="#别踩白块-启程" class="headerlink" title="别踩白块 -启程"></a>别踩白块 -启程</h1><h3 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h3><p><img src="http://ox5bam95j.bkt.clouddn.com/1001.jpg" alt="选择关卡"><br><img src="http://ox5bam95j.bkt.clouddn.com/1002.jpg" alt="游戏效果"><br><img src="http://ox5bam95j.bkt.clouddn.com/1003.jpg" alt="游戏结束"></p>
+<p>我已经准备好每个按键的音频文件和每个关卡对应音乐的键谱了，相关定义如下<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Path_Music_resPiano <span class="meta-string">"..//resplus//piano"</span>	<span class="comment">//载入键音</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Path_Music_Fail <span class="meta-string">"..//resplus//fail.mp3"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Path_Music_Launch <span class="meta-string">"..//resplus//chuanshao.mp3"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Path_pre <span class="meta-string">"..//resplus//piano//"</span>	<span class="comment">//音频路径前缀</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Path_end <span class="meta-string">".mp3"</span>	<span class="comment">//音频路径后缀</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//每个关卡对应键谱</span></span><br><span class="line"><span class="keyword">char</span> Path_A_Breeze_From_Alabama[] = <span class="string">"..//resplus//A Breeze From Alabama.txt"</span>;</span><br><span class="line"><span class="keyword">char</span> Path_Happy_New_Year[] = <span class="string">"..//resplus//Happy New Year.txt"</span>;</span><br><span class="line"><span class="keyword">char</span> Path_Jasmine[] = <span class="string">"..//resplus//Jasmine.txt"</span>;</span><br><span class="line"><span class="keyword">char</span> Path_Little_Star[] = <span class="string">"..//resplus//Little Star.txt"</span>;</span><br><span class="line"><span class="keyword">char</span> Path_lyricwaltz[] = <span class="string">"..//resplus//lyricwaltz.txt"</span>;</span><br><span class="line"><span class="keyword">char</span> Path_Merry_Christmas[] = <span class="string">"..//resplus//Merry Christmas.txt"</span>;</span><br></pre></td></tr></table></figure></p>
+<h3 id="整体思路（这可能是最简便的方法了）"><a href="#整体思路（这可能是最简便的方法了）" class="headerlink" title="整体思路（这可能是最简便的方法了）"></a>整体思路（这可能是最简便的方法了）</h3><ul>
+<li>启动时读入相关的音乐键谱，记录总按键数</li>
+<li>别踩白块可看成竖向的四条平行轨道</li>
+<li>根据总按键数创建一个尺寸为 窗口宽度<em>(按键数</em>黑块高度)的PIMAGE对象（此处代称总画布）</li>
+<li>生成1到4的随机数，对应的数为所在的轨道。并且记录随机数，为后面评判做准备</li>
+<li>按照所在轨道在总画布上错位绘制黑块</li>
+<li>游戏启动后，使总画布左下角定点与窗口（0,0）顶点对齐</li>
+<li>使总画布在可见区域由底向上绘制，并记录下移坐标。</li>
+<li>根据下移的坐标除以黑块的高度可确定是哪个方块</li>
+<li>根据按键以及之前的随机数数组即答案来计分</li>
+</ul>
+<h3 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h3><ul>
+<li><p>主函数<br>下面代码已有注解</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span>	<span class="comment">//主函数</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">//--------播放启动音乐----------begin</span></span><br><span class="line">	ThreadParameter tp;</span><br><span class="line">	<span class="built_in">strcpy</span>(tp.filename, Path_Music_Launch);</span><br><span class="line">	CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)music_play, &amp;tp, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">	<span class="comment">//--------播放启动音乐----------end</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">//------------初始化------------begin</span></span><br><span class="line">	setinitmode(RENDER_MANUAL);</span><br><span class="line">	initgraph(WINDOW_WIDTH, WINDOW_HIGHT, INIT_RENDERMANUAL);	<span class="comment">//初始化窗口</span></span><br><span class="line">	<span class="built_in">strcpy</span>(Path_Music, Path_Jasmine);	<span class="comment">//默认关卡</span></span><br><span class="line">	<span class="comment">//------------初始化------------end</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">//----------选择关卡------------begin</span></span><br><span class="line">	setfont(<span class="number">20</span>, <span class="number">0</span>, <span class="string">"宋体"</span>);</span><br><span class="line">	outtextxy(<span class="number">10</span>, <span class="number">10</span>, <span class="string">"按下对应字母进入关卡"</span>);</span><br><span class="line">	outtextxy(<span class="number">10</span>, <span class="number">35</span>, <span class="string">"A:	A Breeze From Alabama"</span>);</span><br><span class="line">	outtextxy(<span class="number">10</span>, <span class="number">55</span>, <span class="string">"B:	茉莉花"</span>);</span><br><span class="line">	outtextxy(<span class="number">10</span>, <span class="number">75</span>, <span class="string">"C:	Happy New Year"</span>);</span><br><span class="line">	outtextxy(<span class="number">10</span>, <span class="number">95</span>, <span class="string">"D:	Little Star"</span>);</span><br><span class="line">	outtextxy(<span class="number">10</span>, <span class="number">115</span>, <span class="string">"E:	lyricwaltz"</span>);</span><br><span class="line">	outtextxy(<span class="number">10</span>, <span class="number">135</span>, <span class="string">"F:	Merry Christmas"</span>);</span><br><span class="line">	<span class="keyword">switch</span> (getch())</span><br><span class="line">	&#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">'A'</span>:</span><br><span class="line">		<span class="built_in">strcpy</span>(Path_Music, Path_A_Breeze_From_Alabama);</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">'B'</span>:</span><br><span class="line">		<span class="built_in">strcpy</span>(Path_Music, Path_Jasmine);</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">'C'</span>:</span><br><span class="line">		<span class="built_in">strcpy</span>(Path_Music, Path_Happy_New_Year);</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">'D'</span>:</span><br><span class="line">		<span class="built_in">strcpy</span>(Path_Music, Path_Little_Star);</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">'E'</span>:</span><br><span class="line">		<span class="built_in">strcpy</span>(Path_Music, Path_lyricwaltz);</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">'F'</span>:</span><br><span class="line">		<span class="built_in">strcpy</span>(Path_Music, Path_Merry_Christmas);</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	<span class="keyword">default</span>:</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//----------选择关卡------------end</span></span><br><span class="line">	initFile();	<span class="comment">//读入相关文件</span></span><br><span class="line">	creatView();	<span class="comment">//创建地图</span></span><br><span class="line">	CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)GameControl, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="literal">NULL</span>);	<span class="comment">//启动键盘控制线程</span></span><br><span class="line"></span><br><span class="line">	GameView();	<span class="comment">//绘图</span></span><br><span class="line">	getch();	<span class="comment">//防止游戏结束后退出</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>文件读入</p>
+</li>
+</ul>
+<p>键谱文件中的内容（片段供参考）</p>
+<blockquote>
+<p>d2 d2 #f2 e2 a1 #c2 e2 d2 d (#f.a) (#f.a) d (#f.a) (#f.a) d (#f.a) (#f.a) A-1 (e.g) (e.g)</p>
+</blockquote>
+<p>对应的音频文件名为黄色部分</p>
+<blockquote>
+<p>==d2== ==d== (==#f==.==a==)  ==A-1==<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">char</span> track[<span class="number">1024</span>][<span class="number">12</span>];	<span class="comment">//乐谱</span></span><br><span class="line"><span class="keyword">int</span> mLength = <span class="number">0</span>;	<span class="comment">//键总数</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">initFile</span><span class="params">()</span>	<span class="comment">//初始化文件资源</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	FILE *fp = <span class="literal">NULL</span>;</span><br><span class="line">	fp = fopen(Path_Music, <span class="string">"r"</span>);</span><br><span class="line">	<span class="keyword">if</span> (fp != <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">while</span> (<span class="built_in">fscanf</span>(fp, <span class="string">"%s"</span>, track[mLength]) != EOF)</span><br><span class="line">		&#123;	<span class="comment">//读入所有键</span></span><br><span class="line">			mLength++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	fclose(fp);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p>从文件中读入每个按键的标识码存到数组track中，并记录有多少个键存到变量mLength中。</p>
+<ul>
+<li>绘制总画布</li>
+</ul>
+<p>根据总按键数创建一个尺寸为窗口宽度<em>(按键数</em>黑块高度)的PIMAGE对象。生成1到4的随机数，对应的数为所在的轨道。按照所在轨道在总画布上错位绘制黑块<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">PIMAGE totalimg;    <span class="comment">//总画布存储对象 &lt;全局变量&gt;</span></span><br><span class="line"><span class="keyword">int</span> randtrack[<span class="number">3000</span>] = &#123; <span class="number">-1000</span> &#125;;	<span class="comment">//存轨道的随机数</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">creatView</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> point[<span class="number">8</span>];	<span class="comment">//四边形点集</span></span><br><span class="line">	<span class="keyword">int</span> x = <span class="number">0</span>, y = <span class="number">0</span>;	<span class="comment">//基定点坐标</span></span><br><span class="line">	randomize();	<span class="comment">//初始化随机数</span></span><br><span class="line">	totalimg = newimage(WINDOW_WIDTH, Blank_HIGHT*mLength);	<span class="comment">//初始化总画布</span></span><br><span class="line">	setbkcolor(COLOR_WHITE, totalimg);	<span class="comment">//设置总画布背景</span></span><br><span class="line">	cleardevice(totalimg);	<span class="comment">//清空总画布</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; mLength; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		randtrack[i] = random(<span class="number">4</span>) + <span class="number">1</span>;	<span class="comment">//参数0-3的随机数，加一后为轨道位置</span></span><br><span class="line">		y = inter_y;</span><br><span class="line">		x = (randtrack[i] - <span class="number">1</span>) * Blank_WIDTH;</span><br><span class="line">		point[<span class="number">0</span>] = x;</span><br><span class="line">		point[<span class="number">1</span>] = y;</span><br><span class="line">		point[<span class="number">2</span>] = x + Blank_WIDTH;</span><br><span class="line">		point[<span class="number">3</span>] = y;</span><br><span class="line">		point[<span class="number">4</span>] = x + Blank_WIDTH;</span><br><span class="line">		point[<span class="number">5</span>] = y + Blank_HIGHT;</span><br><span class="line">		point[<span class="number">6</span>] = x;</span><br><span class="line">		point[<span class="number">7</span>] = y + Blank_HIGHT;</span><br><span class="line">		setfillstyle(SOLID_FILL, Blank_COLOR);	<span class="comment">//设置方块颜色</span></span><br><span class="line">		fillpoly(<span class="number">4</span>, point, totalimg);	<span class="comment">//绘制方块</span></span><br><span class="line">		inter_y += Blank_HIGHT;	<span class="comment">//设置滑块公共高度</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>启动监听按键线程</li>
+</ul>
+<p>根据按键以及之前的随机数数组即答案来计分<br>由于监听按键和绘制动画是异步操作的，所有我们给按键控制单独开一个线程来监听。线程的使用在上面已经介绍过了，下面来看看代码。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">GameControl</span><span class="params">()</span>	<span class="comment">//控制</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> curr = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> k = <span class="number">0</span>, index = <span class="number">0</span>;</span><br><span class="line">	ThreadParameter tp;</span><br><span class="line">	<span class="built_in">strcpy</span>(tp.filename, Path_Music_Fail);	<span class="comment">//给线程传参结构体赋值失败音乐路径</span></span><br><span class="line">	<span class="keyword">for</span> (; k != key_esc;)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (kbhit())</span><br><span class="line">		&#123;</span><br><span class="line">			k = getch();</span><br><span class="line">			<span class="keyword">if</span> (k == <span class="string">'S'</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span> (randtrack[mLength - curr - <span class="number">1</span>] == <span class="number">1</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					music_play_control(track[index++]);		<span class="comment">//将键音传入音乐处理函数</span></span><br><span class="line">					mScore++;	<span class="comment">//得分加一</span></span><br><span class="line">					drawCountText();	<span class="comment">//刷新计分标签</span></span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span></span><br><span class="line">				&#123;</span><br><span class="line">					CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)music_play, &amp;tp, <span class="number">0</span>, <span class="literal">NULL</span>);	<span class="comment">//播放失败音乐线程</span></span><br><span class="line">					failplay = <span class="literal">true</span>;	<span class="comment">//设定失败标志为真</span></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> <span class="keyword">if</span> (k == <span class="string">'D'</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span> (randtrack[mLength - curr - <span class="number">1</span>] == <span class="number">2</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					music_play_control(track[index++]);</span><br><span class="line">					mScore++;</span><br><span class="line">					drawCountText();</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span></span><br><span class="line">				&#123;</span><br><span class="line">					CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)music_play, &amp;tp, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">					failplay = <span class="literal">true</span>;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> <span class="keyword">if</span> (k == <span class="string">'4'</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span> (randtrack[mLength - curr - <span class="number">1</span>] == <span class="number">3</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					music_play_control(track[index++]);</span><br><span class="line">					mScore++;</span><br><span class="line">					drawCountText();</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span></span><br><span class="line">				&#123;</span><br><span class="line">					CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)music_play, &amp;tp, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">					failplay = <span class="literal">true</span>;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> <span class="keyword">if</span> (k == <span class="string">'5'</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span> (randtrack[mLength - curr - <span class="number">1</span>] == <span class="number">4</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					music_play_control(track[index++]);</span><br><span class="line">					mScore++;</span><br><span class="line">					drawCountText();</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span></span><br><span class="line">				&#123;</span><br><span class="line">					CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)music_play, &amp;tp, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">					failplay = <span class="literal">true</span>;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			curr++;</span><br><span class="line">			accelerate = mScore / <span class="number">25</span>;	<span class="comment">//设定滑块每25分增加速度</span></span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (failplay)</span><br><span class="line">		&#123;</span><br><span class="line">			api_sleep(<span class="number">500</span>);	<span class="comment">//等待播放音乐线程启动</span></span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码中用大写字母S、D和数字键4、5分别控制四条轨道，可随意修改。<br>failpaly为游戏失败标志，若为真则播放失败音乐，延迟500毫秒后结束线程。</p>
+<ul>
+<li><p>计数器<br>游戏窗口中有显示得分情况，以下是绘制得分函数，其中mScore为int型变量，程序中通过改变mScore变量的值来改变得分。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">drawCountText</span><span class="params">()</span>	<span class="comment">//绘制计数器</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">sprintf</span>(mCharsScore, <span class="string">"%d"</span>, mScore);		<span class="comment">//int转char*</span></span><br><span class="line">	setfont(<span class="number">40</span>, <span class="number">0</span>, <span class="string">"宋体"</span>);		<span class="comment">//设定字体样式</span></span><br><span class="line">	setfontbkcolor(EGERGB(<span class="number">0xff</span>, <span class="number">0x00</span>, <span class="number">0x00</span>));	<span class="comment">//设置字体背景色</span></span><br><span class="line">	outtextxy(WINDOW_WIDTH / <span class="number">2</span>, <span class="number">0</span>, mCharsScore);	<span class="comment">//在窗口输出字体</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>音频播放<br>该部分分为两个函数，一个是预处理一个是播放。</p>
+</li>
+</ul>
+<p>预处理(写法比较暴力哈)<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">music_play_control</span><span class="params">(<span class="keyword">char</span> key[])</span>	<span class="comment">//控制音乐播放</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> flage = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">char</span> copy[<span class="number">30</span>];</span><br><span class="line">	<span class="keyword">char</span> buff[<span class="number">10</span>][<span class="number">30</span>];	<span class="comment">//同时按下的键值</span></span><br><span class="line">	<span class="keyword">char</span> temp[<span class="number">200</span>];</span><br><span class="line">	<span class="built_in">memset</span>(temp, <span class="string">'\0'</span>, <span class="keyword">sizeof</span>(temp));</span><br><span class="line">	<span class="comment">//按照特定格式读入每个键符</span></span><br><span class="line">	<span class="keyword">if</span> (key[<span class="number">0</span>] != <span class="string">'('</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">strcat</span>(temp, Path_pre);</span><br><span class="line">		<span class="built_in">strcat</span>(temp, key);</span><br><span class="line">		<span class="built_in">strcat</span>(temp, Path_end);</span><br><span class="line">		<span class="built_in">strcpy</span>(tpp.filename, temp);</span><br><span class="line">		CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)music_play, &amp;tpp, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">memset</span>(buff, <span class="string">'\0'</span>, <span class="keyword">sizeof</span>(buff));</span><br><span class="line">		<span class="built_in">strcpy</span>(copy, key);</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="built_in">strlen</span>(copy); i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span> (copy[i] == <span class="string">'.'</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				flage++;</span><br><span class="line">				copy[i] = <span class="string">' '</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> <span class="keyword">if</span> (copy[i] == <span class="string">'('</span> || copy[i] == <span class="string">')'</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				copy[i] = <span class="string">' '</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (flage == <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">sscanf</span>(copy, <span class="string">"%s"</span>, buff[<span class="number">0</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (flage == <span class="number">1</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">sscanf</span>(copy, <span class="string">"%s %s"</span>, buff[<span class="number">0</span>], buff[<span class="number">1</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (flage == <span class="number">2</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">sscanf</span>(copy, <span class="string">"%s %s %s"</span>, buff[<span class="number">0</span>], buff[<span class="number">1</span>], buff[<span class="number">2</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (flage == <span class="number">3</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">sscanf</span>(copy, <span class="string">"%s %s %s %s"</span>, buff[<span class="number">0</span>], buff[<span class="number">1</span>], buff[<span class="number">2</span>], buff[<span class="number">3</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; flage; i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">strcat</span>(temp, Path_pre);</span><br><span class="line">			<span class="built_in">strcat</span>(temp, buff[i]);</span><br><span class="line">			<span class="built_in">strcat</span>(temp, Path_end);</span><br><span class="line">			<span class="built_in">strcpy</span>(tpp.filename, temp);</span><br><span class="line">			CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)music_play, &amp;tpp, <span class="number">0</span>, <span class="literal">NULL</span>);	<span class="comment">//启动音乐播放线程</span></span><br><span class="line">			api_sleep(<span class="number">200</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>实际播放音乐的线程函数<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function">DWORD WINAPI <span class="title">music_play</span><span class="params">(LPVOID pParam)</span>	<span class="comment">//播放音乐</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">//mciSendString(tp-&gt;filename, NULL, 0, NULL); //低效播放方式</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">//高效率无阻塞播放</span></span><br><span class="line">	ThreadParameter *tp = (ThreadParameter *)pParam;</span><br><span class="line">	MCI_OPEN_PARMS open;<span class="comment">//定义打开结构体变量</span></span><br><span class="line">	open.lpstrElementName = tp-&gt;filename;<span class="comment">//填充参数</span></span><br><span class="line">	mciSendCommand(<span class="number">0</span>, MCI_OPEN, MCI_OPEN_ELEMENT, DWORD_PTR(&amp;open));<span class="comment">//打开</span></span><br><span class="line">	MCI_PLAY_PARMS play;<span class="comment">//定义播放结构题变量</span></span><br><span class="line">	mciSendCommand(open.wDeviceID, MCI_PLAY, <span class="number">0</span>, DWORD_PTR(&amp;play));<span class="comment">//非阻塞式播放</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>启动时绘制窗口函数</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">GameView</span><span class="params">()</span>	<span class="comment">//	绘图</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	randomize();	<span class="comment">//初始化随机数</span></span><br><span class="line">	cleardevice();	<span class="comment">//清屏</span></span><br><span class="line">	setcaption(<span class="string">"别踩白块 - 1707004544"</span>);		<span class="comment">//窗口标题</span></span><br><span class="line">	setbkcolor(EGERGB(<span class="number">0xff</span>, <span class="number">0xff</span>, <span class="number">0xff</span>));	<span class="comment">//背景色</span></span><br><span class="line"></span><br><span class="line">	ThreadDrawTrack();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>游戏开始后画面绘制线程函数</li>
+</ul>
+<p>游戏启动后，使总画布左下角定点与窗口（0,0）顶点对齐<br>使总画布在可见区域由底向上绘制，并记录下移坐标。<br>根据下移的坐标除以黑块的高度可确定是哪个方块<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadDrawTrack</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	setrendermode(RENDER_MANUAL);</span><br><span class="line">	<span class="keyword">int</span> y = inter_y;</span><br><span class="line">	<span class="keyword">int</span> addh = <span class="number">0</span>;</span><br><span class="line">	ThreadParameter tp;</span><br><span class="line">	<span class="built_in">strcpy</span>(tp.filename, Path_Music_Fail);</span><br><span class="line">	<span class="keyword">for</span> (; is_run(); delay_fps(FPS))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (failplay)</span><br><span class="line">		&#123;</span><br><span class="line">			cleardevice();</span><br><span class="line">			<span class="built_in">sprintf</span>(mCharsScore, <span class="string">"%d"</span>, mScore);</span><br><span class="line">			setfont(<span class="number">100</span>, <span class="number">0</span>, <span class="string">"宋体"</span>);</span><br><span class="line">			setfontbkcolor(EGERGB(<span class="number">0xff</span>, <span class="number">0x00</span>, <span class="number">0x00</span>));</span><br><span class="line">			outtextxy(WINDOW_WIDTH / <span class="number">2</span> + <span class="number">20</span>, WINDOW_HIGHT / <span class="number">2</span>, mCharsScore);</span><br><span class="line">			outtextxy(<span class="number">0</span>, WINDOW_HIGHT / <span class="number">2</span>, <span class="string">"得分:"</span>);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (<span class="number">-1</span> * y &gt;= <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		putimage(<span class="number">0</span>, <span class="number">-1</span> * y, totalimg);</span><br><span class="line">		y -= <span class="number">2</span> + accelerate;</span><br><span class="line">		below = addh - mScore*Blank_HIGHT - <span class="number">160</span>;</span><br><span class="line">		<span class="keyword">if</span> (below &gt;= WINDOW_HIGHT)</span><br><span class="line">		&#123;</span><br><span class="line">			CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)music_play, &amp;tp, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">			failplay = <span class="literal">true</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		addh += <span class="number">2</span>;</span><br><span class="line">		drawCountText();	<span class="comment">//更新显示得分</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>个人感觉EGE绘制效率确实有点低，这是我写的五总方法中画面最流畅，且最简单的方法。缺点也很明显，不能单独控制每个按键。</p>
+<p>完整项目会在我的github上发布，等期末考完先，毕竟这是期末作业。并且我会用OpenCV实现另一种写法，他可以单独控制每个按键，高仿手机版钢琴块2。<a href="https://github.com/wmpscc">有兴趣的欢迎关注我的github</a>。</p>
+<p>我也是初学者，代码上有很多不足之处欢迎提出指正，感谢阅览。</p>
+<p>完整实现代码如下<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;graphics.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;math.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;windows.h&gt;  </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> comment(lib, <span class="meta-string">"Winmm.lib"</span>)            <span class="comment">//For MCI(Media Control Interface，媒体控制接口)  </span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Path_Music_resPiano <span class="meta-string">"..//resplus//piano"</span>	<span class="comment">//载入键音</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Path_Music_Fail <span class="meta-string">"..//resplus//fail.mp3"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Path_Music_Launch <span class="meta-string">"..//resplus//chuanshao.mp3"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Path_pre <span class="meta-string">"..//resplus//piano//"</span>	<span class="comment">//音频路径前缀</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Path_end <span class="meta-string">".mp3"</span>	<span class="comment">//音频路径后缀</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> WINDOW_HIGHT 800	<span class="comment">//窗口高度</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> WINDOW_WIDTH 480	<span class="comment">//窗口宽度</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Blank_HIGHT 160		<span class="comment">//方块高度</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Blank_WIDTH 120		<span class="comment">//方块宽度</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Blank_COLOR EGERGB(00,00,00)	<span class="comment">//方块颜色</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> COLOR_WHITE EGERGB(0xFF, 0xFF, 0xFF)	<span class="comment">//白色</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> FPS 100</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SLEEP 10</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//-------函数声明--------</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">drawCountText</span><span class="params">()</span></span>;	<span class="comment">//绘制计数器</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">initFile</span><span class="params">()</span></span>;	<span class="comment">//初始化文件资源</span></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">music_play</span><span class="params">(LPVOID pParam)</span></span>; 	<span class="comment">//播放音乐</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">music_play_control</span><span class="params">(<span class="keyword">char</span> key[])</span></span>;	<span class="comment">//控制音乐播放</span></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">GameControl</span><span class="params">()</span></span>;		<span class="comment">//控制</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">GameView</span><span class="params">()</span></span>;	<span class="comment">//	绘图</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">creatView</span><span class="params">()</span></span>;	<span class="comment">//创建地图</span></span><br><span class="line"></span><br><span class="line">												<span class="comment">//-------全局变量--------</span></span><br><span class="line"><span class="keyword">int</span> mScore = <span class="number">0</span>;	<span class="comment">//分数</span></span><br><span class="line"><span class="keyword">char</span> mCharsScore[<span class="number">50</span>];	<span class="comment">//分数字符串</span></span><br><span class="line"><span class="keyword">char</span> track[<span class="number">1024</span>][<span class="number">12</span>];	<span class="comment">//乐谱</span></span><br><span class="line"><span class="keyword">int</span> mLength = <span class="number">0</span>;	<span class="comment">//键总数</span></span><br><span class="line"><span class="keyword">int</span> below = <span class="number">0</span>;	<span class="comment">//最下面一个方块定点的y轴</span></span><br><span class="line">PIMAGE totalimg;</span><br><span class="line"><span class="keyword">int</span> randtrack[<span class="number">3000</span>] = &#123; <span class="number">-1000</span> &#125;;	<span class="comment">//存轨道的随机数</span></span><br><span class="line"><span class="keyword">int</span> inter_y = <span class="number">0</span>;	<span class="comment">//生成图片时用到的y</span></span><br><span class="line"><span class="keyword">bool</span> failplay = <span class="literal">false</span>;</span><br><span class="line"><span class="keyword">int</span> accelerate = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> Path_A_Breeze_From_Alabama[] = <span class="string">"..//resplus//A Breeze From Alabama.txt"</span>;</span><br><span class="line"><span class="keyword">char</span> Path_Happy_New_Year[] = <span class="string">"..//resplus//Happy New Year.txt"</span>;</span><br><span class="line"><span class="keyword">char</span> Path_Jasmine[] = <span class="string">"..//resplus//Jasmine.txt"</span>;</span><br><span class="line"><span class="keyword">char</span> Path_Little_Star[] = <span class="string">"..//resplus//Little Star.txt"</span>;</span><br><span class="line"><span class="keyword">char</span> Path_lyricwaltz[] = <span class="string">"..//resplus//lyricwaltz.txt"</span>;</span><br><span class="line"><span class="keyword">char</span> Path_Merry_Christmas[] = <span class="string">"..//resplus//Merry Christmas.txt"</span>;</span><br><span class="line"><span class="keyword">char</span> Path_Music[<span class="number">50</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">ThreadParameter</span> &#123;</span>	<span class="comment">//音频播放线程参数</span></span><br><span class="line">	<span class="keyword">char</span> filename[<span class="number">200</span>];</span><br><span class="line">	<span class="keyword">char</span> key[<span class="number">30</span>];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">ThreadParameter tpp;	<span class="comment">//音频播放线程传参结构体</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span>	<span class="comment">//主函数</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">//--------播放启动音乐----------begin</span></span><br><span class="line">	ThreadParameter tp;</span><br><span class="line">	<span class="built_in">strcpy</span>(tp.filename, Path_Music_Launch);</span><br><span class="line">	CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)music_play, &amp;tp, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">	<span class="comment">//--------播放启动音乐----------end</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">//------------初始化------------begin</span></span><br><span class="line">	setinitmode(RENDER_MANUAL);</span><br><span class="line">	initgraph(WINDOW_WIDTH, WINDOW_HIGHT, INIT_RENDERMANUAL);	<span class="comment">//初始化窗口</span></span><br><span class="line">	<span class="built_in">strcpy</span>(Path_Music, Path_Jasmine);	<span class="comment">//默认关卡</span></span><br><span class="line">	<span class="comment">//------------初始化------------end</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">//----------选择关卡------------begin</span></span><br><span class="line">	setfont(<span class="number">20</span>, <span class="number">0</span>, <span class="string">"宋体"</span>);</span><br><span class="line">	outtextxy(<span class="number">10</span>, <span class="number">10</span>, <span class="string">"按下对应字母进入关卡"</span>);</span><br><span class="line">	outtextxy(<span class="number">10</span>, <span class="number">35</span>, <span class="string">"A:	A Breeze From Alabama"</span>);</span><br><span class="line">	outtextxy(<span class="number">10</span>, <span class="number">55</span>, <span class="string">"B:	茉莉花"</span>);</span><br><span class="line">	outtextxy(<span class="number">10</span>, <span class="number">75</span>, <span class="string">"C:	Happy New Year"</span>);</span><br><span class="line">	outtextxy(<span class="number">10</span>, <span class="number">95</span>, <span class="string">"D:	Little Star"</span>);</span><br><span class="line">	outtextxy(<span class="number">10</span>, <span class="number">115</span>, <span class="string">"E:	lyricwaltz"</span>);</span><br><span class="line">	outtextxy(<span class="number">10</span>, <span class="number">135</span>, <span class="string">"F:	Merry Christmas"</span>);</span><br><span class="line">	<span class="keyword">switch</span> (getch())</span><br><span class="line">	&#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">'A'</span>:</span><br><span class="line">		<span class="built_in">strcpy</span>(Path_Music, Path_A_Breeze_From_Alabama);</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">'B'</span>:</span><br><span class="line">		<span class="built_in">strcpy</span>(Path_Music, Path_Jasmine);</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">'C'</span>:</span><br><span class="line">		<span class="built_in">strcpy</span>(Path_Music, Path_Happy_New_Year);</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">'D'</span>:</span><br><span class="line">		<span class="built_in">strcpy</span>(Path_Music, Path_Little_Star);</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">'E'</span>:</span><br><span class="line">		<span class="built_in">strcpy</span>(Path_Music, Path_lyricwaltz);</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">'F'</span>:</span><br><span class="line">		<span class="built_in">strcpy</span>(Path_Music, Path_Merry_Christmas);</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	<span class="keyword">default</span>:</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//----------选择关卡------------end</span></span><br><span class="line">	initFile();	<span class="comment">//读入相关文件</span></span><br><span class="line">	creatView();	<span class="comment">//创建地图</span></span><br><span class="line">	CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)GameControl, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="literal">NULL</span>);	<span class="comment">//启动键盘控制线程</span></span><br><span class="line"></span><br><span class="line">	GameView();	<span class="comment">//绘图</span></span><br><span class="line">	getch();	<span class="comment">//防止游戏结束后退出</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">initFile</span><span class="params">()</span>	<span class="comment">//初始化文件资源</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	FILE *fp = <span class="literal">NULL</span>;</span><br><span class="line">	fp = fopen(Path_Music, <span class="string">"r"</span>);</span><br><span class="line">	<span class="keyword">if</span> (fp != <span class="literal">NULL</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">while</span> (<span class="built_in">fscanf</span>(fp, <span class="string">"%s"</span>, track[mLength]) != EOF)</span><br><span class="line">		&#123;	<span class="comment">//读入所有键</span></span><br><span class="line">			mLength++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	fclose(fp);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">ThreadDrawTrack</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	setrendermode(RENDER_MANUAL);</span><br><span class="line">	<span class="keyword">int</span> y = inter_y;</span><br><span class="line">	<span class="keyword">int</span> addh = <span class="number">0</span>;</span><br><span class="line">	ThreadParameter tp;</span><br><span class="line">	<span class="built_in">strcpy</span>(tp.filename, Path_Music_Fail);</span><br><span class="line">	<span class="keyword">for</span> (; is_run(); delay_fps(FPS))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (failplay)</span><br><span class="line">		&#123;</span><br><span class="line">			cleardevice();</span><br><span class="line">			<span class="built_in">sprintf</span>(mCharsScore, <span class="string">"%d"</span>, mScore);</span><br><span class="line">			setfont(<span class="number">100</span>, <span class="number">0</span>, <span class="string">"宋体"</span>);</span><br><span class="line">			setfontbkcolor(EGERGB(<span class="number">0xff</span>, <span class="number">0x00</span>, <span class="number">0x00</span>));</span><br><span class="line">			outtextxy(WINDOW_WIDTH / <span class="number">2</span> + <span class="number">20</span>, WINDOW_HIGHT / <span class="number">2</span>, mCharsScore);</span><br><span class="line">			outtextxy(<span class="number">0</span>, WINDOW_HIGHT / <span class="number">2</span>, <span class="string">"得分:"</span>);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (<span class="number">-1</span> * y &gt;= <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		putimage(<span class="number">0</span>, <span class="number">-1</span> * y, totalimg);</span><br><span class="line">		y -= <span class="number">2</span> + accelerate;</span><br><span class="line">		below = addh - mScore*Blank_HIGHT - <span class="number">160</span>;</span><br><span class="line">		<span class="keyword">if</span> (below &gt;= WINDOW_HIGHT)</span><br><span class="line">		&#123;</span><br><span class="line">			CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)music_play, &amp;tp, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">			failplay = <span class="literal">true</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		addh += <span class="number">2</span>;</span><br><span class="line">		drawCountText();	<span class="comment">//更新显示得分</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">GameView</span><span class="params">()</span>	<span class="comment">//	绘图</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	randomize();	<span class="comment">//初始化随机数</span></span><br><span class="line">	cleardevice();	<span class="comment">//清屏</span></span><br><span class="line">	setcaption(<span class="string">"别踩白块 - 1707004544 李浩"</span>);		<span class="comment">//窗口标题</span></span><br><span class="line">	setbkcolor(EGERGB(<span class="number">0xff</span>, <span class="number">0xff</span>, <span class="number">0xff</span>));	<span class="comment">//背景色</span></span><br><span class="line"></span><br><span class="line">	ThreadDrawTrack();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">GameControl</span><span class="params">()</span>	<span class="comment">//控制</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> curr = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> k = <span class="number">0</span>, index = <span class="number">0</span>;</span><br><span class="line">	ThreadParameter tp;</span><br><span class="line">	<span class="built_in">strcpy</span>(tp.filename, Path_Music_Fail);	<span class="comment">//给线程传参结构体赋值失败音乐路径</span></span><br><span class="line">	<span class="keyword">for</span> (; k != key_esc;)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (kbhit())</span><br><span class="line">		&#123;</span><br><span class="line">			k = getch();</span><br><span class="line">			<span class="keyword">if</span> (k == <span class="string">'S'</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span> (randtrack[mLength - curr - <span class="number">1</span>] == <span class="number">1</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					music_play_control(track[index++]);		<span class="comment">//将键音传入音乐处理函数</span></span><br><span class="line">					mScore++;	<span class="comment">//得分加一</span></span><br><span class="line">					drawCountText();	<span class="comment">//刷新计分标签</span></span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span></span><br><span class="line">				&#123;</span><br><span class="line">					CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)music_play, &amp;tp, <span class="number">0</span>, <span class="literal">NULL</span>);	<span class="comment">//播放失败音乐线程</span></span><br><span class="line">					failplay = <span class="literal">true</span>;	<span class="comment">//设定失败标志为真</span></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> <span class="keyword">if</span> (k == <span class="string">'D'</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span> (randtrack[mLength - curr - <span class="number">1</span>] == <span class="number">2</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					music_play_control(track[index++]);</span><br><span class="line">					mScore++;</span><br><span class="line">					drawCountText();</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span></span><br><span class="line">				&#123;</span><br><span class="line">					CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)music_play, &amp;tp, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">					failplay = <span class="literal">true</span>;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> <span class="keyword">if</span> (k == <span class="string">'4'</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span> (randtrack[mLength - curr - <span class="number">1</span>] == <span class="number">3</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					music_play_control(track[index++]);</span><br><span class="line">					mScore++;</span><br><span class="line">					drawCountText();</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span></span><br><span class="line">				&#123;</span><br><span class="line">					CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)music_play, &amp;tp, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">					failplay = <span class="literal">true</span>;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> <span class="keyword">if</span> (k == <span class="string">'5'</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span> (randtrack[mLength - curr - <span class="number">1</span>] == <span class="number">4</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					music_play_control(track[index++]);</span><br><span class="line">					mScore++;</span><br><span class="line">					drawCountText();</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span></span><br><span class="line">				&#123;</span><br><span class="line">					CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)music_play, &amp;tp, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">					failplay = <span class="literal">true</span>;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			curr++;</span><br><span class="line">			accelerate = mScore / <span class="number">25</span>;	<span class="comment">//设定滑块每25分增加速度</span></span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (failplay)</span><br><span class="line">		&#123;</span><br><span class="line">			api_sleep(<span class="number">500</span>);	<span class="comment">//等待播放音乐线程启动</span></span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">drawCountText</span><span class="params">()</span>	<span class="comment">//绘制计数器</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">sprintf</span>(mCharsScore, <span class="string">"%d"</span>, mScore);		<span class="comment">//int转char*</span></span><br><span class="line">	setfont(<span class="number">40</span>, <span class="number">0</span>, <span class="string">"宋体"</span>);		<span class="comment">//设定字体样式</span></span><br><span class="line">	setfontbkcolor(EGERGB(<span class="number">0xff</span>, <span class="number">0x00</span>, <span class="number">0x00</span>));	<span class="comment">//设置字体背景色</span></span><br><span class="line">	outtextxy(WINDOW_WIDTH / <span class="number">2</span>, <span class="number">0</span>, mCharsScore);	<span class="comment">//在窗口输出字体</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">creatView</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> point[<span class="number">8</span>];	<span class="comment">//四边形点集</span></span><br><span class="line">	<span class="keyword">int</span> x = <span class="number">0</span>, y = <span class="number">0</span>;	<span class="comment">//基定点坐标</span></span><br><span class="line">	randomize();	<span class="comment">//初始化随机数</span></span><br><span class="line">	totalimg = newimage(WINDOW_WIDTH, Blank_HIGHT*mLength);	<span class="comment">//初始化总画布</span></span><br><span class="line">	setbkcolor(COLOR_WHITE, totalimg);	<span class="comment">//设置总画布背景</span></span><br><span class="line">	cleardevice(totalimg);	<span class="comment">//清空总画布</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; mLength; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		randtrack[i] = random(<span class="number">4</span>) + <span class="number">1</span>;	<span class="comment">//参数0-3的随机数，加一后为轨道位置</span></span><br><span class="line">		y = inter_y;</span><br><span class="line">		x = (randtrack[i] - <span class="number">1</span>) * Blank_WIDTH;</span><br><span class="line">		point[<span class="number">0</span>] = x;</span><br><span class="line">		point[<span class="number">1</span>] = y;</span><br><span class="line">		point[<span class="number">2</span>] = x + Blank_WIDTH;</span><br><span class="line">		point[<span class="number">3</span>] = y;</span><br><span class="line">		point[<span class="number">4</span>] = x + Blank_WIDTH;</span><br><span class="line">		point[<span class="number">5</span>] = y + Blank_HIGHT;</span><br><span class="line">		point[<span class="number">6</span>] = x;</span><br><span class="line">		point[<span class="number">7</span>] = y + Blank_HIGHT;</span><br><span class="line">		setfillstyle(SOLID_FILL, Blank_COLOR);	<span class="comment">//设置方块颜色</span></span><br><span class="line">		fillpoly(<span class="number">4</span>, point, totalimg);	<span class="comment">//绘制方块</span></span><br><span class="line">		inter_y += Blank_HIGHT;	<span class="comment">//设置滑块公共高度</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">music_play_control</span><span class="params">(<span class="keyword">char</span> key[])</span>	<span class="comment">//控制音乐播放</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> flage = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">char</span> copy[<span class="number">30</span>];</span><br><span class="line">	<span class="keyword">char</span> buff[<span class="number">10</span>][<span class="number">30</span>];	<span class="comment">//同时按下的键值</span></span><br><span class="line">	<span class="keyword">char</span> temp[<span class="number">200</span>];</span><br><span class="line">	<span class="built_in">memset</span>(temp, <span class="string">'\0'</span>, <span class="keyword">sizeof</span>(temp));</span><br><span class="line">	<span class="comment">//按照特定格式读入每个键符</span></span><br><span class="line">	<span class="keyword">if</span> (key[<span class="number">0</span>] != <span class="string">'('</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">strcat</span>(temp, Path_pre);</span><br><span class="line">		<span class="built_in">strcat</span>(temp, key);</span><br><span class="line">		<span class="built_in">strcat</span>(temp, Path_end);</span><br><span class="line">		<span class="built_in">strcpy</span>(tpp.filename, temp);</span><br><span class="line">		CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)music_play, &amp;tpp, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">memset</span>(buff, <span class="string">'\0'</span>, <span class="keyword">sizeof</span>(buff));</span><br><span class="line">		<span class="built_in">strcpy</span>(copy, key);</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="built_in">strlen</span>(copy); i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span> (copy[i] == <span class="string">'.'</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				flage++;</span><br><span class="line">				copy[i] = <span class="string">' '</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> <span class="keyword">if</span> (copy[i] == <span class="string">'('</span> || copy[i] == <span class="string">')'</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				copy[i] = <span class="string">' '</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (flage == <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">sscanf</span>(copy, <span class="string">"%s"</span>, buff[<span class="number">0</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (flage == <span class="number">1</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">sscanf</span>(copy, <span class="string">"%s %s"</span>, buff[<span class="number">0</span>], buff[<span class="number">1</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (flage == <span class="number">2</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">sscanf</span>(copy, <span class="string">"%s %s %s"</span>, buff[<span class="number">0</span>], buff[<span class="number">1</span>], buff[<span class="number">2</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (flage == <span class="number">3</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">sscanf</span>(copy, <span class="string">"%s %s %s %s"</span>, buff[<span class="number">0</span>], buff[<span class="number">1</span>], buff[<span class="number">2</span>], buff[<span class="number">3</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; flage; i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">strcat</span>(temp, Path_pre);</span><br><span class="line">			<span class="built_in">strcat</span>(temp, buff[i]);</span><br><span class="line">			<span class="built_in">strcat</span>(temp, Path_end);</span><br><span class="line">			<span class="built_in">strcpy</span>(tpp.filename, temp);</span><br><span class="line">			CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)music_play, &amp;tpp, <span class="number">0</span>, <span class="literal">NULL</span>);	<span class="comment">//启动音乐播放线程</span></span><br><span class="line">			api_sleep(<span class="number">200</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">music_play</span><span class="params">(LPVOID pParam)</span>	<span class="comment">//播放音乐</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">//mciSendString(tp-&gt;filename, NULL, 0, NULL); //低效播放方式</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">//高效率无阻塞播放</span></span><br><span class="line">	ThreadParameter *tp = (ThreadParameter *)pParam;</span><br><span class="line">	MCI_OPEN_PARMS open;<span class="comment">//定义打开结构体变量</span></span><br><span class="line">	open.lpstrElementName = tp-&gt;filename;<span class="comment">//填充参数</span></span><br><span class="line">	mciSendCommand(<span class="number">0</span>, MCI_OPEN, MCI_OPEN_ELEMENT, DWORD_PTR(&amp;open));<span class="comment">//打开</span></span><br><span class="line">	MCI_PLAY_PARMS play;<span class="comment">//定义播放结构题变量</span></span><br><span class="line">	mciSendCommand(open.wDeviceID, MCI_PLAY, <span class="number">0</span>, DWORD_PTR(&amp;play));<span class="comment">//非阻塞式播放</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+        </div>
+        <div class="post-tool">
+            <a class="btn-thumbs-up" href="javascript:void(0);" data-cid="52" title="95">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i> 打赏
+            </a>
+        </div>
+        
+        <div class="post-tags">标签：
+            
+            <a href="/tags/C-C/">C/C++</a>
+            
+        </div>
+        
+    </article>
+    
+    <p>新手上路，若有不恰当之处，望不吝赐教！</p>
+    
+    
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    var disqus_config = function () {
+        this.page.url = 'http://heolis.info/language/用EGE简单实现别踩白块游戏.html';
+        this.page.identifier = 'language/用EGE简单实现别踩白块游戏.html';
+    };
+    (function () { // DON'T EDIT BELOW THIS LINE
+        var d = document, disqus_shortname = 'HeoLis', s = d.createElement('script');
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by
+        Disqus.</a></noscript>
+
+</div>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        </div><!-- end #main-->
+    </div><!-- end #body -->
+    <footer class="footer">
+    <div class="footer-inner">
+        <p>
+            <a href="/links" title="友情链接">友情链接</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            本站已建立<a id="siteBuildingTime"></a>天&nbsp<em>·</em>&nbsp;
+        <span id="busuanzi_container_site_uv">
+            总访客数为
+            <span id="busuanzi_value_site_uv"></span>人次
+        </span>
+        </p>
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    </div>
+</footer>
+
+<!-- Tencent Analytics
+<script type="text/javascript" src="//tajs.qq.com/stats?sId=66072444" charset="UTF-8"></script> -->
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?1762d61c140d8360105c1f427350ad71";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="/js/InsightSearch.js"></script>
+<script src="/js/SimpleCore.js"></script>
+
+</div>
+<div class="fixed-btn">
+    <a class="btn-gotop" href="javascript:"> <i class="fa fa-angle-up"></i></a>
+</div>
+<script>
+    $(function () {
+        SimpleCore.init({
+            buildingTime: '11/26/2017',
+            current: $('.post-tags').length > 0 ? 'post' : 'archive',
+            snsQRCode: '/images/sns-qrcode.png',
+            donateImg: '/images/donate-qr.png',
+        });
+    });
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("MathJax config");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

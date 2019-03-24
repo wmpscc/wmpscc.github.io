@@ -1,0 +1,307 @@
+<!DOCTYPE HTML>
+<html class="no-js" lang="zh-CN">
+
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lte IE 9]>
+<meta http-equiv="refresh" content="0;url=http://heolis.info/warn.html">
+<![endif]-->
+<meta charset="utf-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+<meta http-equiv="mobile-agent" content="format=html5; url=http://heolis.info">
+<meta name="author" content="HeoLis(http://heolis.info/)">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/SimpleStyle.min.css">
+
+<link rel="shortcut icon" href="/images/favicon.jpg">
+
+
+<title>opencv基本绘图函数 - Gain</title>
+
+<meta name="keywords" content="机器瞎学/数据掩埋/模式混淆/人工智障/深度遗忘/神经掉线/计算机幻觉">
+
+<meta name="description " content="这里将记录我的学习历程。个人公众号(机器视觉于算法建模）"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="nav">
+    <nav class="nav-menu">
+        <a class="site-name current" href="/" title="Epoch">Epoch</a>
+        <a class="site-index current" href="/"><i class="fa fa-home"></i><span>首页</span></a>
+        <a href="/archives" title="归档"><i class="fa fa-archives"></i><span>归档</span></a>
+        <a href="/tags" title="标签"><i class="fa fa-tags"></i><span>标签</span></a>
+        <!-- custom single page of menus -->
+        
+    </nav>
+</div>
+
+<div class="nav-user">
+    <a class="btn-search" href="#"><i class="fa fa-search"></i></a>
+    <a class="btn-read-mode" href="#"><i class="fa fa-sun-o"></i></a>
+    <a class="btn-sns-qr" href="javascript:"><i class="fa fa-telegram"></i></a>
+</div>
+
+<div id="wrapper" class="clearfix">
+    <div id="body">
+        <div class="main" id="main">
+            <div id="cover">
+    <div class="cover-img"></div>
+    <div class="cover-info">
+        
+        <h1 class="cover-siteName">MachineEpoch</h1>
+        <h3 class="cover-siteTitle">学习、记录、分享、获得</h3>
+        <p class="cover-siteDesc">一个技术新人的博客</p>
+        <div class="cover-sns">
+            
+            <div class="btn btn-github">
+                <a href="https://github.com/wmpscc" target="_blank" title="github" ref="friend">
+                    <i class="fa fa-github"></i>
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</div>
+            <div class="page-title">
+    <ul>
+        <li><a href="/">最新</a></li>
+        
+            
+                <li class="">
+                    <a href="/categories/machinelearning" data-name="人工智障">人工智障</a>
+                </li>
+            
+                <li class="active">
+                    <a href="/categories/CV" data-name="计算机幻觉">计算机幻觉</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/language" data-name="编程语言">编程语言</a>
+                </li>
+            
+        
+        <li class="page-search">
+    <form id="search" class="search-form">
+        <label for="s" class="sr-only">请输入关键字</label>
+        <input class="search-field" type="text" name="s" class="text" placeholder="请输入关键字" />
+        <button type="submit" class="search-form-submit" title="搜索"><i class="fa fa-search"></i></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..."/>
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+</li>
+
+    </ul>
+</div>
+<div class="main-inner">
+    <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <div class="post-header">
+            <div class="post-author clearfix">
+                <a class="avatar fleft" href="https://github.com/wmpscc" target="_blank">
+                    <img width="48" src="/images/favicon.png" alt="avatar"/>
+                </a>
+                <p><span class="label">作者</span>
+                    <a href="https://github.com/wmpscc" target="_blank">wmpscc</a>
+                    <span title="最后编辑于2017-12-31">2017-12-31</span>
+                </p>
+                <p>Why become a pirate if you can join the Navy?</p>
+            </div>
+            <h2 class="post-title">OpenCV基本绘图函数</h2>
+            <div class="post-meta">
+                本文总共5788个字 | 您是第<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
+            </div>
+        </div>
+        <div class="post-content markdown-body">
+            <h3 id="线段：line-函数"><a href="#线段：line-函数" class="headerlink" title="线段：line 函数"></a>线段：line 函数</h3><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">CV_EXPORTS_W <span class="keyword">void</span> <span class="title">line</span><span class="params">(CV_IN_OUT Mat&amp; img, Point pt1, Point pt2, <span class="keyword">const</span> Scalar&amp; color, <span class="keyword">int</span> thickness=<span class="number">1</span>, <span class="keyword">int</span> lineT ype=<span class="number">8</span>, <span class="keyword">int</span> shift=<span class="number">0</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>img: 要绘制线段的图像。</li>
+<li>pt1: 线段的起点。</li>
+<li>pt2: 线段的终点。</li>
+<li>color: 线段的颜色，通过一个Scalar对象定义。</li>
+<li>thickness: 线条的宽度。</li>
+<li>lineType: 线段的类型。可以取值8， 4， 和CV_AA， 分别代表8邻接连接线，4邻接连接线和反锯齿连接线。默认值为8邻接。为了获得更好地效果可以选用CV_AA(采用了高斯滤波)。</li>
+<li>shift: 坐标点小数点位数。</li>
+</ul>
+<h3 id="椭圆：ellipse-函数"><a href="#椭圆：ellipse-函数" class="headerlink" title="椭圆：ellipse 函数"></a>椭圆：ellipse 函数</h3><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">CV_EXPORTS_W <span class="keyword">void</span> <span class="title">ellipse</span><span class="params">(CV_IN_OUT Mat&amp; img, Point center, Size axes,<span class="keyword">double</span> angle, <span class="keyword">double</span> startAngle, <span class="keyword">double</span> endAngle, <span class="keyword">const</span> Scalar&amp; color, <span class="keyword">int</span> thickness=<span class="number">1</span>,<span class="keyword">int</span> lineType=<span class="number">8</span>, <span class="keyword">int</span> shift=<span class="number">0</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>img: 要绘制椭圆的图像。</li>
+<li>center: 椭圆中心点坐标。</li>
+<li>axes: 椭圆位于该Size决定的矩形内。（即定义长轴和短轴）。</li>
+<li>angle: 椭圆旋转角度。</li>
+<li>startAngle: 椭圆开始绘制时角度。</li>
+<li>endAngle: 椭圆绘制结束时角度。（若绘制一个完整的椭圆，则startAngle=0, endAngle = 360）。</li>
+<li>color: 椭圆的颜色。</li>
+<li>thickness: 绘制椭圆线粗。负数表示全部填充。</li>
+<li>lineType、shift：同上。</li>
+</ul>
+<h3 id="矩形：rectangle-函数"><a href="#矩形：rectangle-函数" class="headerlink" title="矩形：rectangle 函数"></a>矩形：rectangle 函数</h3><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">CV_EXPORTS_W <span class="keyword">void</span> <span class="title">rectangle</span><span class="params">(CV_IN_OUT Mat&amp; img, Point pt1, Point pt2, <span class="keyword">const</span> Scalar&amp; color, <span class="keyword">int</span> thickness=<span class="number">1</span>, <span class="keyword">int</span> lineType=<span class="number">8</span>, <span class="keyword">int</span> shift=<span class="number">0</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>pt1: 矩形的左上角坐标。</li>
+<li>pt2: 矩阵的右下角坐标。</li>
+<li>其余同上。</li>
+</ul>
+<h3 id="圆：circle-函数"><a href="#圆：circle-函数" class="headerlink" title="圆：circle 函数"></a>圆：circle 函数</h3><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">CV_EXPORTS_W <span class="keyword">void</span> <span class="title">circle</span><span class="params">(CV_IN_OUT Mat&amp; img, Point center, <span class="keyword">int</span> radius, <span class="keyword">const</span> Scalar&amp; color, <span class="keyword">int</span> thickness=<span class="number">1</span>, <span class="keyword">int</span> lineType=<span class="number">8</span>, <span class="keyword">int</span> shift=<span class="number">0</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>center: 圆心坐标。</li>
+<li>radius: 半径。</li>
+<li>其余同上。</li>
+</ul>
+<h3 id="填充多边形：fillPoly-函数"><a href="#填充多边形：fillPoly-函数" class="headerlink" title="填充多边形：fillPoly 函数"></a>填充多边形：fillPoly 函数</h3><figure class="highlight"><table><tr><td class="code"><pre><span class="line">CV_EXPORTS void fillPoly(Mat&amp; img, const Point** pts,const int* npts, int ncontours, const Scalar&amp; color, int lineType=8, int shift=0, Point offset=Point() );</span><br></pre></td></tr></table></figure>
+<ul>
+<li>pts: 多边形定点集。</li>
+<li>npts: 多边形的顶点数目。</li>
+<li>ncontours: 要绘制多边形的数量。</li>
+<li>offset: 所有点轮廓的可选偏移。</li>
+<li>其余同上。</li>
+</ul>
+<h3 id="显示文字：PutText-函数"><a href="#显示文字：PutText-函数" class="headerlink" title="显示文字：PutText 函数"></a>显示文字：PutText 函数</h3><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">putText</span><span class="params">(Mat&amp; img, <span class="keyword">const</span> <span class="built_in">string</span>&amp; text, Point org, <span class="keyword">int</span> fontFace, <span class="keyword">double</span> fontScale, Scalar color, <span class="keyword">int</span> thickness=<span class="number">1</span>, <span class="keyword">int</span> lineType=<span class="number">8</span>, <span class="keyword">bool</span> bottomLeftOrigin=<span class="literal">false</span> )</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>img – 显示文字所在图像.</li>
+<li>text – 待显示的文字.</li>
+<li>org – 文字在图像中的左下角 坐标.</li>
+<li>font – 字体结构体.</li>
+<li>fontFace – 字体类型， 可选择字体：<blockquote>
+<p>FONT_HERSHEY_SIMPLEX, FONT_HERSHEY_PLAIN,<br>FONT_HERSHEY_DUPLEX, FONT_HERSHEY_COMPLEX,<br>FONT_HERSHEY_TRIPLEX, FONT_HERSHEY_COMPLEX_SMALL,<br>FONT_HERSHEY_SCRIPT_SIMPLEX, or FONT_HERSHEY_SCRIPT_COMPLEX,<br>以上所有类型都可以配合FONT_HERSHEY_ITALIC使用，产生斜体效果。</p>
+</blockquote>
+</li>
+<li>fontScale – 字体大小，该值和字体内置大小相乘得到字体大小</li>
+<li>color – 文本颜色</li>
+<li>thickness – 写字的线的粗细</li>
+<li>lineType – 线型.</li>
+<li>bottomLeftOrigin – true, 图像数据原点在左下角。否则， 图像数据原点在左上角.</li>
+</ul>
+<p>示例<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;core.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;highgui.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;imgproc.hpp&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> cv;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> WINDOW_NAME1 <span class="meta-string">"[绘制图1]"</span>	<span class="comment">//为窗口标题定义的宏</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> WINDOW_NAME2 <span class="meta-string">"[绘制图2]"</span>	<span class="comment">//为窗口标题定义的宏</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> WINDOW_WIDTH 600			<span class="comment">//定义窗口大小的宏</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//绘制不同角度。相同尺寸的椭圆</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">DrawEllipse</span><span class="params">(Mat img, <span class="keyword">double</span> angle)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> thickness = <span class="number">2</span>;</span><br><span class="line">	<span class="keyword">int</span> lineType = <span class="number">8</span>;</span><br><span class="line">	ellipse(img, Point(WINDOW_WIDTH / <span class="number">2</span>, WINDOW_WIDTH / <span class="number">2</span>),</span><br><span class="line">			Size(WINDOW_WIDTH / <span class="number">4</span>, WINDOW_WIDTH / <span class="number">16</span>), angle,</span><br><span class="line">			<span class="number">0</span>, <span class="number">360</span>, Scalar(<span class="number">255</span>, <span class="number">129</span>, <span class="number">0</span>), thickness, lineType);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//绘制实心圆</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">DrawFilledCircle</span><span class="params">(Mat img, Point center)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> thickness = <span class="number">-1</span>;	<span class="comment">//线粗</span></span><br><span class="line">	<span class="keyword">int</span> lineType = <span class="number">8</span>;</span><br><span class="line">	circle(img, center, WINDOW_WIDTH / <span class="number">32</span>, Scalar(<span class="number">0</span>, <span class="number">0</span>, <span class="number">255</span>),</span><br><span class="line">			thickness, lineType);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//实现凹多边形绘制</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">DrawPolygon</span><span class="params">(Mat img)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> lineType = <span class="number">8</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//创建一些点</span></span><br><span class="line">	Point rootPoints[<span class="number">1</span>][<span class="number">20</span>];</span><br><span class="line">	rootPoints[<span class="number">0</span>][<span class="number">0</span>] = Point(WINDOW_WIDTH / <span class="number">4</span>, <span class="number">7</span> * WINDOW_WIDTH / <span class="number">8</span>);</span><br><span class="line">	rootPoints[<span class="number">0</span>][<span class="number">1</span>] = Point(<span class="number">3</span> * WINDOW_WIDTH / <span class="number">4</span>, <span class="number">7</span> * WINDOW_WIDTH / <span class="number">8</span>);</span><br><span class="line">	rootPoints[<span class="number">0</span>][<span class="number">2</span>] = Point(<span class="number">3</span> * WINDOW_WIDTH / <span class="number">4</span>, <span class="number">13</span> * WINDOW_WIDTH / <span class="number">16</span>);</span><br><span class="line">	rootPoints[<span class="number">0</span>][<span class="number">3</span>] = Point(<span class="number">11</span> * WINDOW_WIDTH / <span class="number">16</span>, <span class="number">13</span> * WINDOW_WIDTH / <span class="number">16</span>);</span><br><span class="line">	rootPoints[<span class="number">0</span>][<span class="number">4</span>] = Point(<span class="number">19</span> * WINDOW_WIDTH / <span class="number">32</span>, <span class="number">3</span> * WINDOW_WIDTH / <span class="number">8</span>);</span><br><span class="line">	rootPoints[<span class="number">0</span>][<span class="number">5</span>] = Point(<span class="number">3</span> * WINDOW_WIDTH / <span class="number">4</span>, <span class="number">3</span> * WINDOW_WIDTH / <span class="number">8</span>);</span><br><span class="line">	rootPoints[<span class="number">0</span>][<span class="number">6</span>] = Point(<span class="number">3</span> * WINDOW_WIDTH / <span class="number">4</span>, WINDOW_WIDTH / <span class="number">8</span>);</span><br><span class="line">	rootPoints[<span class="number">0</span>][<span class="number">7</span>] = Point(<span class="number">26</span> * WINDOW_WIDTH / <span class="number">40</span>, WINDOW_WIDTH / <span class="number">8</span>);</span><br><span class="line">	rootPoints[<span class="number">0</span>][<span class="number">8</span>] = Point(<span class="number">26</span> * WINDOW_WIDTH / <span class="number">40</span>, WINDOW_WIDTH / <span class="number">4</span>);</span><br><span class="line">	rootPoints[<span class="number">0</span>][<span class="number">9</span>] = Point(<span class="number">22</span> * WINDOW_WIDTH / <span class="number">40</span>, WINDOW_WIDTH / <span class="number">4</span>);</span><br><span class="line">	rootPoints[<span class="number">0</span>][<span class="number">10</span>] = Point(<span class="number">22</span> * WINDOW_WIDTH / <span class="number">40</span>, WINDOW_WIDTH / <span class="number">8</span>);</span><br><span class="line">	rootPoints[<span class="number">0</span>][<span class="number">11</span>] = Point(<span class="number">18</span> * WINDOW_WIDTH / <span class="number">40</span>, WINDOW_WIDTH / <span class="number">8</span>);</span><br><span class="line">	rootPoints[<span class="number">0</span>][<span class="number">12</span>] = Point(<span class="number">18</span> * WINDOW_WIDTH / <span class="number">40</span>, WINDOW_WIDTH / <span class="number">4</span>);</span><br><span class="line">	rootPoints[<span class="number">0</span>][<span class="number">13</span>] = Point(<span class="number">14</span> * WINDOW_WIDTH / <span class="number">40</span>, WINDOW_WIDTH / <span class="number">4</span>);</span><br><span class="line">	rootPoints[<span class="number">0</span>][<span class="number">14</span>] = Point(<span class="number">14</span> * WINDOW_WIDTH / <span class="number">40</span>, WINDOW_WIDTH / <span class="number">8</span>);</span><br><span class="line">	rootPoints[<span class="number">0</span>][<span class="number">15</span>] = Point(WINDOW_WIDTH / <span class="number">4</span>, WINDOW_WIDTH / <span class="number">8</span>);</span><br><span class="line">	rootPoints[<span class="number">0</span>][<span class="number">16</span>] = Point(WINDOW_WIDTH / <span class="number">4</span>, <span class="number">3</span> * WINDOW_WIDTH / <span class="number">8</span>);</span><br><span class="line">	rootPoints[<span class="number">0</span>][<span class="number">17</span>] = Point(<span class="number">13</span> * WINDOW_WIDTH / <span class="number">32</span>, <span class="number">3</span> * WINDOW_WIDTH / <span class="number">8</span>);</span><br><span class="line">	rootPoints[<span class="number">0</span>][<span class="number">18</span>] = Point(<span class="number">5</span> * WINDOW_WIDTH / <span class="number">16</span>, <span class="number">13</span> * WINDOW_WIDTH / <span class="number">16</span>);</span><br><span class="line">	rootPoints[<span class="number">0</span>][<span class="number">19</span>] = Point(WINDOW_WIDTH / <span class="number">4</span>, <span class="number">13</span> * WINDOW_WIDTH / <span class="number">16</span>);</span><br><span class="line">	<span class="keyword">const</span> Point* ppt[<span class="number">1</span>] = &#123; rootPoints[<span class="number">0</span>] &#125;;</span><br><span class="line">	<span class="keyword">int</span> npt[] = &#123; <span class="number">20</span> &#125;;</span><br><span class="line">	fillPoly(img, ppt, npt, <span class="number">1</span>, Scalar(<span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>), lineType);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 绘制线</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">DrawLine</span><span class="params">(Mat img, Point start, Point end)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> thickness = <span class="number">2</span>;</span><br><span class="line">	<span class="keyword">int</span> lineType = <span class="number">8</span>;</span><br><span class="line">	line(img, start, end, Scalar(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>), thickness, lineType);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">//创建空白的Mat图像</span></span><br><span class="line">	Mat atomImage = Mat::zeros(WINDOW_WIDTH, WINDOW_WIDTH, CV_8UC3);</span><br><span class="line">	Mat rookImage = Mat::zeros(WINDOW_WIDTH, WINDOW_WIDTH, CV_8UC3);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//----------- 绘制化学中原子的示例图-----------</span></span><br><span class="line">	<span class="comment">//1.先绘制出椭圆</span></span><br><span class="line">	DrawEllipse(atomImage, <span class="number">90</span>);</span><br><span class="line">	DrawEllipse(atomImage, <span class="number">0</span>);</span><br><span class="line">	DrawEllipse(atomImage, <span class="number">45</span>);</span><br><span class="line">	DrawEllipse(atomImage, <span class="number">-45</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//2.再绘制出圆心</span></span><br><span class="line">	DrawFilledCircle(atomImage, Point(WINDOW_WIDTH / <span class="number">2</span>, WINDOW_WIDTH / <span class="number">2</span>));</span><br><span class="line"></span><br><span class="line">	<span class="comment">//----------- 绘制组合图形----------------</span></span><br><span class="line">	<span class="comment">//1.线绘制出多边形</span></span><br><span class="line">	DrawPolygon(rookImage);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//2.绘制矩形</span></span><br><span class="line">	rectangle(rookImage, Point(<span class="number">0</span>, <span class="number">7</span> * WINDOW_WIDTH),</span><br><span class="line">			Point(WINDOW_WIDTH, WINDOW_WIDTH), Scalar(<span class="number">0</span>, <span class="number">255</span>, <span class="number">255</span>), <span class="number">-1</span>, <span class="number">8</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//2.绘制一些线段</span></span><br><span class="line">	DrawLine(rookImage, Point(<span class="number">0</span>, <span class="number">15</span> * WINDOW_WIDTH / <span class="number">16</span>),</span><br><span class="line">		Point(WINDOW_WIDTH, <span class="number">15</span> * WINDOW_WIDTH / <span class="number">16</span>));</span><br><span class="line">	DrawLine(rookImage, Point(WINDOW_WIDTH / <span class="number">4</span>, <span class="number">7</span> * WINDOW_WIDTH / <span class="number">8</span>),</span><br><span class="line">			 Point(WINDOW_WIDTH / <span class="number">4</span>, WINDOW_WIDTH));</span><br><span class="line">	DrawLine(rookImage, Point(WINDOW_WIDTH / <span class="number">2</span>, <span class="number">7</span> * WINDOW_WIDTH / <span class="number">8</span>),</span><br><span class="line">			 Point(WINDOW_WIDTH / <span class="number">2</span>, WINDOW_WIDTH));</span><br><span class="line">	DrawLine(rookImage, Point(<span class="number">3</span> * WINDOW_WIDTH / <span class="number">4</span>, <span class="number">7</span> * WINDOW_WIDTH / <span class="number">8</span>),</span><br><span class="line">			 Point(<span class="number">3</span> * WINDOW_WIDTH / <span class="number">4</span>, WINDOW_WIDTH));</span><br><span class="line"></span><br><span class="line">	<span class="comment">//3.显示绘制出的图像</span></span><br><span class="line">	imshow(WINDOW_NAME1, atomImage);</span><br><span class="line">	moveWindow(WINDOW_NAME1, <span class="number">0</span>, <span class="number">200</span>);</span><br><span class="line">	imshow(WINDOW_NAME2, rookImage);</span><br><span class="line">	moveWindow(WINDOW_NAME2, WINDOW_WIDTH, <span class="number">200</span>);</span><br><span class="line"></span><br><span class="line">	waitKey(<span class="number">0</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+        </div>
+        <div class="post-tool">
+            <a class="btn-thumbs-up" href="javascript:void(0);" data-cid="52" title="95">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i> 打赏
+            </a>
+        </div>
+        
+        <div class="post-tags">标签：
+            
+            <a href="/tags/OpenCV/">OpenCV</a>
+            
+        </div>
+        
+    </article>
+    
+    <p>新手上路，若有不恰当之处，望不吝赐教！</p>
+    
+    
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    var disqus_config = function () {
+        this.page.url = 'http://heolis.info/CV/OpenCV基本绘图函数.html';
+        this.page.identifier = 'CV/OpenCV基本绘图函数.html';
+    };
+    (function () { // DON'T EDIT BELOW THIS LINE
+        var d = document, disqus_shortname = 'HeoLis', s = d.createElement('script');
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by
+        Disqus.</a></noscript>
+
+</div>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        </div><!-- end #main-->
+    </div><!-- end #body -->
+    <footer class="footer">
+    <div class="footer-inner">
+        <p>
+            <a href="/links" title="友情链接">友情链接</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            本站已建立<a id="siteBuildingTime"></a>天&nbsp<em>·</em>&nbsp;
+        <span id="busuanzi_container_site_uv">
+            总访客数为
+            <span id="busuanzi_value_site_uv"></span>人次
+        </span>
+        </p>
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    </div>
+</footer>
+
+<!-- Tencent Analytics
+<script type="text/javascript" src="//tajs.qq.com/stats?sId=66072444" charset="UTF-8"></script> -->
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?1762d61c140d8360105c1f427350ad71";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="/js/InsightSearch.js"></script>
+<script src="/js/SimpleCore.js"></script>
+
+</div>
+<div class="fixed-btn">
+    <a class="btn-gotop" href="javascript:"> <i class="fa fa-angle-up"></i></a>
+</div>
+<script>
+    $(function () {
+        SimpleCore.init({
+            buildingTime: '11/26/2017',
+            current: $('.post-tags').length > 0 ? 'post' : 'archive',
+            snsQRCode: '/images/sns-qrcode.png',
+            donateImg: '/images/donate-qr.png',
+        });
+    });
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("MathJax config");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

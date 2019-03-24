@@ -1,0 +1,297 @@
+<!DOCTYPE HTML>
+<html class="no-js" lang="zh-CN">
+
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lte IE 9]>
+<meta http-equiv="refresh" content="0;url=http://heolis.info/warn.html">
+<![endif]-->
+<meta charset="utf-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+<meta http-equiv="mobile-agent" content="format=html5; url=http://heolis.info">
+<meta name="author" content="HeoLis(http://heolis.info/)">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/SimpleStyle.min.css">
+
+<link rel="shortcut icon" href="/images/favicon.jpg">
+
+
+<title>python与c语言对比 - Gain</title>
+
+<meta name="keywords" content="机器瞎学/数据掩埋/模式混淆/人工智障/深度遗忘/神经掉线/计算机幻觉">
+
+<meta name="description " content="这里将记录我的学习历程。个人公众号(机器视觉于算法建模）"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="nav">
+    <nav class="nav-menu">
+        <a class="site-name current" href="/" title="Epoch">Epoch</a>
+        <a class="site-index current" href="/"><i class="fa fa-home"></i><span>首页</span></a>
+        <a href="/archives" title="归档"><i class="fa fa-archives"></i><span>归档</span></a>
+        <a href="/tags" title="标签"><i class="fa fa-tags"></i><span>标签</span></a>
+        <!-- custom single page of menus -->
+        
+    </nav>
+</div>
+
+<div class="nav-user">
+    <a class="btn-search" href="#"><i class="fa fa-search"></i></a>
+    <a class="btn-read-mode" href="#"><i class="fa fa-sun-o"></i></a>
+    <a class="btn-sns-qr" href="javascript:"><i class="fa fa-telegram"></i></a>
+</div>
+
+<div id="wrapper" class="clearfix">
+    <div id="body">
+        <div class="main" id="main">
+            <div id="cover">
+    <div class="cover-img"></div>
+    <div class="cover-info">
+        
+        <h1 class="cover-siteName">MachineEpoch</h1>
+        <h3 class="cover-siteTitle">学习、记录、分享、获得</h3>
+        <p class="cover-siteDesc">一个技术新人的博客</p>
+        <div class="cover-sns">
+            
+            <div class="btn btn-github">
+                <a href="https://github.com/wmpscc" target="_blank" title="github" ref="friend">
+                    <i class="fa fa-github"></i>
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</div>
+            <div class="page-title">
+    <ul>
+        <li><a href="/">最新</a></li>
+        
+            
+                <li class="">
+                    <a href="/categories/machinelearning" data-name="人工智障">人工智障</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/CV" data-name="计算机幻觉">计算机幻觉</a>
+                </li>
+            
+                <li class="active">
+                    <a href="/categories/language" data-name="编程语言">编程语言</a>
+                </li>
+            
+        
+        <li class="page-search">
+    <form id="search" class="search-form">
+        <label for="s" class="sr-only">请输入关键字</label>
+        <input class="search-field" type="text" name="s" class="text" placeholder="请输入关键字" />
+        <button type="submit" class="search-form-submit" title="搜索"><i class="fa fa-search"></i></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..."/>
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+</li>
+
+    </ul>
+</div>
+<div class="main-inner">
+    <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <div class="post-header">
+            <div class="post-author clearfix">
+                <a class="avatar fleft" href="https://github.com/wmpscc" target="_blank">
+                    <img width="48" src="/images/favicon.png" alt="avatar"/>
+                </a>
+                <p><span class="label">作者</span>
+                    <a href="https://github.com/wmpscc" target="_blank">wmpscc</a>
+                    <span title="最后编辑于2018-03-16">2018-03-16</span>
+                </p>
+                <p>Why become a pirate if you can join the Navy?</p>
+            </div>
+            <h2 class="post-title">Python与C语言对比</h2>
+            <div class="post-meta">
+                本文总共5372个字 | 您是第<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
+            </div>
+        </div>
+        <div class="post-content markdown-body">
+            <blockquote>
+<p>代码较长，建议使用电脑阅读本文。</p>
+</blockquote>
+<h1 id="10分钟入门Python"><a href="#10分钟入门Python" class="headerlink" title="10分钟入门Python"></a>10分钟入门Python</h1><p><code>本文中使用的是Python3</code><br>如果你曾经学过C语言，阅读此文，相信你能迅速发现这两种语言的异同，达到快速入门的目的。下面将开始介绍它们的异同。</p>
+<h2 id="Python与C语言基本语法对比"><a href="#Python与C语言基本语法对比" class="headerlink" title="Python与C语言基本语法对比"></a>Python与C语言基本语法对比</h2><p>Python使用空格来限制代码的作用域，相当于C语言的<code>{ }</code>。</p>
+<h3 id="第一个程序-Hello-World"><a href="#第一个程序-Hello-World" class="headerlink" title="第一个程序 Hello,World!"></a>第一个程序 Hello,World!</h3><h4 id="C语言"><a href="#C语言" class="headerlink" title="C语言"></a>C语言</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"Hello,World!"</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Python"><a href="#Python" class="headerlink" title="Python"></a>Python</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">print(<span class="string">"Hello,World!"</span>)</span><br></pre></td></tr></table></figure>
+<p>怎么样，是不是已经感受到Python的精巧了呢。</p>
+<h3 id="输入输出"><a href="#输入输出" class="headerlink" title="输入输出"></a>输入输出</h3><h4 id="C语言-1"><a href="#C语言-1" class="headerlink" title="C语言"></a>C语言</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> number;</span><br><span class="line">	<span class="keyword">float</span> decimal;</span><br><span class="line">	<span class="keyword">char</span> <span class="built_in">string</span>[<span class="number">20</span>];</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;number);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%f"</span>, &amp;decimal);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%s"</span>, <span class="built_in">string</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>, number);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%f\n"</span>, decimal);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%s\n"</span>, <span class="built_in">string</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Python-1"><a href="#Python-1" class="headerlink" title="Python"></a>Python</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">number = int(input())</span><br><span class="line">decimal = float(input())</span><br><span class="line">string = input()</span><br><span class="line"></span><br><span class="line">print(number)</span><br><span class="line">print(decimal)</span><br><span class="line">print(string)</span><br></pre></td></tr></table></figure>
+<p>如果你尝试自己写一个Python循环输出语句，你肯定会发现Python的输出默认的换行的，如果不想让它换行，可给<code>end</code>参数复制<code>&quot;&quot;</code>，例如</p>
+<h4 id="连续输出不换行"><a href="#连续输出不换行" class="headerlink" title="连续输出不换行"></a>连续输出不换行</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, <span class="number">10</span>):</span><br><span class="line">    print(i, end=<span class="string">""</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="代码注释"><a href="#代码注释" class="headerlink" title="代码注释"></a>代码注释</h3><h4 id="C语言-2"><a href="#C语言-2" class="headerlink" title="C语言"></a>C语言</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">//	printf("注释一行");</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	printf("注释多行");</span></span><br><span class="line"><span class="comment">	printf("注释多行");</span></span><br><span class="line"><span class="comment">	printf("注释多行");</span></span><br><span class="line"><span class="comment">	printf("注释多行");</span></span><br><span class="line"><span class="comment">	**/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Python-2"><a href="#Python-2" class="headerlink" title="Python"></a>Python</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># print("注释一行")</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 三个单引号</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">print("单引号注释多行")</span></span><br><span class="line"><span class="string">print("单引号注释多行")</span></span><br><span class="line"><span class="string">print("单引号注释多行")</span></span><br><span class="line"><span class="string">print("单引号注释多行")</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="comment"># 三个双引号</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">print("双引号注释多行")</span></span><br><span class="line"><span class="string">print("双引号注释多行")</span></span><br><span class="line"><span class="string">print("双引号注释多行")</span></span><br><span class="line"><span class="string">print("双引号注释多行")</span></span><br><span class="line"><span class="string">"""</span></span><br></pre></td></tr></table></figure>
+<h3 id="基本运算"><a href="#基本运算" class="headerlink" title="基本运算"></a>基本运算</h3><h4 id="C语言-3"><a href="#C语言-3" class="headerlink" title="C语言"></a>C语言</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> Result;</span><br><span class="line">	<span class="keyword">int</span> a = <span class="number">10</span>, b = <span class="number">20</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 加法</span></span><br><span class="line">	Result = a + b;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>, Result);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 自加</span></span><br><span class="line">	Result++;</span><br><span class="line">	++Result ;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>, Result);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 减法</span></span><br><span class="line">	Result = b - a;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>, Result);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 自减</span></span><br><span class="line">	Result--;</span><br><span class="line">	--Result;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>, Result);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 乘法</span></span><br><span class="line">	Result = a * b;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>, Result);</span><br><span class="line">	Result *= a;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>, Result);</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 除法</span></span><br><span class="line">	Result = b / a;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>, Result);</span><br><span class="line">	Result /= a;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>, Result); </span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Python-3"><a href="#Python-3" class="headerlink" title="Python"></a>Python</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = <span class="number">10</span></span><br><span class="line">b = <span class="number">20</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#  加法</span></span><br><span class="line">result = a + b</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 减法</span></span><br><span class="line">result = a - b</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 乘法</span></span><br><span class="line">result = a * b</span><br><span class="line">print(result)</span><br><span class="line">result *= a</span><br><span class="line"></span><br><span class="line"><span class="comment"># 除法</span></span><br><span class="line">result = b / a</span><br><span class="line">print(result)</span><br><span class="line">result /= a</span><br><span class="line">print(result)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：Python没有自加，自减运算符，即<code>i++</code>、<code>++i</code>、<code>i--</code>、<code>--i</code>，其他运算符基本与C语言相同。</p>
+</blockquote>
+<h3 id="判断语句"><a href="#判断语句" class="headerlink" title="判断语句"></a>判断语句</h3><h4 id="C语言-4"><a href="#C语言-4" class="headerlink" title="C语言"></a>C语言</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> a = <span class="number">1</span>, b = <span class="number">2</span>, c = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>(a == b)</span><br><span class="line">	&#123;</span><br><span class="line">	    <span class="built_in">printf</span>(<span class="string">"a == b"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span>(a == c)</span><br><span class="line">	&#123;</span><br><span class="line">	    <span class="built_in">printf</span>(<span class="string">"a == c"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">	    <span class="built_in">printf</span>(<span class="string">"error"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Python-4"><a href="#Python-4" class="headerlink" title="Python"></a>Python</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = <span class="number">1</span></span><br><span class="line">b = <span class="number">2</span></span><br><span class="line">c = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> a == b:</span><br><span class="line">    print(<span class="string">"a == b"</span>)</span><br><span class="line"><span class="keyword">elif</span> a == c:</span><br><span class="line">    print(<span class="string">"a == c"</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    print(<span class="string">"error"</span>)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>elif</code>相当于<code>else if</code>，其他用法与C语言相同。</p>
+</blockquote>
+<h3 id="循环语句"><a href="#循环语句" class="headerlink" title="循环语句"></a>循环语句</h3><h4 id="while循环"><a href="#while循环" class="headerlink" title="while循环"></a>while循环</h4><h5 id="C语言-5"><a href="#C语言-5" class="headerlink" title="C语言"></a>C语言</h5><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> a = <span class="number">0</span>, b = <span class="number">10</span>;</span><br><span class="line">	<span class="keyword">while</span>(a &lt; b)</span><br><span class="line">	&#123;</span><br><span class="line">		a++;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d"</span>, a);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="Python-5"><a href="#Python-5" class="headerlink" title="Python"></a>Python</h5><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = <span class="number">0</span></span><br><span class="line">b = <span class="number">10</span></span><br><span class="line"><span class="keyword">while</span> a &lt; b:</span><br><span class="line">    a+=<span class="number">1</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    print(a)</span><br></pre></td></tr></table></figure>
+<h4 id="for循环"><a href="#for循环" class="headerlink" title="for循环"></a>for循环</h4><h5 id="C语言-6"><a href="#C语言-6" class="headerlink" title="C语言"></a>C语言</h5><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%d\n"</span>, i);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="Python-6"><a href="#Python-6" class="headerlink" title="Python"></a>Python</h5><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, <span class="number">10</span>):</span><br><span class="line">    print(i)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>range(0, 10)</code>表示创建一个在[0, 10)区间的整数列表，相当于C语言for循环中的<code>i &lt; 10</code>条件</p>
+</blockquote>
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><h4 id="C语言-7"><a href="#C语言-7" class="headerlink" title="C语言"></a>C语言</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">function</span><span class="params">(<span class="keyword">char</span> name[], <span class="keyword">int</span> age, <span class="keyword">float</span> weight)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"Name:%s\n"</span>, name);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"Age:%d\n"</span>, age);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"Weight:%f\n"</span>, weight);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">char</span> name[<span class="number">20</span>];</span><br><span class="line">	<span class="keyword">int</span> age;</span><br><span class="line">	<span class="keyword">float</span> weight;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"请输入名字:"</span>);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%s"</span>, name);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"请输入年龄:"</span>);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;age);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"请输入体重:"</span>);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%f"</span>, &amp;weight);</span><br><span class="line">	<span class="keyword">if</span>(function(name, age, weight) == <span class="number">1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"执行完毕"</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Python-7"><a href="#Python-7" class="headerlink" title="Python"></a>Python</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># _*_coding:utf-8_*_</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">function</span><span class="params">(name, age, weight)</span>:</span></span><br><span class="line">    print(<span class="string">"Name:"</span> + name)</span><br><span class="line">    print(<span class="string">"Age:"</span>, age)</span><br><span class="line">    print(<span class="string">"Weight"</span>, weight)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    name = input(<span class="string">"请输入名字:"</span>)s</span><br><span class="line">    age = input(<span class="string">"请输入年龄:"</span>)</span><br><span class="line">    weight = input(<span class="string">"请输入体重:"</span>)</span><br><span class="line">    <span class="keyword">if</span> (function(name=name, age=age, weight=weight) == <span class="number">1</span>):</span><br><span class="line">        print(<span class="string">"执行完毕"</span>)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意代码的作用域，缩减相同表达的意思与C语言的<code>{ }</code>相同。</p>
+</blockquote>
+<h3 id="导入头文件"><a href="#导入头文件" class="headerlink" title="导入头文件"></a>导入头文件</h3><h4 id="C语言-8"><a href="#C语言-8" class="headerlink" title="C语言"></a>C语言</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;math.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">make_sqrt</span><span class="params">(<span class="keyword">float</span> numA, <span class="keyword">float</span> numB, <span class="keyword">float</span> numC)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">float</span> sum = <span class="built_in">sqrt</span>(numA + numB + numC);</span><br><span class="line">	<span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">float</span> a, b, c, result;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%f %f %f"</span>, &amp;a, &amp;b, &amp;c);</span><br><span class="line">	result = make_sqrt(a, b, c);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%f"</span>, result);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Python-8"><a href="#Python-8" class="headerlink" title="Python"></a>Python</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># _*_coding:utf-8_*_</span></span><br><span class="line"><span class="keyword">import</span> cmath</span><br><span class="line"><span class="keyword">import</span> cmath <span class="keyword">as</span> mt</span><br><span class="line"><span class="keyword">from</span> cmath <span class="keyword">import</span> sqrt</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">make_sqrt_sum</span><span class="params">(numA, numB, numC)</span>:</span></span><br><span class="line">    sum1 = cmath.sqrt(numA + numB + numC)</span><br><span class="line">    sum2 = mt.sqrt(numA + numB + numC)</span><br><span class="line">    sum3 = sqrt(numA + numB + numC)</span><br><span class="line">    <span class="keyword">return</span> sum1, sum2, sum3;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    a, b, c = map(float, input().split())</span><br><span class="line">    result1, result2, result3 = make_sqrt_sum(a, b, c)</span><br><span class="line">    print(result1, result2, result3)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>导入模块<br><code>import cmath</code><br><code>import cmath as mt</code><br><code>from cmath import sqrt</code><br>第一种方法是直接导入<code>cmath</code>库（sqrt模块包含在该库中），<br>第二种方法是导入后给它起个别名（后面使用的使用不用敲那么长的名字了），<br>第三种方法是直接导入<code>cmath</code>库中的<code>sqrt</code>模块（我们只用到了这个模块）。</p>
+</blockquote>
+<h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><p>Python的数组相当灵活，这里直接介绍Python类似数组的组件，及其常用操作。</p>
+<h4 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h4><p>列表中每个存储的每个元素可以是不同的类型，例如整数、小数、字符串等。列表中可以实现元素的添加、修改、删除操作，元素的值可以被修改。<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">peopleList = [<span class="string">"eye"</span>, <span class="string">"mouth"</span>, <span class="string">"nose"</span>, <span class="string">"brow"</span>, <span class="string">"ear"</span>, <span class="number">1.80</span>, <span class="number">120</span>]</span><br><span class="line">print(peopleList)               <span class="comment"># 输出整个列表</span></span><br><span class="line">print(peopleList[<span class="number">0</span>])            <span class="comment"># 访问索引为0的元素</span></span><br><span class="line">peopleList[<span class="number">1</span>] = <span class="string">"head"</span>          <span class="comment"># 修改索引为1的元素</span></span><br><span class="line">peopleList.append(<span class="string">"arm"</span>)        <span class="comment"># 在列表末尾添加元素</span></span><br><span class="line">peopleList.insert(<span class="number">1</span>, <span class="string">"foot"</span>)    <span class="comment"># 在列表中插入元素</span></span><br><span class="line"><span class="keyword">del</span> peopleList[<span class="number">0</span>]               <span class="comment"># 删除索引位置的元素</span></span><br><span class="line">result = peopleList.pop(<span class="number">0</span>)      <span class="comment"># 删除并引用索引位置的元素，先复制给result再从列表中删除</span></span><br><span class="line">peopleList.remove(<span class="string">"nose"</span>)       <span class="comment"># 根据值来删除元素</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="元组"><a href="#元组" class="headerlink" title="元组"></a>元组</h4><p>元组与列表类似，不同的是，它的元素初始化后不能再修改。但可以通过重新给变量赋值操作，达到修改元素的目的。<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 元组</span></span><br><span class="line">peopleTuple = (<span class="string">"eye"</span>, <span class="string">"mouth"</span>, <span class="string">"nose"</span>, <span class="string">"brow"</span>, <span class="string">"ear"</span>, <span class="number">1.80</span>, <span class="number">120</span>)</span><br><span class="line">print(peopleTuple)</span><br><span class="line">peopleTuple = (<span class="string">"eye"</span>, <span class="string">"mouth"</span>, <span class="string">"nose"</span>, <span class="string">"brow"</span>, <span class="string">"head"</span>, <span class="number">6.6</span>, <span class="number">999</span>)  <span class="comment"># 重新给变量赋值来达到修改元素的目的</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="字典"><a href="#字典" class="headerlink" title="字典"></a>字典</h4><p>字典是由<code>键-值对</code>组成的集合,可通过键名对值进行操作。<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">peopleDict = &#123;<span class="string">"e"</span>: <span class="string">"eye"</span>, <span class="string">"m"</span>: <span class="string">"mouth"</span>, <span class="string">"n"</span>: <span class="string">"nose"</span>, <span class="string">"b"</span>: <span class="string">"brow"</span>, <span class="string">"h"</span>: <span class="number">1.80</span>, <span class="string">"w"</span>: <span class="number">120</span>&#125;</span><br><span class="line">print(peopleDict)</span><br><span class="line">print(peopleDict[<span class="string">"e"</span>])  <span class="comment"># 访问</span></span><br><span class="line">peopleDict[<span class="string">"a"</span>] = <span class="string">"arm"</span>  <span class="comment"># 添加键-值对</span></span><br><span class="line">peopleDict[<span class="string">"w"</span>] = <span class="number">190</span>  <span class="comment"># 修改键-值对</span></span><br><span class="line"><span class="keyword">del</span> peopleDict[<span class="string">"a"</span>]  <span class="comment"># 删除键-值对</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>Python博大精深，要想学好建议还是认真研读一本书。</p>
+<p>本文已在公众号:GainAnEpoch发布，转载请注明出处。</p>
+
+        </div>
+        <div class="post-tool">
+            <a class="btn-thumbs-up" href="javascript:void(0);" data-cid="52" title="95">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i> 打赏
+            </a>
+        </div>
+        
+        <div class="post-tags">标签：
+            
+            <a href="/tags/C-C/">C/C++</a>
+            
+            <a href="/tags/Python/">Python</a>
+            
+        </div>
+        
+    </article>
+    
+    <p>新手上路，若有不恰当之处，望不吝赐教！</p>
+    
+    
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    var disqus_config = function () {
+        this.page.url = 'http://heolis.info/language/Python与C语言对比.html';
+        this.page.identifier = 'language/Python与C语言对比.html';
+    };
+    (function () { // DON'T EDIT BELOW THIS LINE
+        var d = document, disqus_shortname = 'HeoLis', s = d.createElement('script');
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by
+        Disqus.</a></noscript>
+
+</div>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        </div><!-- end #main-->
+    </div><!-- end #body -->
+    <footer class="footer">
+    <div class="footer-inner">
+        <p>
+            <a href="/links" title="友情链接">友情链接</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            本站已建立<a id="siteBuildingTime"></a>天&nbsp<em>·</em>&nbsp;
+        <span id="busuanzi_container_site_uv">
+            总访客数为
+            <span id="busuanzi_value_site_uv"></span>人次
+        </span>
+        </p>
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    </div>
+</footer>
+
+<!-- Tencent Analytics
+<script type="text/javascript" src="//tajs.qq.com/stats?sId=66072444" charset="UTF-8"></script> -->
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?1762d61c140d8360105c1f427350ad71";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="/js/InsightSearch.js"></script>
+<script src="/js/SimpleCore.js"></script>
+
+</div>
+<div class="fixed-btn">
+    <a class="btn-gotop" href="javascript:"> <i class="fa fa-angle-up"></i></a>
+</div>
+<script>
+    $(function () {
+        SimpleCore.init({
+            buildingTime: '11/26/2017',
+            current: $('.post-tags').length > 0 ? 'post' : 'archive',
+            snsQRCode: '/images/sns-qrcode.png',
+            donateImg: '/images/donate-qr.png',
+        });
+    });
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("MathJax config");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

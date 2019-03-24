@@ -1,0 +1,716 @@
+<!DOCTYPE HTML>
+<html class="no-js" lang="zh-CN">
+
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lte IE 9]>
+<meta http-equiv="refresh" content="0;url=http://heolis.info/warn.html">
+<![endif]-->
+<meta charset="utf-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+<meta http-equiv="mobile-agent" content="format=html5; url=http://heolis.info">
+<meta name="author" content="HeoLis(http://heolis.info/)">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/SimpleStyle.min.css">
+
+<link rel="shortcut icon" href="/images/favicon.jpg">
+
+
+<title>高级特征工程i - Gain</title>
+
+<meta name="keywords" content="机器瞎学/数据掩埋/模式混淆/人工智障/深度遗忘/神经掉线/计算机幻觉">
+
+<meta name="description " content="这里将记录我的学习历程。个人公众号(机器视觉于算法建模）"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="nav">
+    <nav class="nav-menu">
+        <a class="site-name current" href="/" title="Epoch">Epoch</a>
+        <a class="site-index current" href="/"><i class="fa fa-home"></i><span>首页</span></a>
+        <a href="/archives" title="归档"><i class="fa fa-archives"></i><span>归档</span></a>
+        <a href="/tags" title="标签"><i class="fa fa-tags"></i><span>标签</span></a>
+        <!-- custom single page of menus -->
+        
+    </nav>
+</div>
+
+<div class="nav-user">
+    <a class="btn-search" href="#"><i class="fa fa-search"></i></a>
+    <a class="btn-read-mode" href="#"><i class="fa fa-sun-o"></i></a>
+    <a class="btn-sns-qr" href="javascript:"><i class="fa fa-telegram"></i></a>
+</div>
+
+<div id="wrapper" class="clearfix">
+    <div id="body">
+        <div class="main" id="main">
+            <div id="cover">
+    <div class="cover-img"></div>
+    <div class="cover-info">
+        
+        <h1 class="cover-siteName">MachineEpoch</h1>
+        <h3 class="cover-siteTitle">学习、记录、分享、获得</h3>
+        <p class="cover-siteDesc">一个技术新人的博客</p>
+        <div class="cover-sns">
+            
+            <div class="btn btn-github">
+                <a href="https://github.com/wmpscc" target="_blank" title="github" ref="friend">
+                    <i class="fa fa-github"></i>
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</div>
+            <div class="page-title">
+    <ul>
+        <li><a href="/">最新</a></li>
+        
+            
+                <li class="active">
+                    <a href="/categories/machinelearning" data-name="人工智障">人工智障</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/CV" data-name="计算机幻觉">计算机幻觉</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/language" data-name="编程语言">编程语言</a>
+                </li>
+            
+        
+        <li class="page-search">
+    <form id="search" class="search-form">
+        <label for="s" class="sr-only">请输入关键字</label>
+        <input class="search-field" type="text" name="s" class="text" placeholder="请输入关键字" />
+        <button type="submit" class="search-form-submit" title="搜索"><i class="fa fa-search"></i></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..."/>
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+</li>
+
+    </ul>
+</div>
+<div class="main-inner">
+    <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <div class="post-header">
+            <div class="post-author clearfix">
+                <a class="avatar fleft" href="https://github.com/wmpscc" target="_blank">
+                    <img width="48" src="/images/favicon.png" alt="avatar"/>
+                </a>
+                <p><span class="label">作者</span>
+                    <a href="https://github.com/wmpscc" target="_blank">wmpscc</a>
+                    <span title="最后编辑于2018-10-17">2018-10-17</span>
+                </p>
+                <p>Why become a pirate if you can join the Navy?</p>
+            </div>
+            <h2 class="post-title">高级特征工程I</h2>
+            <div class="post-meta">
+                本文总共5765个字 | 您是第<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
+            </div>
+        </div>
+        <div class="post-content markdown-body">
+            <h1 id="Mean-encodings"><a href="#Mean-encodings" class="headerlink" title="Mean encodings"></a>Mean encodings</h1><p>以下是Coursera上的<a href="https://www.coursera.org/learn/competitive-data-science/home/week/3">How to Win a Data Science Competition: Learn from Top Kagglers</a>课程笔记。</p>
+<h3 id="学习目标"><a href="#学习目标" class="headerlink" title="学习目标"></a>学习目标</h3><ul>
+<li>Regularize mean encodings</li>
+<li>Extend mean encodings</li>
+<li>Summarize the concept of mean encodings</li>
+</ul>
+<h2 id="Concept-of-mean-encoding"><a href="#Concept-of-mean-encoding" class="headerlink" title="Concept of mean encoding"></a>Concept of mean encoding</h2><p>均值编码是一种非常强大的技术，它有很多名字，例如:likelihood encoding、target encoding，但这里我们叫它均值编码。我们举一个二分类任务的例子。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">feature</th>
+<th style="text-align:center">feature_label</th>
+<th style="text-align:center">feature_mean</th>
+<th style="text-align:center">target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">Moscow</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0.4</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">Moscow</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0.4</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">Moscow</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0.4</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">Moscow</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0.4</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">Moscow</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0.4</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">Tver</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">0.8</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">Tver</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">0.8</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">Tver</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">0.8</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">Tver</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">0.8</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">Klin</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0.0</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">klin</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0.0</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">11</td>
+<td style="text-align:center">Tver</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+</tr>
+</tbody>
+</table>
+<p>我们想对<code>feature</code>变量进行编码，最直接、常用的方式就是<code>label encoding</code>，这就是第二列数据。<br><br>平均编码以不同的方式去完成这个任务，它用每个城市自身对应的目标均值来进行编码。例如，对于<code>Moscow</code>，我们有五行，三个0和两个1。 所以我们用2除以5或0.4对它进行编码。用同样的方法处理其他城市。</p>
+<p>现在了解一下细节。当我们的数据集非常大，包含数百个不同的城市，让我们试着比较一下。我们绘制了0,1 class的直方图。<br><img src="https://upload-images.jianshu.io/upload_images/7007489-f8917dd037eed1d1.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="label_encoding.jpg"></p>
+<p>在<code>label encoding</code>的情况下，我们得到的图看起来没有任何逻辑顺序。<br><img src="https://upload-images.jianshu.io/upload_images/7007489-c8385aa96d601471.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="mean_encoding.jpg"></p>
+<p>但是当我们使用<code>mean encoding</code>对目标进行编码时，类看起来更加可分了，像是被排序过。</p>
+<p>一般来说，模型对复杂、非线性的特征目标越依赖，<code>均值编码</code>越有效。例如树模型的深度有限，可以用平均编码来补偿它，可以用它的短板来获得更好的分数。</p>
+<p>以上只是一个例子，传递的是一种思想，实际上可以做很多类似的操作。</p>
+<h4 id="Ways-to-use-target-variable"><a href="#Ways-to-use-target-variable" class="headerlink" title="Ways to use target variable"></a>Ways to use target variable</h4><blockquote>
+<p>Goods-number of ones in a group,<br><br>    Bads-number of zeros</p>
+</blockquote>
+<ul>
+<li>$Likelihood = \frac {Goods}{Goods+Bads} = mean(target)$</li>
+<li>$Weight of Evidence = \ln(\frac{Goods}{Bads}) * 100$</li>
+<li>$Count = Goods = sum(target)$</li>
+<li>$Diff = Goods - Bads$</li>
+</ul>
+<p>构造<code>Mean encoding</code>的例子</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">means= X_tr.groupby(col).target.mean()</span><br><span class="line">train_new[col+<span class="string">'_mean_target'</span>] = train_new[col].map(means)</span><br><span class="line">val_new[col+<span class="string">'_mean_target'</span>] = val_new[col].map(means)</span><br></pre></td></tr></table></figure>
+<p>将它运用到模型中，出现了严重的过拟合，但是为什么呢？</p>
+<ul>
+<li>Train</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">feature</th>
+<th style="text-align:center">feature_label</th>
+<th style="text-align:center">feature_mean</th>
+<th style="text-align:center">target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">Tver</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">0.8</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">Klin</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0.0</td>
+<td style="text-align:center">0</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Validation</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">feature</th>
+<th style="text-align:center">feature_label</th>
+<th style="text-align:center">feature_mean</th>
+<th style="text-align:center">target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">klin</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0.0</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">11</td>
+<td style="text-align:center">Tver</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>When they are categorized, it’s pretty common to get results like in an example, target 0 in train and target 1 in validation. Mean encodings turns into a perfect feature for such categories. That’s why we immediately get very good scores on train and fail hardly on validation. </p>
+</blockquote>
+<h2 id="Regularization"><a href="#Regularization" class="headerlink" title="Regularization"></a>Regularization</h2><p>在上一节，我们意识到平均编码不能按原样使用，需要对训练数据进行某种正规化。现在我们将实施四种不同的正则化方法。</p>
+<ul>
+<li>1.CV loop inside training data;</li>
+<li>2.Smoothing;</li>
+<li>3.Adding random noise;</li>
+<li>4.Sorting and calculating expanding mean.</li>
+</ul>
+<h3 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h3><ul>
+<li>There are a lot ways to regularize mean encodings</li>
+<li>Unending battle with target variable leakage</li>
+<li><strong>CV loop</strong> or <strong>Expanding mean</strong> for partical tasks.</li>
+</ul>
+<h3 id="1-KFold-scheme"><a href="#1-KFold-scheme" class="headerlink" title="1.KFold scheme"></a>1.KFold scheme</h3><p><img src="https://upload-images.jianshu.io/upload_images/7007489-e9f9919f1696ffd0.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="kfold.jpg"></p>
+<p>通常做四到五折的交叉验证就能得到不错的结果，无序调整此数字。</p>
+<p>代码例子<br><img src="https://upload-images.jianshu.io/upload_images/7007489-f3dd1cf2175f7f83.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="kfold_code.jpg"></p>
+<p>这个方法看起来已经完全避免了目标变量的泄露，但事实并非如此。<br><br>这里我们通过<code>留一法</code>对<code>Moscow</code>进行编码</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">feature</th>
+<th style="text-align:center">feature_mean</th>
+<th style="text-align:center">target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">Moscow</td>
+<td style="text-align:center">0.50</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">Moscow</td>
+<td style="text-align:center">0.25</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">Moscow</td>
+<td style="text-align:center">0.25</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">Moscow</td>
+<td style="text-align:center">0.50</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">Moscow</td>
+<td style="text-align:center">0.50</td>
+<td style="text-align:center">0</td>
+</tr>
+</tbody>
+</table>
+<p>对于第一行，我们得到0.5，因为有两个1和 其余行中有两个0。 同样，对于第二行，我们得到0.25，依此类推。 但仔细观察，所有结果和由此产生的特征。 它完美地分割数据，具有等于或等的特征的行 大于0.5的目标为0，其余行的目标为1。 我们没有明确使用目标变量，但我们的编码是有偏置的。<br><br></p>
+<p>目标变量的泄露效果对于<code>KFold scheme</code>仍然是有效的，只是效果温和了点。<br><br><br>在实践中，如果您有足够的数据并使用四或五折，编码将通过这种正规化策略正常工作。 只是要小心并使用正确的验证。 </p>
+<h3 id="2-Smoothing"><a href="#2-Smoothing" class="headerlink" title="2.Smoothing"></a>2.Smoothing</h3><ul>
+<li>Alpha controls the amount of regularization</li>
+<li>Only works together with some other regularization method</li>
+</ul>
+<p>$$\frac{mean(target)<em>nrows + globalmean</em>alpha}{nrows+alpha}$$<br>它具有控制正则化量的超参数alpha。 当alpha为零时，我们没有正则化，并且当alpha接近无穷大时，一切都变成了globalmean。</p>
+<p>在某种意义上，alpha等于我们可以信任的类别大小。也可以使用其他一些公式，基本上任何惩罚编码类别的东西都可以被认为是<code>smoothing</code>。</p>
+<h3 id="3-Nosie"><a href="#3-Nosie" class="headerlink" title="3.Nosie"></a>3.Nosie</h3><ul>
+<li>Noise degrades the quality of encoding</li>
+</ul>
+<p>通过添加噪声，会降低训练数据的编码质量。这种方法很不稳定，很难使它工作。主要问题在于我们需要添加的噪声量。</p>
+<ul>
+<li>How much noise should we add?</li>
+</ul>
+<p>太多的噪声会把这个特征变成垃圾，虽然噪声太小意味着更正规化。你需要努力地微调它。</p>
+<ul>
+<li>Usually used together with LOO(Leave one out).</li>
+</ul>
+<p>这种方法通常与LOO正则化一起使用。如果你没有很多时间，它可能不是最好选择。</p>
+<h3 id="4-Expanding-mean"><a href="#4-Expanding-mean" class="headerlink" title="4.Expanding mean"></a>4.Expanding mean</h3><ul>
+<li>Least amount of leakage</li>
+<li>No hyper parameters</li>
+<li>Irregular encoding quality</li>
+<li>Built-in in CatBoost.</li>
+</ul>
+<p>代码例子<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">cumsum = df_tr.groupby(col)[<span class="string">'target'</span>].cumsum() - df_tr[<span class="string">'target'</span>]</span><br><span class="line">cumcnt = df_tr.groupby(col).cumcount()</span><br><span class="line">train_new[col + <span class="string">'_mean_target'</span>] = cusum/cumcnt</span><br></pre></td></tr></table></figure></p>
+<p>cumsum存储目标变量的累计和，直到给定行，cumcnt存储累积计数。该方法引入的目标变量的泄漏量最少，唯一的缺点是特征质量不均匀。但这不是什么大不了的事，我们可以从不同的数据排列计算编码的平均模型。</p>
+<p>它被用于CatBoost库中，证明了它在分类数据集上表现非常出色。</p>
+<h2 id="Extensions-and-generalizations"><a href="#Extensions-and-generalizations" class="headerlink" title="Extensions and generalizations"></a>Extensions and generalizations</h2><ul>
+<li>如何在回归和多分类任务中进行<code>Mean encoding</code></li>
+<li>如何将编码应用于具有多对多关系的领域</li>
+<li>我们可以根据时间序列中的目标构建哪些功能</li>
+<li>编码交互和数字特征</li>
+</ul>
+<h3 id="Many-to-many-relations"><a href="#Many-to-many-relations" class="headerlink" title="Many-to-many relations"></a>Many-to-many relations</h3><ul>
+<li>原始数据</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">User_id</th>
+<th style="text-align:center">APPS</th>
+<th style="text-align:center">Target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">APP1;APP2;APP3</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">11</td>
+<td style="text-align:center">APP4;APP1</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">12</td>
+<td style="text-align:center">APP2</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">100</td>
+<td style="text-align:center">APP3;APP9</td>
+<td style="text-align:center">0</td>
+</tr>
+</tbody>
+</table>
+<p>现在考虑一个例子，基于用在智能手机上已装的APP，预测它是否会安装，这是一个二分类任务。从表中数据可知，每个用户可能有多个应用程序，每个应用程序由多个用户使用，因此这是多对多的关系。而麻烦在于，如何从多对多的关系中提取均值。</p>
+<ul>
+<li>长数据表示</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">User_id</th>
+<th style="text-align:center">APP_id</th>
+<th style="text-align:center">Target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">APP1</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">APP2</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">APP3</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">11</td>
+<td style="text-align:center">APP4</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">11</td>
+<td style="text-align:center">APP1</td>
+<td style="text-align:center">1</td>
+</tr>
+</tbody>
+</table>
+<p>把原始数据转为长数据表示，如上表。使用此表，我们可以自然地计算APP的<code>均值编码</code>。但是如何将其映射回用户呢？</p>
+<p>每个用户都有许多APP，但不都是“APP1,APP2,APP3”。因此我们用向量表示(0.1,0.2,0.1)，我们还可以从向量中收集各种统计数据，比如均值、标准差、最大最小值等等。</p>
+<h3 id="Time-series"><a href="#Time-series" class="headerlink" title="Time series"></a>Time series</h3><ul>
+<li>Time structure allows us to make a lot of complicated features.</li>
+<li>Rolling statistics of target variable.</li>
+</ul>
+<p>一方面，这是一种限制，另一方面，它允许我们只做一些复杂的特征。考虑一个例子：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Day</th>
+<th style="text-align:center">User</th>
+<th style="text-align:center">Spend</th>
+<th style="text-align:center">Amount</th>
+<th style="text-align:center">Prev_user</th>
+<th style="text-align:center">Prev_spend_avg</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">101</td>
+<td style="text-align:center">FOOD</td>
+<td style="text-align:center">2.0</td>
+<td style="text-align:center">0.0</td>
+<td style="text-align:center">0.0</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">101</td>
+<td style="text-align:center">GAS</td>
+<td style="text-align:center">4.0</td>
+<td style="text-align:center">0.0</td>
+<td style="text-align:center">0.0</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">102</td>
+<td style="text-align:center">FOOD</td>
+<td style="text-align:center">3.0</td>
+<td style="text-align:center">0.0</td>
+<td style="text-align:center">0.0</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">101</td>
+<td style="text-align:center">GAS</td>
+<td style="text-align:center">4.0</td>
+<td style="text-align:center">6.0</td>
+<td style="text-align:center">4.0</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">101</td>
+<td style="text-align:center">TV</td>
+<td style="text-align:center">8.0</td>
+<td style="text-align:center">6.0</td>
+<td style="text-align:center">0.0</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">102</td>
+<td style="text-align:center">FOOD</td>
+<td style="text-align:center">2.0</td>
+<td style="text-align:center">3.0</td>
+<td style="text-align:center">2.5</td>
+</tr>
+</tbody>
+</table>
+<p>我们需要预测用户会为哪个类别花钱。 我们有两天的时间，两个用户， 和三个支出类别。 一些好的特征是用户在前一天消费总额，所有用户在给定类别中花费的平均金额。 因此，在第1天，用户101花费6美元，用户102花费$3。 因此，我们认为这些数字是第2天的未来值。 同样，可以按类别划分平均金额。 </p>
+<p>我们拥有的数据越多，可以创造的特征就越复杂。</p>
+<h3 id="Interactions-and-numerical-features"><a href="#Interactions-and-numerical-features" class="headerlink" title="Interactions and numerical features"></a>Interactions and numerical features</h3><ul>
+<li>Analyzing fitted model</li>
+<li>Binning numeric and selecting interactions</li>
+</ul>
+<p>在实践中，通常需要编码数字特征以及进行特征组合。要对数字特征进行编码，我们只需要对其进行分区，然后将其视为分类。我们以没有进行任何编码的原始特征和决策树模型为例。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/7007489-ef8c65531a1a26c7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="interaction_tree.png"></p>
+<ul>
+<li><p>如何为数字特征分组？<br>如果数字特征有很多分裂点，则表示它于目标有一些复杂的依赖，并且试图去编码它。此外这些精确的分裂点可用于对特征进行分类，所以通过分析模型结构，我们既可以识别这些可疑的数字特征，又可以找到很好的方法去给它分组。</p>
+</li>
+<li><p>如何挑选特征组合？<br>先看决策树中如何提取交互特征。参照上图，如果两个特征在相邻的节点中，则这两个特征在相互作用。考虑到这点，我们可以遍历模型中的所有树，计算每个特征组合出现的次数。最常见的组合可能值得进行均值编码。<br><br>例如，如果我们发现<code>feature1</code>和<code>feature2</code>这一对特征最常见，我们可以在数据中连接这些特征，这意味编码产生交互。</p>
+</li>
+</ul>
+<h3 id="Correct-validation-reminder"><a href="#Correct-validation-reminder" class="headerlink" title="Correct validation reminder"></a>Correct validation reminder</h3><ul>
+<li>Local experiments:<ul>
+<li>Estimate encodings on X_tr</li>
+<li>Map them to X_tr and X_val</li>
+<li>Regularize on X_tr</li>
+<li>Validate model on X_tr/X_val split</li>
+</ul>
+</li>
+<li>Submission:<ul>
+<li>Estimate encodings on whole Train data</li>
+<li>Map them on Train and Test</li>
+<li>Regularize on Train</li>
+<li>Fit on Train</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/7007489-6a8f509625ab5815.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="reminder_set.png"></p>
+<h2 id="End"><a href="#End" class="headerlink" title="End"></a>End</h2><ul>
+<li><strong>Main advantages:</strong><ul>
+<li>Compact transformation of categorical variables</li>
+<li>Powerful basis for feature engineering</li>
+</ul>
+</li>
+<li><strong>Disadvantages:</strong><ul>
+<li>Need careful validation, there a lot of ways to overfit</li>
+<li>Significant improvements only on specific datasets</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+        <div class="post-tool">
+            <a class="btn-thumbs-up" href="javascript:void(0);" data-cid="52" title="95">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i> 打赏
+            </a>
+        </div>
+        
+        <div class="post-tags">标签：
+            
+            <a href="/tags/DataMining/">DataMining</a>
+            
+            <a href="/tags/MachineLearning/">MachineLearning</a>
+            
+            <a href="/tags/Kaggle/">Kaggle</a>
+            
+        </div>
+        
+    </article>
+    
+    <p>新手上路，若有不恰当之处，望不吝赐教！</p>
+    
+    
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    var disqus_config = function () {
+        this.page.url = 'http://heolis.info/machinelearning/高级特征工程I.html';
+        this.page.identifier = 'machinelearning/高级特征工程I.html';
+    };
+    (function () { // DON'T EDIT BELOW THIS LINE
+        var d = document, disqus_shortname = 'HeoLis', s = d.createElement('script');
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by
+        Disqus.</a></noscript>
+
+</div>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        </div><!-- end #main-->
+    </div><!-- end #body -->
+    <footer class="footer">
+    <div class="footer-inner">
+        <p>
+            <a href="/links" title="友情链接">友情链接</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            本站已建立<a id="siteBuildingTime"></a>天&nbsp<em>·</em>&nbsp;
+        <span id="busuanzi_container_site_uv">
+            总访客数为
+            <span id="busuanzi_value_site_uv"></span>人次
+        </span>
+        </p>
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    </div>
+</footer>
+
+<!-- Tencent Analytics
+<script type="text/javascript" src="//tajs.qq.com/stats?sId=66072444" charset="UTF-8"></script> -->
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?1762d61c140d8360105c1f427350ad71";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="/js/InsightSearch.js"></script>
+<script src="/js/SimpleCore.js"></script>
+
+</div>
+<div class="fixed-btn">
+    <a class="btn-gotop" href="javascript:"> <i class="fa fa-angle-up"></i></a>
+</div>
+<script>
+    $(function () {
+        SimpleCore.init({
+            buildingTime: '11/26/2017',
+            current: $('.post-tags').length > 0 ? 'post' : 'archive',
+            snsQRCode: '/images/sns-qrcode.png',
+            donateImg: '/images/donate-qr.png',
+        });
+    });
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("MathJax config");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

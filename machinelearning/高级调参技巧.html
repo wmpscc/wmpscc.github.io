@@ -1,0 +1,549 @@
+<!DOCTYPE HTML>
+<html class="no-js" lang="zh-CN">
+
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lte IE 9]>
+<meta http-equiv="refresh" content="0;url=http://heolis.info/warn.html">
+<![endif]-->
+<meta charset="utf-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+<meta http-equiv="mobile-agent" content="format=html5; url=http://heolis.info">
+<meta name="author" content="HeoLis(http://heolis.info/)">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/SimpleStyle.min.css">
+
+<link rel="shortcut icon" href="/images/favicon.jpg">
+
+
+<title>高级调参技巧 - Gain</title>
+
+<meta name="keywords" content="机器瞎学/数据掩埋/模式混淆/人工智障/深度遗忘/神经掉线/计算机幻觉">
+
+<meta name="description " content="这里将记录我的学习历程。个人公众号(机器视觉于算法建模）"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="nav">
+    <nav class="nav-menu">
+        <a class="site-name current" href="/" title="Epoch">Epoch</a>
+        <a class="site-index current" href="/"><i class="fa fa-home"></i><span>首页</span></a>
+        <a href="/archives" title="归档"><i class="fa fa-archives"></i><span>归档</span></a>
+        <a href="/tags" title="标签"><i class="fa fa-tags"></i><span>标签</span></a>
+        <!-- custom single page of menus -->
+        
+    </nav>
+</div>
+
+<div class="nav-user">
+    <a class="btn-search" href="#"><i class="fa fa-search"></i></a>
+    <a class="btn-read-mode" href="#"><i class="fa fa-sun-o"></i></a>
+    <a class="btn-sns-qr" href="javascript:"><i class="fa fa-telegram"></i></a>
+</div>
+
+<div id="wrapper" class="clearfix">
+    <div id="body">
+        <div class="main" id="main">
+            <div id="cover">
+    <div class="cover-img"></div>
+    <div class="cover-info">
+        
+        <h1 class="cover-siteName">MachineEpoch</h1>
+        <h3 class="cover-siteTitle">学习、记录、分享、获得</h3>
+        <p class="cover-siteDesc">一个技术新人的博客</p>
+        <div class="cover-sns">
+            
+            <div class="btn btn-github">
+                <a href="https://github.com/wmpscc" target="_blank" title="github" ref="friend">
+                    <i class="fa fa-github"></i>
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</div>
+            <div class="page-title">
+    <ul>
+        <li><a href="/">最新</a></li>
+        
+            
+                <li class="active">
+                    <a href="/categories/machinelearning" data-name="人工智障">人工智障</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/CV" data-name="计算机幻觉">计算机幻觉</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/language" data-name="编程语言">编程语言</a>
+                </li>
+            
+        
+        <li class="page-search">
+    <form id="search" class="search-form">
+        <label for="s" class="sr-only">请输入关键字</label>
+        <input class="search-field" type="text" name="s" class="text" placeholder="请输入关键字" />
+        <button type="submit" class="search-form-submit" title="搜索"><i class="fa fa-search"></i></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..."/>
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+</li>
+
+    </ul>
+</div>
+<div class="main-inner">
+    <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <div class="post-header">
+            <div class="post-author clearfix">
+                <a class="avatar fleft" href="https://github.com/wmpscc" target="_blank">
+                    <img width="48" src="/images/favicon.png" alt="avatar"/>
+                </a>
+                <p><span class="label">作者</span>
+                    <a href="https://github.com/wmpscc" target="_blank">wmpscc</a>
+                    <span title="最后编辑于2018-10-17">2018-10-17</span>
+                </p>
+                <p>Why become a pirate if you can join the Navy?</p>
+            </div>
+            <h2 class="post-title">高级调参技巧</h2>
+            <div class="post-meta">
+                本文总共6118个字 | 您是第<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
+            </div>
+        </div>
+        <div class="post-content markdown-body">
+            <p>以下是Coursera上的<a href="https://www.coursera.org/learn/competitive-data-science/home/week/3">How to Win a Data Science Competition: Learn from Top Kagglers</a>课程笔记。</p>
+<h1 id="Hyperparameter-Optimization"><a href="#Hyperparameter-Optimization" class="headerlink" title="Hyperparameter Optimization"></a>Hyperparameter Optimization</h1><ul>
+<li>List most important hyperparameters in major models; describe their impact</li>
+<li>Understand the hyperparameter tuning process in general</li>
+<li>Arrange hyperparameters by their importance</li>
+</ul>
+<h2 id="Hyperparameter-tuning-I"><a href="#Hyperparameter-tuning-I" class="headerlink" title="Hyperparameter tuning I"></a>Hyperparameter tuning I</h2><p><strong>Plan for the lecture</strong></p>
+<ul>
+<li>Hyperparameter tuning in general<ul>
+<li>General pipeline</li>
+<li>Manual and automatic tuning</li>
+<li>What should we understand about hyperparameters?</li>
+</ul>
+</li>
+<li>Models,libraries and hyperparameter optimization<ul>
+<li>Tree-based models</li>
+<li>Neural networks</li>
+<li>Linear models</li>
+</ul>
+</li>
+</ul>
+<p><strong>Plan for the lecture:models</strong></p>
+<ul>
+<li>Tree-based models<ul>
+<li>GBDT: XGBoost, LightGBM, CatBoost</li>
+<li>RandomForest/ExtraTrees</li>
+</ul>
+</li>
+<li>Neural nets<ul>
+<li>Pytorch, Tensorflow, Keras…</li>
+</ul>
+</li>
+<li>Linear models<ul>
+<li>SVM, logistic regression</li>
+<li>Vowpal Wabbit, FTRL</li>
+</ul>
+</li>
+<li><em>Factorization Machines(out of scope)</em><ul>
+<li>libFM, libFFM</li>
+</ul>
+</li>
+</ul>
+<h3 id="How-do-we-tune-hyperparameters"><a href="#How-do-we-tune-hyperparameters" class="headerlink" title="How do we tune hyperparameters"></a>How do we tune hyperparameters</h3><ul>
+<li>1.Select the most influential parameters<ul>
+<li>a.There are tons of parameters and we can’ttune all of them</li>
+</ul>
+</li>
+<li>2.Understand,how exactly they influence the training</li>
+<li><p>3.Tune them</p>
+<ul>
+<li>a.Manually(change and examine)</li>
+<li>b.Automatically(hyperopt, etc)</li>
+</ul>
+</li>
+<li><p>1.<br>无论如何，我们从来没有时间调整所有的参数，所以我们需要提出一个很好的子集来调整。假设我们是xgboost新手，不知道哪些参数是需要调的，可以在Github或Kaggle Kernels搜索到前人通常设置的参数。</p>
+</li>
+<li>2.<br>理解改变其中一个参数会发生什么。</li>
+<li>3.<br>大多数人手动完成调参工作。也可以使用超参数优化工具，但手动执行通常会更快。</li>
+</ul>
+<h3 id="Hyperparameter-optimization-software自动调参工具"><a href="#Hyperparameter-optimization-software自动调参工具" class="headerlink" title="Hyperparameter optimization software自动调参工具"></a>Hyperparameter optimization software自动调参工具</h3><p>运行调参工具可能需要很长时间，因此最好的策略是在夜间运行它。</p>
+<ul>
+<li>A lot of libraries to try:<ul>
+<li>Hyperopt</li>
+<li>Scikit-optimize</li>
+<li>Spearmint</li>
+<li>GPyOpt</li>
+<li>RoBO</li>
+<li>SMAC3</li>
+</ul>
+</li>
+</ul>
+<p>从广义上讲，不同的参数会导致三种不同的结果</p>
+<ul>
+<li>1.Underfitting(bad)</li>
+<li>2.Good fit and generalization(good)</li>
+<li>3.Overfitting(bad)</li>
+</ul>
+<p>因此我们需要把想要调整的参数分为两组。第一组是约束模型的参数，第二组与第一组效果相反。</p>
+<ul>
+<li><strong>A parameter in red</strong><ul>
+<li>Increasing it impedes fitting</li>
+<li>Increase it to reduce overfitting</li>
+<li>Decrease to allow model fit easier</li>
+</ul>
+</li>
+<li><strong>A parameter in green</strong><ul>
+<li>Increasing it leads to a batter fit(overfit) on train set</li>
+<li>Increase it, if model underfits</li>
+<li>Decrease if overfits</li>
+</ul>
+</li>
+</ul>
+<p><em>上面提到的颜色只是视频中的标记</em></p>
+<h2 id="Hyperparameter-tuning-II"><a href="#Hyperparameter-tuning-II" class="headerlink" title="Hyperparameter tuning II"></a>Hyperparameter tuning II</h2><p>一些基于树模型的超参数优化</p>
+<ul>
+<li>Tree-based models</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Model</th>
+<th style="text-align:center">Where</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">GBDT</td>
+<td style="text-align:center">XGBoost-<a href="https://github.com/dmlc/xgboost">dmlc/xgboost</a><br>LightGBM-<a href="https://github.com/Microsoft/LightGBM">Microsoft/LightGBM</a><br>CatBoost-<a href="https://github.com/catboost/catboost">catboost/catboost</a></td>
+</tr>
+<tr>
+<td style="text-align:center">RandomForest/ExtraTrees</td>
+<td style="text-align:center"><em>scikit-learn</em></td>
+</tr>
+<tr>
+<td style="text-align:center">Others</td>
+<td style="text-align:center">RGF-<a href="https://github.com/baidu/fast_rgf">baidu/fast_rgf</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="GBDT"><a href="#GBDT" class="headerlink" title="GBDT"></a>GBDT</h3><table>
+<thead>
+<tr>
+<th style="text-align:center">XGBoost</th>
+<th style="text-align:center">LightGBM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">max_depth</td>
+<td style="text-align:center">max_depth/num_leaves</td>
+</tr>
+<tr>
+<td style="text-align:center">subsample</td>
+<td style="text-align:center">bagging_fraction</td>
+</tr>
+<tr>
+<td style="text-align:center">colsample_bytree,<br>colsample_bylevel</td>
+<td style="text-align:center">frature_fraction</td>
+</tr>
+<tr>
+<td style="text-align:center"><em><code>min_child_weight,</code><br><code>lambda,alpha</code></em></td>
+<td style="text-align:center"><em><code>min_data_in_leaf,</code><br><code>lambda_l1,lambda_l2</code></em></td>
+</tr>
+<tr>
+<td style="text-align:center">eta<br>num_round</td>
+<td style="text-align:center">learning_rate<br>num_iterations</td>
+</tr>
+<tr>
+<td style="text-align:center">Others:<br>seed</td>
+<td style="text-align:center">Others:<br>*_seed</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>max_depth</strong>:<br>树越深，越能拟合数据集，但这可以会导致过拟合。根据任务的不同，最大深度可能会有很大差异，有时是2，有时是27。建议max_depth大约从7开始，直到未过拟合的最大深度。需要注意的是深度增加，学习时间就更长。<ul>
+<li><strong>num_leaves</strong>:<br>在LightGBM中，可以控制叶的数量，而不是最大深度。因为树可以很深，但如果叶子数量少就不会导致过拟合。</li>
+</ul>
+</li>
+<li><strong>subsample、bagging_fraction</strong>:<br>这个参数可以控制每次喂给模型的数据量，取值在0,1之间。每次喂给它一小部分数据，可以让它不那么过拟合，并且可以得到更好的泛化效果，但是模型的训练会更慢。这有点像正则化的作用。</li>
+<li><strong>colsample_bytree、colsample_bylevel</strong>:<br>这个参数可以控制subsample中的分裂点。如果模型过拟合，可以尝试降低这些值。</li>
+<li><strong>min_child_weight,lambda,alpha</strong>:<br>正则化参数。<ul>
+<li><strong>min_child_weight</strong>:<br>经验中，这是最重要的参数。增加它可以让模型更保守，减少它会让模型有更少约束。根据不同的任务，我发现最佳值为0,5,15,300，所以不要犹豫，尝试各种值，这取决于数据。</li>
+</ul>
+</li>
+<li><p><strong>eta、num_round</strong>:eta本质上是一种学习权重，就像梯度下降一样。num_round是我们想要执行的学习步数，换句话说，是我们想要建多少棵树。每次迭代都会构建一个新树，以学习率eta添加到模型中。</p>
+<ul>
+<li>当我们找到合适的轮数时，可以做一个通常会提高分数的技巧。我们将num_round乘以α，将eta除以α，模型通常会变得更好。可能应用的参数也需要调整，但通常可以保留原样。</li>
+</ul>
+<p><strong>Other</strong></p>
+<ul>
+<li><strong>seed</strong>:<br>一般情况下随机种子对于模型影响不大。但如果随机种子对你的影响非常大时，建议你可以多次提交，或者根据随机性调整你的验证方案。</li>
+</ul>
+</li>
+</ul>
+<h3 id="sklearn-RandomForest-ExtraTrees"><a href="#sklearn-RandomForest-ExtraTrees" class="headerlink" title="sklearn.RandomForest/ExtraTrees"></a>sklearn.RandomForest/ExtraTrees</h3><ul>
+<li><strong>n_estimators</strong>:<br>RandomForest构建每棵树是独立于其他树的，这意味这拥有大量树的模型不会导致过拟合，这于Gradient Boosting相反。我们通常首先将n_estimators设置为非常小的数字，例如10，并看看这将花费多少时间，如果不太长，就把它设为一个比较大的值，例如300。</li>
+<li><strong>max_deep</strong>:<br>控制树的深度，于XGBoost不同，它可以被设置为None,这对应于无限深度。当数据集中的特征具有重复值和重要交互时，它实际上非常有用。在其他情况下，无约束深度的模型将立即过拟合。建议随机森林的深度从7左右开始。通常随机深林的最佳深度高于Gradient Boosting，所有不要犹豫尝试10,20或更高的值。</li>
+<li><strong>max_feature</strong>:<br>与XGBoost中的参数相同。</li>
+<li><strong>min_samples_leaf</strong>:<br>是一个类似正则化的参数，与XGBoost的min_child_weight和LightGBM的min_data_leaf相同。</li>
+</ul>
+<p><strong>Other</strong></p>
+<ul>
+<li><strong>criterion</strong>:<br>根据我的经验，Gini更常见，但有时Entropy更好。</li>
+<li><strong>random_state</strong>:<br>随机种子参数</li>
+<li><strong>n_jobs</strong>:设置拥有多个核心数。默认情况下sklearn的RandomForest由于某种原因仅使用一个核心。</li>
+</ul>
+<h2 id="Hyperparameter-tuning-III"><a href="#Hyperparameter-tuning-III" class="headerlink" title="Hyperparameter tuning III"></a>Hyperparameter tuning III</h2><ul>
+<li>Neural nets<ul>
+<li>Pytorch, Tensorflow, Keras…</li>
+</ul>
+</li>
+<li>Linear models<ul>
+<li>SVM, logistic regression</li>
+<li>Vowpal Wabbit, FTRL</li>
+</ul>
+</li>
+</ul>
+<h3 id="Neural-Nets"><a href="#Neural-Nets" class="headerlink" title="Neural Nets"></a>Neural Nets</h3><p>这里讨论的是dense neural nets,即只含有全连接层的网络</p>
+<p>自适应算法已高亮+斜体显示</p>
+<ul>
+<li>Number of neurons per layer</li>
+<li>Number of layers</li>
+<li>Optimizers<ul>
+<li><em><code>SGD + momentum</code></em></li>
+<li>Adam/Adadelta/Adagrade/..<ul>
+<li>In pratice lead to more overfitting</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Batch size</li>
+<li>Learning rate</li>
+<li><p>Regularization</p>
+<ul>
+<li>L2/L1 for weights</li>
+<li>Dropout/Dropconnect</li>
+<li>Static Dropconect</li>
+</ul>
+</li>
+<li><p>建议从简单的开始，比如1层或2层，调试代码，确保训练时loss下降</p>
+</li>
+<li>然后尝试找到一个能够过拟合的配置，之后在网络中调整一些东西</li>
+<li>神经网络的关键部分之一是优化方法<ul>
+<li>自适应优化方法的确可以让你更快的拟合数据，但根据我的经验，这也会导致严重的过拟合。普通的SGD收敛速度较慢，但是训练好的模型通常会有更好的泛化效果。Adaptive methods are useful,but in the settings others in classification and regression.</li>
+</ul>
+</li>
+<li>Batch Size:事实证明批量过大会导致更多的过拟合。凭经验，batch_size为500就可以认为很大。建议选择32或64左右的值，如果网络仍然过拟合，请尝试减少batch_size，反之增加它。batch_size也不应该太小，否则梯度可能会有太多噪声。在调整batch_size后，必要时，应该去调整其他网络数量。</li>
+<li>学习率：学习率不能太高也不能太低。因此，最佳学习率取决于其他参数。通常从一个大的学习率开始，比如0.1，然后逐步去减小它。有一条经验法则，如果你将batch_size增加alpha倍，你也可以提高学习率alpha倍。</li>
+<li>早期，人们大多使用L2和L1正则化。如今大多数人都使用dropout正则化。对我来说，就是在数层之后立即将dropout作为第一层。</li>
+<li>static dropconnect:通常我们有一个密集连接的输入层，比如128个单位。我们将改为一个非常巨大的隐藏层，比如4096个单位，对于一般的比赛来说，这是一个巨大的网络，它会严重过拟合。现在为了规范它，我们将对这一层随机dropout 99%，这是非常强的正则化，实践证明这是可以的。<br><img src="https://upload-images.jianshu.io/upload_images/7007489-883e9d43728d23ea.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="dropconnect.png"></li>
+</ul>
+<h3 id="Linear-models"><a href="#Linear-models" class="headerlink" title="Linear models"></a>Linear models</h3><ul>
+<li><strong>Scikit-learn</strong><ul>
+<li>SVC/SVR<ul>
+<li>Sklearn wraps <code>libLinear</code> and <code>libSVM</code></li>
+<li>Compile yourself for multicore support</li>
+</ul>
+</li>
+<li>LogisticRegression/LinearRegression + <em>regularizers</em></li>
+<li>SGDClassifier/SGDRegressor</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p><strong>Vowpal Wabbit</strong></p>
+<ul>
+<li>FTRL</li>
+</ul>
+</li>
+<li><p>SVM几乎不需要调参，这是最大的益处</p>
+</li>
+<li>最新版的<code>libLinear</code>和<code>libSVM</code>支持多核处理，但Sklearn中的不支持多核处理。所以我们需要动手变异这些库以使用此选项。</li>
+<li>几乎没有人使用<code>kernel SVC</code>，所以这里只讨论SVM</li>
+<li>对于不适合在内存中操作的数据，我们可以使用<code>Vowpal Wabbit</code>，它以在线的方式实现线性模型的学习。它只能直接从硬盘驱动器中逐行读取数据，永远不会将整个数据集加载到内存中。因此，允许学习非常庞大的数据集。</li>
+<li>线性模型的在线学习方法（FTRL）在前段时间特别受欢迎，他是<code>Vowpal Wabbit</code>中的实现。</li>
+</ul>
+<h3 id="Linear-models-1"><a href="#Linear-models-1" class="headerlink" title="Linear models"></a>Linear models</h3><ul>
+<li>Regularization parameter(X,alpha,lambda,..)<ul>
+<li>Start with very small value and increase it.</li>
+<li>SVC starts to work sklowe as C increase</li>
+</ul>
+</li>
+<li><p>Regularization type</p>
+<ul>
+<li>L1/L2/L1+L2 –try each</li>
+<li>L1 can be used for feature selection</li>
+</ul>
+</li>
+<li><p>C：对于SVM，我通常会从一个非常小的值开始，比如$10^{-6}$，每次乘以10。从小的值开始，是因为参数C越大，训练时间越长。</p>
+</li>
+<li>选择L1还是L2？答案是尝试两者，在我看来，它们非常相识。并且L1还有一个好处，可以给我们提供一个稀疏权重，这可以用于特征选择。</li>
+</ul>
+<h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><ul>
+<li><p><strong>Don’t spend too much time tuning hyperparameters</strong></p>
+<ul>
+<li>Only if you don’t have any more ideas or you have spare computational resources</li>
+</ul>
+</li>
+<li><p><strong>Be patient</strong></p>
+<ul>
+<li>It can take thousands of rounds for GBDT or neural nets to fit.</li>
+</ul>
+</li>
+<li><p><strong>Average everything</strong></p>
+<ul>
+<li>Over random seed</li>
+<li>Or over small deviations from optimal parameters<ul>
+<li>e.g.average max_depth=4,5,6for an optimal 5</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="相关链接"><a href="#相关链接" class="headerlink" title="相关链接"></a>相关链接</h2><ul>
+<li><a href="http://scikit-learn.org/stable/modules/grid_search.html">调整估计器的超参数（sklearn）</a></li>
+<li><a href="https://www.analyticsvidhya.com/blog/2016/02/complete-guide-parameter-tuning-gradient-boosting-gbm-python/">Python中梯度提升（GBM）中参数调整的完整指南</a></li>
+</ul>
+
+        </div>
+        <div class="post-tool">
+            <a class="btn-thumbs-up" href="javascript:void(0);" data-cid="52" title="95">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i> 打赏
+            </a>
+        </div>
+        
+        <div class="post-tags">标签：
+            
+            <a href="/tags/DataMining/">DataMining</a>
+            
+            <a href="/tags/MachineLearning/">MachineLearning</a>
+            
+            <a href="/tags/Kaggle/">Kaggle</a>
+            
+        </div>
+        
+    </article>
+    
+    <p>新手上路，若有不恰当之处，望不吝赐教！</p>
+    
+    
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    var disqus_config = function () {
+        this.page.url = 'http://heolis.info/machinelearning/高级调参技巧.html';
+        this.page.identifier = 'machinelearning/高级调参技巧.html';
+    };
+    (function () { // DON'T EDIT BELOW THIS LINE
+        var d = document, disqus_shortname = 'HeoLis', s = d.createElement('script');
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by
+        Disqus.</a></noscript>
+
+</div>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        </div><!-- end #main-->
+    </div><!-- end #body -->
+    <footer class="footer">
+    <div class="footer-inner">
+        <p>
+            <a href="/links" title="友情链接">友情链接</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            本站已建立<a id="siteBuildingTime"></a>天&nbsp<em>·</em>&nbsp;
+        <span id="busuanzi_container_site_uv">
+            总访客数为
+            <span id="busuanzi_value_site_uv"></span>人次
+        </span>
+        </p>
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    </div>
+</footer>
+
+<!-- Tencent Analytics
+<script type="text/javascript" src="//tajs.qq.com/stats?sId=66072444" charset="UTF-8"></script> -->
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?1762d61c140d8360105c1f427350ad71";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="/js/InsightSearch.js"></script>
+<script src="/js/SimpleCore.js"></script>
+
+</div>
+<div class="fixed-btn">
+    <a class="btn-gotop" href="javascript:"> <i class="fa fa-angle-up"></i></a>
+</div>
+<script>
+    $(function () {
+        SimpleCore.init({
+            buildingTime: '11/26/2017',
+            current: $('.post-tags').length > 0 ? 'post' : 'archive',
+            snsQRCode: '/images/sns-qrcode.png',
+            donateImg: '/images/donate-qr.png',
+        });
+    });
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("MathJax config");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

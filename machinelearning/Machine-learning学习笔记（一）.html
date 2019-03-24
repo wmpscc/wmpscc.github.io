@@ -1,0 +1,410 @@
+<!DOCTYPE HTML>
+<html class="no-js" lang="zh-CN">
+
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lte IE 9]>
+<meta http-equiv="refresh" content="0;url=http://heolis.info/warn.html">
+<![endif]-->
+<meta charset="utf-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+<meta http-equiv="mobile-agent" content="format=html5; url=http://heolis.info">
+<meta name="author" content="HeoLis(http://heolis.info/)">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/SimpleStyle.min.css">
+
+<link rel="shortcut icon" href="/images/favicon.jpg">
+
+
+<title>machine learning学习笔记（一） - Gain</title>
+
+<meta name="keywords" content="机器瞎学/数据掩埋/模式混淆/人工智障/深度遗忘/神经掉线/计算机幻觉">
+
+<meta name="description " content="这里将记录我的学习历程。个人公众号(机器视觉于算法建模）"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="nav">
+    <nav class="nav-menu">
+        <a class="site-name current" href="/" title="Epoch">Epoch</a>
+        <a class="site-index current" href="/"><i class="fa fa-home"></i><span>首页</span></a>
+        <a href="/archives" title="归档"><i class="fa fa-archives"></i><span>归档</span></a>
+        <a href="/tags" title="标签"><i class="fa fa-tags"></i><span>标签</span></a>
+        <!-- custom single page of menus -->
+        
+    </nav>
+</div>
+
+<div class="nav-user">
+    <a class="btn-search" href="#"><i class="fa fa-search"></i></a>
+    <a class="btn-read-mode" href="#"><i class="fa fa-sun-o"></i></a>
+    <a class="btn-sns-qr" href="javascript:"><i class="fa fa-telegram"></i></a>
+</div>
+
+<div id="wrapper" class="clearfix">
+    <div id="body">
+        <div class="main" id="main">
+            <div id="cover">
+    <div class="cover-img"></div>
+    <div class="cover-info">
+        
+        <h1 class="cover-siteName">MachineEpoch</h1>
+        <h3 class="cover-siteTitle">学习、记录、分享、获得</h3>
+        <p class="cover-siteDesc">一个技术新人的博客</p>
+        <div class="cover-sns">
+            
+            <div class="btn btn-github">
+                <a href="https://github.com/wmpscc" target="_blank" title="github" ref="friend">
+                    <i class="fa fa-github"></i>
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</div>
+            <div class="page-title">
+    <ul>
+        <li><a href="/">最新</a></li>
+        
+            
+                <li class="active">
+                    <a href="/categories/machinelearning" data-name="人工智障">人工智障</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/CV" data-name="计算机幻觉">计算机幻觉</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/language" data-name="编程语言">编程语言</a>
+                </li>
+            
+        
+        <li class="page-search">
+    <form id="search" class="search-form">
+        <label for="s" class="sr-only">请输入关键字</label>
+        <input class="search-field" type="text" name="s" class="text" placeholder="请输入关键字" />
+        <button type="submit" class="search-form-submit" title="搜索"><i class="fa fa-search"></i></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..."/>
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+</li>
+
+    </ul>
+</div>
+<div class="main-inner">
+    <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <div class="post-header">
+            <div class="post-author clearfix">
+                <a class="avatar fleft" href="https://github.com/wmpscc" target="_blank">
+                    <img width="48" src="/images/favicon.png" alt="avatar"/>
+                </a>
+                <p><span class="label">作者</span>
+                    <a href="https://github.com/wmpscc" target="_blank">wmpscc</a>
+                    <span title="最后编辑于2018-02-10">2018-02-10</span>
+                </p>
+                <p>Why become a pirate if you can join the Navy?</p>
+            </div>
+            <h2 class="post-title">Machine Learning学习笔记（一）</h2>
+            <div class="post-meta">
+                本文总共11303个字 | 您是第<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
+            </div>
+        </div>
+        <div class="post-content markdown-body">
+            <p>本文讲解一些常见处理数据的方法。</p>
+<h2 id="Hyperparameter-Search"><a href="#Hyperparameter-Search" class="headerlink" title="Hyperparameter Search"></a>Hyperparameter Search</h2><p>Grid Search更适合微调，当超参数组合多、搜索空间大时更适合使用Randomized Search。</p>
+<h3 id="GridSearchCV-对估算器指定参数值进行详尽搜索"><a href="#GridSearchCV-对估算器指定参数值进行详尽搜索" class="headerlink" title="GridSearchCV()  对估算器指定参数值进行详尽搜索"></a>GridSearchCV()  对估算器指定参数值进行详尽搜索</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> GridSearchCV</span><br><span class="line"></span><br><span class="line">param_grid = [</span><br><span class="line">    <span class="comment"># try 12 (3×4) combinations of hyperparameters</span></span><br><span class="line">    &#123;<span class="string">'n_estimators'</span>: [<span class="number">3</span>, <span class="number">10</span>, <span class="number">30</span>], <span class="string">'max_features'</span>: [<span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">8</span>]&#125;,</span><br><span class="line">    <span class="comment"># then try 6 (2×3) combinations with bootstrap set as False</span></span><br><span class="line">    &#123;<span class="string">'bootstrap'</span>: [<span class="keyword">False</span>], <span class="string">'n_estimators'</span>: [<span class="number">3</span>, <span class="number">10</span>], <span class="string">'max_features'</span>: [<span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]&#125;,</span><br><span class="line">  ]</span><br><span class="line"></span><br><span class="line">forest_reg = RandomForestRegressor(random_state=<span class="number">42</span>)</span><br><span class="line"><span class="comment"># train across 5 folds, that's a total of (12+6)*5=90 rounds of training</span></span><br><span class="line">grid_search = GridSearchCV(forest_reg, param_grid, cv=<span class="number">5</span>,</span><br><span class="line">                           scoring=<span class="string">'neg_mean_squared_error'</span>)</span><br><span class="line">grid_search.fit(housing_prepared, housing_labels)</span><br><span class="line"></span><br><span class="line">grid_search.best_params_</span><br><span class="line"><span class="comment"># Out:&#123;'max_features': 8, 'n_estimators': 30&#125;</span></span><br><span class="line"></span><br><span class="line">grid_search.best_estimator_</span><br><span class="line"><span class="comment"># Out:</span></span><br><span class="line"><span class="comment"># RandomForestRegressor(bootstrap=True, criterion='mse', max_depth=None,</span></span><br><span class="line"><span class="comment">#            max_features=8, max_leaf_nodes=None, min_impurity_decrease=0.0,</span></span><br><span class="line"><span class="comment">#            min_impurity_split=None, min_samples_leaf=1,</span></span><br><span class="line"><span class="comment">#            min_samples_split=2, min_weight_fraction_leaf=0.0,</span></span><br><span class="line"><span class="comment">#            n_estimators=30, n_jobs=1, oob_score=False, random_state=42,</span></span><br><span class="line"><span class="comment">#            verbose=0, warm_start=False)</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>estimator : estimator object.每个估算器需要提供一个<code>score</code>函数或填写<code>scoring</code>参数。</li>
+<li>param_grid : dict or list of dictionaries，键作为参数名称，list作为参数的字典。或存有这样的字典的列表。</li>
+<li>scoring : string, callable, list/tuple, dict or None, default: None，</li>
+<li>cv : int, cross-validation generator or an iterable, optional，如果是整数，则代表KFold</li>
+<li>refit : boolean, or string, default=True，应用已找到的最好的参数到整个数据集上。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Methods</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>decision_function(X)</td>
+<td>Call decision_function on the estimator with the best found parameters.</td>
+</tr>
+<tr>
+<td>fit(X[, y, groups])</td>
+<td>Run fit with all sets of parameters.</td>
+</tr>
+<tr>
+<td>get_params([deep])</td>
+<td>Get parameters for this estimator.</td>
+</tr>
+<tr>
+<td>inverse_transform(Xt)</td>
+<td>Call inverse_transform on the estimator with the best found params.</td>
+</tr>
+<tr>
+<td>predict(X)</td>
+<td>Call predict on the estimator with the best found parameters.</td>
+</tr>
+<tr>
+<td>predict_log_proba(X)</td>
+<td>Call predict_log_proba on the estimator with the best found parameters.</td>
+</tr>
+<tr>
+<td>predict_proba(X)</td>
+<td>Call predict_proba on the estimator with the best found parameters.</td>
+</tr>
+<tr>
+<td>score(X[, y])</td>
+<td>Returns the score on the given data, if the estimator has been refit.</td>
+</tr>
+<tr>
+<td>set_params(**params)</td>
+<td>Set the parameters of this estimator.</td>
+</tr>
+<tr>
+<td>transform(X)</td>
+<td>Call transform on the estimator with the best found parameters.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="RandomizedSearchCV"><a href="#RandomizedSearchCV" class="headerlink" title="RandomizedSearchCV()"></a>RandomizedSearchCV()</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> RandomizedSearchCV</span><br><span class="line"><span class="keyword">from</span> scipy.stats <span class="keyword">import</span> randint</span><br><span class="line"></span><br><span class="line">param_distribs = &#123;</span><br><span class="line">        <span class="string">'n_estimators'</span>: randint(low=<span class="number">1</span>, high=<span class="number">200</span>),</span><br><span class="line">        <span class="string">'max_features'</span>: randint(low=<span class="number">1</span>, high=<span class="number">8</span>),</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">forest_reg = RandomForestRegressor(random_state=<span class="number">42</span>)</span><br><span class="line">rnd_search = RandomizedSearchCV(forest_reg, param_distributions=param_distribs,</span><br><span class="line">                                n_iter=<span class="number">10</span>, cv=<span class="number">5</span>, scoring=<span class="string">'neg_mean_squared_error'</span>, random_state=<span class="number">42</span>)</span><br><span class="line">rnd_search.fit(housing_prepared, housing_labels)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>estimator : estimator object.指定估算器对象。</li>
+<li>param_distributions : dict，给定以参数名为键，list为参数的字典。或提供一个分布，分布必须提供一个<code>rvs</code>方法进行采样，例如来自scipy.stats.distributions的方法。</li>
+<li>n_iter : int, default=10，采样参数设置数量。</li>
+<li>scoring : string, callable, list/tuple, dict or None, default: None</li>
+<li>cv : int, cross-validation generator or an iterable, optional</li>
+<li>refit : boolean, or string default=True</li>
+<li>random_state : int, RandomState instance or None, optional, default=None</li>
+</ul>
+<h2 id="Transformation-Pipelines"><a href="#Transformation-Pipelines" class="headerlink" title="Transformation Pipelines"></a>Transformation Pipelines</h2><p>执行pipeline结构的<code>fit()</code>方法时，依次执行transformer的<code>fit_transform()方法</code>，最后一个transformer执行<code>fit()</code>方法，并将前一个transformer返回的值作为参数输入给后一个transformer。通过FeatureUnion类向已有的pipeline加入子pipeline。每个字pipeline以selector开头，目的是挑选出主要属性，并转换为NumPy array。<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.pipeline <span class="keyword">import</span> Pipeline</span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler</span><br><span class="line"></span><br><span class="line">num_pipeline = Pipeline([</span><br><span class="line">        (<span class="string">'imputer'</span>, Imputer(strategy=<span class="string">"median"</span>)),</span><br><span class="line">        (<span class="string">'attribs_adder'</span>, CombinedAttributesAdder()),</span><br><span class="line">        (<span class="string">'std_scaler'</span>, StandardScaler()),</span><br><span class="line">    ])</span><br><span class="line"></span><br><span class="line">housing_num_tr = num_pipeline.fit_transform(housing_num)</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>steps : list；由（名称， 变换）组成的元组列表，列表最后一个对象是一个估计器。</li>
+<li>memory : None, str or object with the joblib.Memory interface, optional</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Methods</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>decision_function(X)</td>
+<td>Apply transforms, and decision_function of the final estimator</td>
+</tr>
+<tr>
+<td>fit(X[, y])</td>
+<td>Fit the model</td>
+</tr>
+<tr>
+<td>fit_predict(X[, y])</td>
+<td>Applies fit_predict of last step in pipeline after transforms.</td>
+</tr>
+<tr>
+<td>fit_transform(X[, y])</td>
+<td>Fit the model and transform with the final estimator</td>
+</tr>
+<tr>
+<td>get_params([deep])</td>
+<td>Get parameters for this estimator.</td>
+</tr>
+<tr>
+<td>predict(X)</td>
+<td>Apply transforms to the data, and predict with the final estimator</td>
+</tr>
+<tr>
+<td>predict_log_proba(X)</td>
+<td>Apply transforms, and predict_log_proba of the final estimator</td>
+</tr>
+<tr>
+<td>predict_proba(X)</td>
+<td>Apply transforms, and predict_proba of the final estimator</td>
+</tr>
+<tr>
+<td>score(X[, y, sample_weight])</td>
+<td>Apply transforms, and score with the final estimator</td>
+</tr>
+<tr>
+<td>set_params(**kwargs)</td>
+<td>Set the parameters of this estimator.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="用subpipeline-构建一个fullpipeline"><a href="#用subpipeline-构建一个fullpipeline" class="headerlink" title="用subpipeline 构建一个fullpipeline"></a>用subpipeline 构建一个fullpipeline</h4><p>这需要用到<code>FeatureUnion</code>类。<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.pipeline <span class="keyword">import</span> FeatureUnion</span><br><span class="line">num_attribs = list(housing_num)</span><br><span class="line">cat_attribs = [<span class="string">"ocean_proximity"</span>]</span><br><span class="line"></span><br><span class="line">num_pipeline = Pipeline([</span><br><span class="line">        (<span class="string">'selector'</span>, DataFrameSelector(num_attribs)),</span><br><span class="line">        (<span class="string">'imputer'</span>, Imputer(strategy=<span class="string">"median"</span>)),</span><br><span class="line">        (<span class="string">'attribs_adder'</span>, CombinedAttributesAdder()),</span><br><span class="line">        (<span class="string">'std_scaler'</span>, StandardScaler()),</span><br><span class="line">    ])</span><br><span class="line"></span><br><span class="line">cat_pipeline = Pipeline([</span><br><span class="line">        (<span class="string">'selector'</span>, DataFrameSelector(cat_attribs)),</span><br><span class="line">        (<span class="string">'cat_encoder'</span>, CategoricalEncoder(encoding=<span class="string">"onehot-dense"</span>)),</span><br><span class="line">    ])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">full_pipeline = FeatureUnion(transformer_list=[</span><br><span class="line">        (<span class="string">"num_pipeline"</span>, num_pipeline),</span><br><span class="line">        (<span class="string">"cat_pipeline"</span>, cat_pipeline),</span><br><span class="line">    ])</span><br><span class="line"></span><br><span class="line">housing_prepared = full_pipeline.fit_transform(housing)</span><br><span class="line">housing_prepared</span><br></pre></td></tr></table></figure></p>
+<h4 id="FeatureUnion-类链接多个transdormer对象的结果"><a href="#FeatureUnion-类链接多个transdormer对象的结果" class="headerlink" title="FeatureUnion 类链接多个transdormer对象的结果"></a>FeatureUnion 类链接多个transdormer对象的结果</h4><ul>
+<li>transformer_list : list of (string, transformer) tuples</li>
+<li>n_jobs : int, optional；并行作业数，默认为1.</li>
+<li>transformer_weights : dict, optional；每个transformer的乘法权重，键为transformer名称，值为权重。</li>
+</ul>
+<h4 id="DataFrameSeletor示例"><a href="#DataFrameSeletor示例" class="headerlink" title="DataFrameSeletor示例"></a>DataFrameSeletor示例</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.base <span class="keyword">import</span> BaseEstimator, TransformerMixin</span><br><span class="line"></span><br><span class="line"><span class="comment"># Create a class to select numerical or categorical columns </span></span><br><span class="line"><span class="comment"># since Scikit-Learn doesn't handle DataFrames yet</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DataFrameSelector</span><span class="params">(BaseEstimator, TransformerMixin)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, attribute_names)</span>:</span></span><br><span class="line">        self.attribute_names = attribute_names</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fit</span><span class="params">(self, X, y=None)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">transform</span><span class="params">(self, X)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> X[self.attribute_names].values</span><br></pre></td></tr></table></figure>
+<h2 id="特征放缩"><a href="#特征放缩" class="headerlink" title="特征放缩"></a>特征放缩</h2><h3 id="MinMaxScaler-MinMax-scaling归一化"><a href="#MinMaxScaler-MinMax-scaling归一化" class="headerlink" title="MinMaxScaler()              MinMax scaling归一化"></a>MinMaxScaler()              MinMax scaling归一化</h3><p>该方法更容易受离散点影响<br><code>X_std = (X - X.min(axis=0)) / (X.max(axis=0) - X.min(axis=0))</code><br/><br><code>X_scaled = X_std * (max - min) + min</code><br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> MinMaxScaler</span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>data = [[<span class="number">-1</span>, <span class="number">2</span>], [<span class="number">-0.5</span>, <span class="number">6</span>], [<span class="number">0</span>, <span class="number">10</span>], [<span class="number">1</span>, <span class="number">18</span>]]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>scaler = MinMaxScaler()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>print(scaler.fit(data))</span><br><span class="line">MinMaxScaler(copy=<span class="keyword">True</span>, feature_range=(<span class="number">0</span>, <span class="number">1</span>))</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>print(scaler.data_max_)</span><br><span class="line">[  <span class="number">1.</span>  <span class="number">18.</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>print(scaler.transform(data))</span><br><span class="line">[[ <span class="number">0.</span>    <span class="number">0.</span>  ]</span><br><span class="line"> [ <span class="number">0.25</span>  <span class="number">0.25</span>]</span><br><span class="line"> [ <span class="number">0.5</span>   <span class="number">0.5</span> ]</span><br><span class="line"> [ <span class="number">1.</span>    <span class="number">1.</span>  ]]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>print(scaler.transform([[<span class="number">2</span>, <span class="number">2</span>]]))</span><br><span class="line">[[ <span class="number">1.5</span>  <span class="number">0.</span> ]]</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>feature_range : tuple (min, max), default=(0, 1)，归一化后值的范围</li>
+<li>copy : boolean, optional, default True，是否复制数据在新的数据上归一化</li>
+</ul>
+<h3 id="StandardScaler-0均值标准化"><a href="#StandardScaler-0均值标准化" class="headerlink" title="StandardScaler()          0均值标准化"></a>StandardScaler()          0均值标准化</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler</span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>data = [[<span class="number">0</span>, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">0</span>], [<span class="number">1</span>, <span class="number">1</span>], [<span class="number">1</span>, <span class="number">1</span>]]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>scaler = StandardScaler()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>print(scaler.fit(data))</span><br><span class="line">StandardScaler(copy=<span class="keyword">True</span>, with_mean=<span class="keyword">True</span>, with_std=<span class="keyword">True</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>print(scaler.mean_)</span><br><span class="line">[ <span class="number">0.5</span>  <span class="number">0.5</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>print(scaler.transform(data))</span><br><span class="line">[[<span class="number">-1.</span> <span class="number">-1.</span>]</span><br><span class="line"> [<span class="number">-1.</span> <span class="number">-1.</span>]</span><br><span class="line"> [ <span class="number">1.</span>  <span class="number">1.</span>]</span><br><span class="line"> [ <span class="number">1.</span>  <span class="number">1.</span>]]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>print(scaler.transform([[<span class="number">2</span>, <span class="number">2</span>]]))</span><br><span class="line">[[ <span class="number">3.</span>  <span class="number">3.</span>]]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>copy : boolean, optional, default True，是否复制数据在新的数据上执行</li>
+<li>with_mean : boolean, True by default，若为True则在缩放前将数据居中。但在稀疏矩阵上是行不通的。</li>
+<li>with_std : boolean, True by default，若为True，则将数据放缩到单位方差或等效于单位标准差</li>
+</ul>
+<h2 id="处理空数据"><a href="#处理空数据" class="headerlink" title="处理空数据"></a>处理空数据</h2><h3 id="Imputer-处理丢失值"><a href="#Imputer-处理丢失值" class="headerlink" title="Imputer() 处理丢失值"></a>Imputer() 处理丢失值</h3><p>各属性必须是数值<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> Imputer</span><br><span class="line"><span class="comment"># 指定用何值替换丢失的值，此处为中位数</span></span><br><span class="line">imputer = Imputer(strategy=<span class="string">"median"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使实例适应数据</span></span><br><span class="line">imputer.fit(housing_num)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果在statistics_ 变量中</span></span><br><span class="line">imputer.statistics_</span><br><span class="line"></span><br><span class="line"><span class="comment"># 替换</span></span><br><span class="line">X = imputer.transform(housing_num)</span><br><span class="line">housing_tr = pd.DataFrame(X, columns=housing_num.columns,</span><br><span class="line">                          index = list(housing.index.values))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 预览</span></span><br><span class="line">housing_tr.loc[sample_incomplete_rows.index.values]</span><br></pre></td></tr></table></figure></p>
+<h2 id="处理文本数据"><a href="#处理文本数据" class="headerlink" title="处理文本数据"></a>处理文本数据</h2><h3 id="pandas-factorize-将输入值编码为枚举类型或分类变量"><a href="#pandas-factorize-将输入值编码为枚举类型或分类变量" class="headerlink" title="pandas.factorize()            将输入值编码为枚举类型或分类变量"></a>pandas.factorize()            将输入值编码为枚举类型或分类变量</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">housing_cat = housing[<span class="string">'ocean_proximity'</span>]</span><br><span class="line">housing_cat.head(<span class="number">10</span>)</span><br><span class="line"><span class="comment"># 输出</span></span><br><span class="line"><span class="comment"># 17606     &lt;1H OCEAN</span></span><br><span class="line"><span class="comment"># 18632     &lt;1H OCEAN</span></span><br><span class="line"><span class="comment"># 14650    NEAR OCEAN</span></span><br><span class="line"><span class="comment"># 3230         INLAND</span></span><br><span class="line"><span class="comment"># 3555      &lt;1H OCEAN</span></span><br><span class="line"><span class="comment"># 19480        INLAND</span></span><br><span class="line"><span class="comment"># 8879      &lt;1H OCEAN</span></span><br><span class="line"><span class="comment"># 13685        INLAND</span></span><br><span class="line"><span class="comment"># 4937      &lt;1H OCEAN</span></span><br><span class="line"><span class="comment"># 4861      &lt;1H OCEAN</span></span><br><span class="line"><span class="comment"># Name: ocean_proximity, dtype: object</span></span><br><span class="line"></span><br><span class="line">housing_cat_encoded, housing_categories = housing_cat.factorize()</span><br><span class="line">housing_cat_encoded[:<span class="number">10</span>]</span><br><span class="line"><span class="comment"># 输出</span></span><br><span class="line"><span class="comment"># array([0, 0, 1, 2, 0, 2, 0, 2, 0, 0], dtype=int64)</span></span><br></pre></td></tr></table></figure>
+<h5 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h5><ul>
+<li>values : ndarray (1-d)；序列</li>
+<li>sort : boolean, default False；根据值排序</li>
+<li>na_sentinel : int, default -1；给未找到赋的值</li>
+<li>size_hint : hint to the hashtable sizer</li>
+</ul>
+<h5 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h5><ul>
+<li>labels : the indexer to the original array</li>
+<li>uniques : ndarray (1-d) or Index；当传递的值是Index或Series时，返回独特的索引。</li>
+</ul>
+<h3 id="OneHotEncoder-编码整数特征为one-hot向量"><a href="#OneHotEncoder-编码整数特征为one-hot向量" class="headerlink" title="OneHotEncoder   编码整数特征为one-hot向量"></a>OneHotEncoder   编码整数特征为one-hot向量</h3><p>返回值为稀疏矩阵<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> OneHotEncoder</span><br><span class="line"></span><br><span class="line">encoder = OneHotEncoder()</span><br><span class="line">housing_cat_1hot = encoder.fit_transform(housing_cat_encoded.reshape(<span class="number">-1</span>,<span class="number">1</span>))</span><br><span class="line">housing_cat_1hot</span><br></pre></td></tr></table></figure></p>
+<p>注意<code>fit_transform()</code>期望一个二维数组，所以这里将数据reshape了。</p>
+<h4 id="处理文本特征示例"><a href="#处理文本特征示例" class="headerlink" title="处理文本特征示例"></a>处理文本特征示例</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">housing_cat = housing[<span class="string">'ocean_proximity'</span>]</span><br><span class="line">housing_cat.head(<span class="number">10</span>)</span><br><span class="line"><span class="comment"># 17606     &lt;1H OCEAN</span></span><br><span class="line"><span class="comment"># 18632     &lt;1H OCEAN</span></span><br><span class="line"><span class="comment"># 14650    NEAR OCEAN</span></span><br><span class="line"><span class="comment"># 3230         INLAND</span></span><br><span class="line"><span class="comment"># 3555      &lt;1H OCEAN</span></span><br><span class="line"><span class="comment"># 19480        INLAND</span></span><br><span class="line"><span class="comment"># 8879      &lt;1H OCEAN</span></span><br><span class="line"><span class="comment"># 13685        INLAND</span></span><br><span class="line"><span class="comment"># 4937      &lt;1H OCEAN</span></span><br><span class="line"><span class="comment"># 4861      &lt;1H OCEAN</span></span><br><span class="line"><span class="comment"># Name: ocean_proximity, dtype: object</span></span><br><span class="line"></span><br><span class="line">housing_cat_encoded, housing_categories = housing_cat.factorize()</span><br><span class="line">housing_cat_encoded[:<span class="number">10</span>]</span><br><span class="line"><span class="comment"># array([0, 0, 1, 2, 0, 2, 0, 2, 0, 0], dtype=int64)</span></span><br><span class="line"></span><br><span class="line">housing_categories</span><br><span class="line"><span class="comment"># Index(['&lt;1H OCEAN', 'NEAR OCEAN', 'INLAND', 'NEAR BAY', 'ISLAND'], dtype='object')</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> OneHotEncoder</span><br><span class="line"></span><br><span class="line">encoder = OneHotEncoder()</span><br><span class="line">print(housing_cat_encoded.reshape(<span class="number">-1</span>,<span class="number">1</span>))</span><br><span class="line">housing_cat_1hot = encoder.fit_transform(housing_cat_encoded.reshape(<span class="number">-1</span>,<span class="number">1</span>))</span><br><span class="line">housing_cat_1hot</span><br><span class="line"><span class="comment"># [[0]</span></span><br><span class="line"><span class="comment">#  [0]</span></span><br><span class="line"><span class="comment">#  [1]</span></span><br><span class="line"><span class="comment">#  ..., </span></span><br><span class="line"><span class="comment">#  [2]</span></span><br><span class="line"><span class="comment">#  [0]</span></span><br><span class="line"><span class="comment">#  [3]]</span></span><br><span class="line"><span class="comment"># &lt;16512x5 sparse matrix of type '&lt;class 'numpy.float64'&gt;'</span></span><br><span class="line"><span class="comment"># 	with 16512 stored elements in Compressed Sparse Row format&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="LabelEncoder-nbsp-标签编码"><a href="#LabelEncoder-nbsp-标签编码" class="headerlink" title="LabelEncoder &nbsp;标签编码"></a>LabelEncoder &nbsp;标签编码</h3><p>LabelEncoder`是一个可以用来将标签规范化的工具类，它可以将标签的编码值范围限定在[0,n_classes-1]。简单来说就是对不连续的数字或者文本进行编号。<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> sklearn <span class="keyword">import</span> preprocessing</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>le = preprocessing.LabelEncoder()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>le.fit([<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">6</span>])</span><br><span class="line">LabelEncoder()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>le.classes_</span><br><span class="line">array([<span class="number">1</span>, <span class="number">2</span>, <span class="number">6</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>le.transform([<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">6</span>])</span><br><span class="line">array([<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>le.inverse_transform([<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>])</span><br><span class="line">array([<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">6</span>])</span><br></pre></td></tr></table></figure></p>
+<p>当然，它也可以用于非数值型标签的编码转换成数值标签（只要它们是可哈希并且可比较的）:<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>le = preprocessing.LabelEncoder()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>le.fit([<span class="string">"paris"</span>, <span class="string">"paris"</span>, <span class="string">"tokyo"</span>, <span class="string">"amsterdam"</span>])</span><br><span class="line">LabelEncoder()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>list(le.classes_)</span><br><span class="line">[<span class="string">'amsterdam'</span>, <span class="string">'paris'</span>, <span class="string">'tokyo'</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>le.transform([<span class="string">"tokyo"</span>, <span class="string">"tokyo"</span>, <span class="string">"paris"</span>])</span><br><span class="line">array([<span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>list(le.inverse_transform([<span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>]))</span><br><span class="line">[<span class="string">'tokyo'</span>, <span class="string">'tokyo'</span>, <span class="string">'paris'</span>]</span><br></pre></td></tr></table></figure></p>
+<h3 id="LabelBinarizer-nbsp-标签二值化"><a href="#LabelBinarizer-nbsp-标签二值化" class="headerlink" title="LabelBinarizer &nbsp;标签二值化"></a>LabelBinarizer &nbsp;标签二值化</h3><p>LabelBinarizer 是一个用来从多类别列表创建标签矩阵的工具类:<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> sklearn <span class="keyword">import</span> preprocessing</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>lb = preprocessing.LabelBinarizer()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>lb.fit([<span class="number">1</span>, <span class="number">2</span>, <span class="number">6</span>, <span class="number">4</span>, <span class="number">2</span>])</span><br><span class="line">LabelBinarizer(neg_label=<span class="number">0</span>, pos_label=<span class="number">1</span>, sparse_output=<span class="keyword">False</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>lb.classes_</span><br><span class="line">array([<span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>lb.transform([<span class="number">1</span>, <span class="number">6</span>])</span><br><span class="line">array([[<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">       [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>]])</span><br></pre></td></tr></table></figure></p>
+<p>对于多类别是实例，可以使用:class:MultiLabelBinarizer:<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>lb = preprocessing.MultiLabelBinarizer()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>lb.fit_transform([(<span class="number">1</span>, <span class="number">2</span>), (<span class="number">3</span>,)])</span><br><span class="line">array([[<span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>],</span><br><span class="line">       [<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>]])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>lb.classes_</span><br><span class="line">array([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])</span><br></pre></td></tr></table></figure></p>
+
+        </div>
+        <div class="post-tool">
+            <a class="btn-thumbs-up" href="javascript:void(0);" data-cid="52" title="95">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i> 打赏
+            </a>
+        </div>
+        
+        <div class="post-tags">标签：
+            
+            <a href="/tags/MachineLearning/">MachineLearning</a>
+            
+        </div>
+        
+    </article>
+    
+    <p>新手上路，若有不恰当之处，望不吝赐教！</p>
+    
+    
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    var disqus_config = function () {
+        this.page.url = 'http://heolis.info/machinelearning/Machine-learning学习笔记（一）.html';
+        this.page.identifier = 'machinelearning/Machine-learning学习笔记（一）.html';
+    };
+    (function () { // DON'T EDIT BELOW THIS LINE
+        var d = document, disqus_shortname = 'HeoLis', s = d.createElement('script');
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by
+        Disqus.</a></noscript>
+
+</div>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        </div><!-- end #main-->
+    </div><!-- end #body -->
+    <footer class="footer">
+    <div class="footer-inner">
+        <p>
+            <a href="/links" title="友情链接">友情链接</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            本站已建立<a id="siteBuildingTime"></a>天&nbsp<em>·</em>&nbsp;
+        <span id="busuanzi_container_site_uv">
+            总访客数为
+            <span id="busuanzi_value_site_uv"></span>人次
+        </span>
+        </p>
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    </div>
+</footer>
+
+<!-- Tencent Analytics
+<script type="text/javascript" src="//tajs.qq.com/stats?sId=66072444" charset="UTF-8"></script> -->
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?1762d61c140d8360105c1f427350ad71";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="/js/InsightSearch.js"></script>
+<script src="/js/SimpleCore.js"></script>
+
+</div>
+<div class="fixed-btn">
+    <a class="btn-gotop" href="javascript:"> <i class="fa fa-angle-up"></i></a>
+</div>
+<script>
+    $(function () {
+        SimpleCore.init({
+            buildingTime: '11/26/2017',
+            current: $('.post-tags').length > 0 ? 'post' : 'archive',
+            snsQRCode: '/images/sns-qrcode.png',
+            donateImg: '/images/donate-qr.png',
+        });
+    });
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("MathJax config");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

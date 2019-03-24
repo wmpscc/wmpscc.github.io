@@ -1,0 +1,495 @@
+<!DOCTYPE HTML>
+<html class="no-js" lang="zh-CN">
+
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lte IE 9]>
+<meta http-equiv="refresh" content="0;url=http://heolis.info/warn.html">
+<![endif]-->
+<meta charset="utf-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+<meta http-equiv="mobile-agent" content="format=html5; url=http://heolis.info">
+<meta name="author" content="HeoLis(http://heolis.info/)">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/SimpleStyle.min.css">
+
+<link rel="shortcut icon" href="/images/favicon.jpg">
+
+
+<title>高级特征工程ii - Gain</title>
+
+<meta name="keywords" content="机器瞎学/数据掩埋/模式混淆/人工智障/深度遗忘/神经掉线/计算机幻觉">
+
+<meta name="description " content="这里将记录我的学习历程。个人公众号(机器视觉于算法建模）"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="nav">
+    <nav class="nav-menu">
+        <a class="site-name current" href="/" title="Epoch">Epoch</a>
+        <a class="site-index current" href="/"><i class="fa fa-home"></i><span>首页</span></a>
+        <a href="/archives" title="归档"><i class="fa fa-archives"></i><span>归档</span></a>
+        <a href="/tags" title="标签"><i class="fa fa-tags"></i><span>标签</span></a>
+        <!-- custom single page of menus -->
+        
+    </nav>
+</div>
+
+<div class="nav-user">
+    <a class="btn-search" href="#"><i class="fa fa-search"></i></a>
+    <a class="btn-read-mode" href="#"><i class="fa fa-sun-o"></i></a>
+    <a class="btn-sns-qr" href="javascript:"><i class="fa fa-telegram"></i></a>
+</div>
+
+<div id="wrapper" class="clearfix">
+    <div id="body">
+        <div class="main" id="main">
+            <div id="cover">
+    <div class="cover-img"></div>
+    <div class="cover-info">
+        
+        <h1 class="cover-siteName">MachineEpoch</h1>
+        <h3 class="cover-siteTitle">学习、记录、分享、获得</h3>
+        <p class="cover-siteDesc">一个技术新人的博客</p>
+        <div class="cover-sns">
+            
+            <div class="btn btn-github">
+                <a href="https://github.com/wmpscc" target="_blank" title="github" ref="friend">
+                    <i class="fa fa-github"></i>
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</div>
+            <div class="page-title">
+    <ul>
+        <li><a href="/">最新</a></li>
+        
+            
+                <li class="active">
+                    <a href="/categories/machinelearning" data-name="人工智障">人工智障</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/CV" data-name="计算机幻觉">计算机幻觉</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/language" data-name="编程语言">编程语言</a>
+                </li>
+            
+        
+        <li class="page-search">
+    <form id="search" class="search-form">
+        <label for="s" class="sr-only">请输入关键字</label>
+        <input class="search-field" type="text" name="s" class="text" placeholder="请输入关键字" />
+        <button type="submit" class="search-form-submit" title="搜索"><i class="fa fa-search"></i></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..."/>
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+</li>
+
+    </ul>
+</div>
+<div class="main-inner">
+    <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <div class="post-header">
+            <div class="post-author clearfix">
+                <a class="avatar fleft" href="https://github.com/wmpscc" target="_blank">
+                    <img width="48" src="/images/favicon.png" alt="avatar"/>
+                </a>
+                <p><span class="label">作者</span>
+                    <a href="https://github.com/wmpscc" target="_blank">wmpscc</a>
+                    <span title="最后编辑于2018-10-17">2018-10-17</span>
+                </p>
+                <p>Why become a pirate if you can join the Navy?</p>
+            </div>
+            <h2 class="post-title">高级特征工程II</h2>
+            <div class="post-meta">
+                本文总共4644个字 | 您是第<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
+            </div>
+        </div>
+        <div class="post-content markdown-body">
+            <p>以下是Coursera上的<a href="https://www.coursera.org/learn/competitive-data-science/home/week/3">How to Win a Data Science Competition: Learn from Top Kagglers</a>课程笔记。</p>
+<h1 id="Statistics-and-distance-based-features"><a href="#Statistics-and-distance-based-features" class="headerlink" title="Statistics and distance based features"></a>Statistics and distance based features</h1><p>该部分专注于此高级特征工程：计算由另一个分组的一个特征的各种统计数据和从给定点的邻域分析得到的特征。</p>
+<blockquote>
+<p> groupby and nearest neighbor methods</p>
+</blockquote>
+<h4 id="例子：这里有一些CTR任务的数据"><a href="#例子：这里有一些CTR任务的数据" class="headerlink" title="例子：这里有一些CTR任务的数据"></a>例子：这里有一些CTR任务的数据</h4><p><img src="https://upload-images.jianshu.io/upload_images/7007489-ab1b3b6f5bfc600a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="statistic_ctr_data.png"></p>
+<blockquote>
+<p> 我们可以暗示广告有 页面上的最低价格将吸引大部分注意力。 页面上的其他广告不会很有吸引力。 计算与这种含义相关的特征非常容易。 我们可以为每个广告的每个用户和网页添加最低和最高价格。 在这种情况下，具有最低价格的广告的位置也可以使用。 </p>
+</blockquote>
+<p><img src="https://upload-images.jianshu.io/upload_images/7007489-9031949a6bf1ba8a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="statistic_ctr_data2.png"></p>
+<p>代码实现<br><img src="https://upload-images.jianshu.io/upload_images/7007489-554789cebac46ee9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="statistic_ctr_data_code.png"></p>
+<ul>
+<li>More feature<ul>
+<li>How many pages user visited</li>
+<li>Standard deviation of prices</li>
+<li>Most visited page</li>
+<li>Many, many more</li>
+</ul>
+</li>
+</ul>
+<p>如果没有特征可以像这样使用groupby呢？可以使用最近邻点</p>
+<h3 id="Neighbors"><a href="#Neighbors" class="headerlink" title="Neighbors"></a>Neighbors</h3><ul>
+<li>Explicit group is not needed</li>
+<li>More flexible</li>
+<li>Much harder to implement</li>
+</ul>
+<p><strong>Examples</strong></p>
+<ul>
+<li>Number of houses in 500m, 1000m,..</li>
+<li>Average price per square meter in 500m, 1000m,..</li>
+<li>Number of schools/supermarkets/parking lots in 500m, 1000m,..</li>
+<li>Distance to colsest subway station</li>
+</ul>
+<p>讲师在<code>Springleaf</code>比赛中使用了它。</p>
+<h4 id="KNN-features-in-springleaf"><a href="#KNN-features-in-springleaf" class="headerlink" title="KNN features in springleaf"></a>KNN features in springleaf</h4><ul>
+<li>Mean encode all the variables</li>
+<li>For every point, find 2000 nearst neighbors using Bray-Curtis metric<br>$$\frac{\sum{|u_i - v_i|}}{\sum{|u_i + v_i|}}$$</li>
+<li>Calculate various features from those 2000 neighbors</li>
+</ul>
+<p><strong>Evaluate</strong> </p>
+<ul>
+<li>Mean target of neatrest 5,10,15,500,2000, neighbors</li>
+<li>Mean distance to 10 closest neighbors</li>
+<li>Mean distance to 10 closest neighbors with target 1</li>
+<li>Mean distance to 10 closest neighbors with target 0</li>
+</ul>
+<h1 id="Matrix-factorizations-for-feature-extraction"><a href="#Matrix-factorizations-for-feature-extraction" class="headerlink" title="Matrix factorizations for feature extraction"></a>Matrix factorizations for feature extraction</h1><ul>
+<li><strong>Example of feature fusion</strong><br>[图片上传失败…(image-32e89c-1539761690622)]</li>
+</ul>
+<h4 id="Notes-about-Matrix-Fatorization"><a href="#Notes-about-Matrix-Fatorization" class="headerlink" title="Notes about Matrix Fatorization"></a>Notes about Matrix Fatorization</h4><ul>
+<li>Can be apply only for some columns</li>
+<li>Can provide additional diversity<ul>
+<li>Good for ensembles</li>
+</ul>
+</li>
+<li>It is <strong>lossy</strong> transformation.Its’ efficirncy depends on:<ul>
+<li>Particular task</li>
+<li>Number of latent factors<ul>
+<li>Usually 5-100</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Implementtation"><a href="#Implementtation" class="headerlink" title="Implementtation"></a>Implementtation</h4><ul>
+<li>Serveral MF methods you can find in sklearn</li>
+<li>SVD and PCA<ul>
+<li>Standart tools for Matrix Fatorization</li>
+</ul>
+</li>
+<li>TruncatedSVD<ul>
+<li>Works with sparse matrices</li>
+</ul>
+</li>
+<li>Non-negative Matrix Fatorization(NMF)<ul>
+<li>Ensures that all latent fators are non-negative</li>
+<li>Good for counts-like data</li>
+</ul>
+</li>
+</ul>
+<h4 id="NMF-for-tree-based-methods"><a href="#NMF-for-tree-based-methods" class="headerlink" title="NMF for tree-based methods"></a>NMF for tree-based methods</h4><blockquote>
+<p><code>non-negative matrix factorization</code>简称NMF，它以一种使数据更适合决策树的方式转换数据。<br><img src="https://upload-images.jianshu.io/upload_images/7007489-a166e8223244d2db.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="NMF.png"></p>
+</blockquote>
+<p> 可以看出，NMF变换数据形成平行于轴的线。</p>
+<h4 id="因子分解"><a href="#因子分解" class="headerlink" title="因子分解"></a>因子分解</h4><p>可以使用与线性模型的技巧来分解矩阵。<br><img src="https://upload-images.jianshu.io/upload_images/7007489-4bd3b126c4b3cbcc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="NMF_note.png"></p>
+<h3 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h3><ul>
+<li>Matrix Factorization is a very general approach for dimensionality reduction and feature extraction</li>
+<li>It can be applied for transforming categorical features into real-valued</li>
+<li>Many of tricks trick suitable for linear models can be useful for MF</li>
+</ul>
+<h2 id="Feature-interactions"><a href="#Feature-interactions" class="headerlink" title="Feature interactions"></a>Feature interactions</h2><p>特征值的所有组合</p>
+<ul>
+<li><strong>Example:banner selection</strong></li>
+</ul>
+<p>假设我们正在构建一个预测模型，在网站上显示的最佳广告横幅。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">…</th>
+<th style="text-align:center">category_ad</th>
+<th style="text-align:center">category_site</th>
+<th style="text-align:center">…</th>
+<th style="text-align:center">is_clicked</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">…</td>
+<td style="text-align:center">auto_part</td>
+<td style="text-align:center">game_news</td>
+<td style="text-align:center">…</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">…</td>
+<td style="text-align:center">music_tickets</td>
+<td style="text-align:center">music_news</td>
+<td style="text-align:center">..</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">…</td>
+<td style="text-align:center">mobile_phones</td>
+<td style="text-align:center">auto_blog</td>
+<td style="text-align:center">…</td>
+<td style="text-align:center">0</td>
+</tr>
+</tbody>
+</table>
+<p>将广告横幅本身的类别和横幅将显示的网站类别，进行组合将构成一个非常强的特征。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">…</th>
+<th style="text-align:center">ad_site</th>
+<th style="text-align:center">…</th>
+<th style="text-align:center">is_clicked</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">…</td>
+<td style="text-align:center">auto_part &#124; game_news</td>
+<td style="text-align:center">…</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">…</td>
+<td style="text-align:center">music_tickets &#124; music_news</td>
+<td style="text-align:center">..</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">…</td>
+<td style="text-align:center">mobile_phones &#124; auto_blog</td>
+<td style="text-align:center">…</td>
+<td style="text-align:center">0</td>
+</tr>
+</tbody>
+</table>
+<p>构建这两个特征的组合特征<code>ad_site</code></p>
+<p> 从技术角度来看， 有两种方法可以构建这种交互。</p>
+<ul>
+<li><strong>Example of interactions</strong></li>
+</ul>
+<p><strong>方法1</strong><br><img src="https://upload-images.jianshu.io/upload_images/7007489-fad3a6b18e66fb2f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="interaction1.png"></p>
+<p><strong>方法2</strong><br><img src="https://upload-images.jianshu.io/upload_images/7007489-8a4d26f8a9d12a09.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="interaction2.png"></p>
+<ul>
+<li><strong>相似的想法也可用于数值变量</strong><br><img src="https://upload-images.jianshu.io/upload_images/7007489-16af87186f016546.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="interge_interaction.png"></li>
+</ul>
+<p>事实上，这不限于乘法操作，还可以是其他的</p>
+<ul>
+<li>Multiplication</li>
+<li>Sum</li>
+<li>Diff</li>
+<li>Division</li>
+<li>..</li>
+</ul>
+<h3 id="Practival-Notes"><a href="#Practival-Notes" class="headerlink" title="Practival Notes"></a><strong>Practival Notes</strong></h3><ul>
+<li>We have a lot of possible interactions -N*N for N features.<ul>
+<li>a. Even more if use several types in interactions</li>
+</ul>
+</li>
+<li>Need ti reduce it’s number<ul>
+<li>a. Dimensionality reduction</li>
+<li>b. Feature selection</li>
+</ul>
+</li>
+</ul>
+<p>通过这种方法生成了大量的特征，可以使用特征选择或降维的方法减少特征。以下用特征选择举例说明<br><img src="https://upload-images.jianshu.io/upload_images/7007489-ec1477a149370d28.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="sele.png"></p>
+<h3 id="Interactions’-order"><a href="#Interactions’-order" class="headerlink" title="Interactions’ order"></a>Interactions’ order</h3><ul>
+<li>We looked at 2nd order interactions.</li>
+<li>Such approach can be generalized for higher orders.</li>
+<li>It is hard to do generation and selection automatically.</li>
+<li>Manual building of high-order interactions is some kind of art.</li>
+</ul>
+<h3 id="Extract-features-from-DT"><a href="#Extract-features-from-DT" class="headerlink" title="Extract features from DT"></a>Extract features from DT</h3><p><img src="https://upload-images.jianshu.io/upload_images/7007489-3e6da39ee51e03c6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="tree_interaction.png"></p>
+<blockquote>
+<p>看一下决策树。 让我们将每个叶子映射成二进制特征。 对象叶子的索引可以用作新分类特征的值。 如果我们不使用单个树而是使用它们的整体。 例如，随机森林， 那么这种操作可以应用于每个条目。 这是一种提取高阶交互的强大方法。 </p>
+</blockquote>
+<ul>
+<li><strong>How to use it</strong></li>
+</ul>
+<p>In sklearn:<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tree_model.apply()</span><br></pre></td></tr></table></figure></p>
+<p>In xgboost:<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">booster.predict(pred_leaf=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure></p>
+<h3 id="Conclusion-1"><a href="#Conclusion-1" class="headerlink" title="Conclusion"></a>Conclusion</h3><ul>
+<li>We looked at ways to build an interaction of categorical attributes</li>
+<li>Extended this approach to real-valued features</li>
+<li>Learn how to extract features via decision trees</li>
+</ul>
+<h2 id="t-SNE"><a href="#t-SNE" class="headerlink" title="t-SNE"></a>t-SNE</h2><p>用于探索数据分析。可以被视为从数据中获取特征的方法。</p>
+<h3 id="Practical-Notes"><a href="#Practical-Notes" class="headerlink" title="Practical Notes"></a>Practical Notes</h3><ul>
+<li>Result heavily depends on hyperparameters(perplexity)<ul>
+<li>Good practice is to use several projections with different perplexities(5-100)</li>
+</ul>
+</li>
+<li>Due to stochastic nature, tSNE provides different projections even for the same data\hyperparams<ul>
+<li>Train and test should be projected together</li>
+</ul>
+</li>
+<li>tSNE runs for a long time with a big number of features<ul>
+<li>it is common to do dimensionality reduction before projection.</li>
+</ul>
+</li>
+<li>Implementation of tSNE can be found in sklearn library.</li>
+<li>But personally I perfer you use stand-alone implementation python package tsne due to its’ faster speed.</li>
+</ul>
+<h3 id="Conclusion-2"><a href="#Conclusion-2" class="headerlink" title="Conclusion"></a>Conclusion</h3><ul>
+<li>tSNE is a great tool for visualization</li>
+<li>It can be used as feature as well</li>
+<li>Be careful with interpretation of results</li>
+<li>Try different perplexities</li>
+</ul>
+<h4 id="矩阵分解："><a href="#矩阵分解：" class="headerlink" title="矩阵分解："></a>矩阵分解：</h4><ul>
+<li><a href="http://scikit-learn.org/stable/modules/decomposition.html">矩阵分解方法概述（sklearn）</a><h4 id="T-SNOW："><a href="#T-SNOW：" class="headerlink" title="T-SNOW："></a>T-SNOW：</h4></li>
+<li><a href="https://github.com/DmitryUlyanov/Multicore-TSNE">多核t-SNE实现</a></li>
+<li><a href="http://scikit-learn.org/stable/auto_examples/manifold/plot_compare_methods.html">流形学习方法的比较（sklearn)</a></li>
+<li><a href="https://distill.pub/2016/misread-tsne/">如何有效使用t-SNE（distill.pub博客）</a></li>
+<li><a href="https://lvdmaaten.github.io/tsne/">tSNE主页（Laurens van der Maaten）</a></li>
+<li><a href="http://scikit-learn.org/stable/auto_examples/manifold/plot_t_sne_perplexity.html#sphx-glr-auto-examples-manifold-plot-t-sne-perplexity-py">示例：具有不同困惑的tSNE（sklearn）</a><h4 id="互动："><a href="#互动：" class="headerlink" title="互动："></a>互动：</h4></li>
+<li><a href="https://research.fb.com/publications/practical-lessons-from-predicting-clicks-on-ads-at-facebook/">Facebook Research的论文关于从树中提取分类特征</a></li>
+<li><a href="http://scikit-learn.org/stable/auto_examples/ensemble/plot_feature_transformation.html">示例：使用树集合进行要素转换（sklearn）</a></li>
+</ul>
+
+        </div>
+        <div class="post-tool">
+            <a class="btn-thumbs-up" href="javascript:void(0);" data-cid="52" title="95">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i> 打赏
+            </a>
+        </div>
+        
+        <div class="post-tags">标签：
+            
+            <a href="/tags/DataMining/">DataMining</a>
+            
+            <a href="/tags/MachineLearning/">MachineLearning</a>
+            
+            <a href="/tags/Kaggle/">Kaggle</a>
+            
+        </div>
+        
+    </article>
+    
+    <p>新手上路，若有不恰当之处，望不吝赐教！</p>
+    
+    
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    var disqus_config = function () {
+        this.page.url = 'http://heolis.info/machinelearning/高级特征工程II.html';
+        this.page.identifier = 'machinelearning/高级特征工程II.html';
+    };
+    (function () { // DON'T EDIT BELOW THIS LINE
+        var d = document, disqus_shortname = 'HeoLis', s = d.createElement('script');
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by
+        Disqus.</a></noscript>
+
+</div>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        </div><!-- end #main-->
+    </div><!-- end #body -->
+    <footer class="footer">
+    <div class="footer-inner">
+        <p>
+            <a href="/links" title="友情链接">友情链接</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            本站已建立<a id="siteBuildingTime"></a>天&nbsp<em>·</em>&nbsp;
+        <span id="busuanzi_container_site_uv">
+            总访客数为
+            <span id="busuanzi_value_site_uv"></span>人次
+        </span>
+        </p>
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    </div>
+</footer>
+
+<!-- Tencent Analytics
+<script type="text/javascript" src="//tajs.qq.com/stats?sId=66072444" charset="UTF-8"></script> -->
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?1762d61c140d8360105c1f427350ad71";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="/js/InsightSearch.js"></script>
+<script src="/js/SimpleCore.js"></script>
+
+</div>
+<div class="fixed-btn">
+    <a class="btn-gotop" href="javascript:"> <i class="fa fa-angle-up"></i></a>
+</div>
+<script>
+    $(function () {
+        SimpleCore.init({
+            buildingTime: '11/26/2017',
+            current: $('.post-tags').length > 0 ? 'post' : 'archive',
+            snsQRCode: '/images/sns-qrcode.png',
+            donateImg: '/images/donate-qr.png',
+        });
+    });
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("MathJax config");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

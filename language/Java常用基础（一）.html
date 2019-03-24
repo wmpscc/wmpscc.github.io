@@ -1,0 +1,268 @@
+<!DOCTYPE HTML>
+<html class="no-js" lang="zh-CN">
+
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lte IE 9]>
+<meta http-equiv="refresh" content="0;url=http://heolis.info/warn.html">
+<![endif]-->
+<meta charset="utf-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+<meta http-equiv="mobile-agent" content="format=html5; url=http://heolis.info">
+<meta name="author" content="HeoLis(http://heolis.info/)">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/SimpleStyle.min.css">
+
+<link rel="shortcut icon" href="/images/favicon.jpg">
+
+
+<title>java常用基础（一） - Gain</title>
+
+<meta name="keywords" content="机器瞎学/数据掩埋/模式混淆/人工智障/深度遗忘/神经掉线/计算机幻觉">
+
+<meta name="description " content="这里将记录我的学习历程。个人公众号(机器视觉于算法建模）"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="nav">
+    <nav class="nav-menu">
+        <a class="site-name current" href="/" title="Epoch">Epoch</a>
+        <a class="site-index current" href="/"><i class="fa fa-home"></i><span>首页</span></a>
+        <a href="/archives" title="归档"><i class="fa fa-archives"></i><span>归档</span></a>
+        <a href="/tags" title="标签"><i class="fa fa-tags"></i><span>标签</span></a>
+        <!-- custom single page of menus -->
+        
+    </nav>
+</div>
+
+<div class="nav-user">
+    <a class="btn-search" href="#"><i class="fa fa-search"></i></a>
+    <a class="btn-read-mode" href="#"><i class="fa fa-sun-o"></i></a>
+    <a class="btn-sns-qr" href="javascript:"><i class="fa fa-telegram"></i></a>
+</div>
+
+<div id="wrapper" class="clearfix">
+    <div id="body">
+        <div class="main" id="main">
+            <div id="cover">
+    <div class="cover-img"></div>
+    <div class="cover-info">
+        
+        <h1 class="cover-siteName">MachineEpoch</h1>
+        <h3 class="cover-siteTitle">学习、记录、分享、获得</h3>
+        <p class="cover-siteDesc">一个技术新人的博客</p>
+        <div class="cover-sns">
+            
+            <div class="btn btn-github">
+                <a href="https://github.com/wmpscc" target="_blank" title="github" ref="friend">
+                    <i class="fa fa-github"></i>
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</div>
+            <div class="page-title">
+    <ul>
+        <li><a href="/">最新</a></li>
+        
+            
+                <li class="">
+                    <a href="/categories/machinelearning" data-name="人工智障">人工智障</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/CV" data-name="计算机幻觉">计算机幻觉</a>
+                </li>
+            
+                <li class="active">
+                    <a href="/categories/language" data-name="编程语言">编程语言</a>
+                </li>
+            
+        
+        <li class="page-search">
+    <form id="search" class="search-form">
+        <label for="s" class="sr-only">请输入关键字</label>
+        <input class="search-field" type="text" name="s" class="text" placeholder="请输入关键字" />
+        <button type="submit" class="search-form-submit" title="搜索"><i class="fa fa-search"></i></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..."/>
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+</li>
+
+    </ul>
+</div>
+<div class="main-inner">
+    <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <div class="post-header">
+            <div class="post-author clearfix">
+                <a class="avatar fleft" href="https://github.com/wmpscc" target="_blank">
+                    <img width="48" src="/images/favicon.png" alt="avatar"/>
+                </a>
+                <p><span class="label">作者</span>
+                    <a href="https://github.com/wmpscc" target="_blank">wmpscc</a>
+                    <span title="最后编辑于2017-12-02">2017-12-02</span>
+                </p>
+                <p>Why become a pirate if you can join the Navy?</p>
+            </div>
+            <h2 class="post-title">Java常用基础（一）</h2>
+            <div class="post-meta">
+                本文总共3140个字 | 您是第<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
+            </div>
+        </div>
+        <div class="post-content markdown-body">
+            <h3 id="随机数"><a href="#随机数" class="headerlink" title="随机数"></a>随机数</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Random rand =  <span class="keyword">new</span> Random(<span class="number">47</span>)</span><br><span class="line"><span class="number">47</span>为随机数种子，随机数种子一样产生的随机数序列一样，</span><br><span class="line">若空则以当前时间为种子，每次产生的随机数不一样</span><br><span class="line"></span><br><span class="line">产生[<span class="number">0</span>,<span class="number">1</span>)区间的小数Math.random();</span><br></pre></td></tr></table></figure>
+<h3 id="输入输出"><a href="#输入输出" class="headerlink" title="输入输出"></a>输入输出</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//输入</span></span><br><span class="line">Scanner in = <span class="keyword">new</span> Scanner(<span class="keyword">new</span> BufferedInputStream(System.in));</span><br><span class="line">in.hasNext();</span><br><span class="line">in.nextInt();</span><br><span class="line"><span class="comment">//输出</span></span><br><span class="line">PrintWriter out = <span class="keyword">new</span> PrintWriter(<span class="keyword">new</span> BufferedOutputStream(System.out));</span><br><span class="line">out.println(<span class="string">"Hello World"</span>);</span><br><span class="line">out.flush();</span><br></pre></td></tr></table></figure>
+<h3 id="进制"><a href="#进制" class="headerlink" title="进制"></a>进制</h3><p>十六进制以0x开头<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">char</span> c = <span class="number">0xffff</span>;     <span class="comment">// max char hex value</span></span><br><span class="line"><span class="keyword">byte</span> b = <span class="number">0x7f</span>;       <span class="comment">// max byte hex value</span></span><br><span class="line"><span class="keyword">short</span> s = <span class="number">0x7fff</span>;    <span class="comment">// max short hex value</span></span><br></pre></td></tr></table></figure></p>
+<p>如果试图将一个变量初始化为超出自身表示范围的值（无论这个值的数值形式如何），编译器都会向我们报告一条错误信息。如果超出范围，编译器会将值自动转换为int型，并告诉我们需要对这次赋值进行“窄化转型”</p>
+<h3 id="窄化转型"><a href="#窄化转型" class="headerlink" title="窄化转型"></a>窄化转型</h3><p>将能容纳更多信息的数据类型转换成无法容纳那么多信息的类型，有可能面临信息丢失的危险<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//如浮点型转换为整形</span></span><br><span class="line"><span class="keyword">int</span> i = <span class="number">29.7</span>;</span><br><span class="line">print(i);</span><br><span class="line"><span class="comment">//输出29，而不是30</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="round"><a href="#round" class="headerlink" title="round()"></a>round()</h3><p>java.lang 中的四舍五入函数<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">double</span> d = <span class="number">29.7</span>;</span><br><span class="line">print(Math.round(d));</span><br><span class="line"><span class="comment">//将输出30</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="指数记数法"><a href="#指数记数法" class="headerlink" title="指数记数法"></a>指数记数法</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 1.3e-43表示的是1.3 x 10`-43f</span></span><br><span class="line"><span class="keyword">float</span> f = <span class="number">1.3e-43f</span></span><br><span class="line"><span class="comment">//编译器通常会将指数作为双精度（double）处理，在尾部加上f是告诉编译器将double 转换成float，否则会出错</span></span><br></pre></td></tr></table></figure>
+<h3 id="按位操作符"><a href="#按位操作符" class="headerlink" title="按位操作符"></a>按位操作符</h3><h4 id="amp-与"><a href="#amp-与" class="headerlink" title="&amp; 与"></a>&amp; 与</h4><h4 id="或"><a href="#或" class="headerlink" title="| 或"></a>| 或</h4><h4 id="非"><a href="#非" class="headerlink" title="~ 非"></a>~ 非</h4><h4 id="amp-、-、-都是合法的"><a href="#amp-、-、-都是合法的" class="headerlink" title="&amp;=、|=、^=都是合法的"></a>&amp;=、|=、^=都是合法的</h4><h3 id="移位操作符"><a href="#移位操作符" class="headerlink" title="移位操作符"></a>移位操作符</h3><h4 id="lt-lt-gt-gt-lt-lt-gt-gt-gt-gt-gt"><a href="#lt-lt-gt-gt-lt-lt-gt-gt-gt-gt-gt" class="headerlink" title="&lt;&lt; &gt;&gt; &lt;&lt;= &gt;&gt;= &gt;&gt;&gt;="></a>&lt;&lt; &gt;&gt; &lt;&lt;= &gt;&gt;= &gt;&gt;&gt;=</h4><h3 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h3><p>只要类型比int小，（即char byte short），在运算之前这些值会自动转换成int。这也一来，最终生成的结果就是int型。如果把结果值赋值给较小的类型，就必须使用强制类型转换（既然把结果赋值给了较小的类型，就可能出现信息的丢失）。<br>通常，表达式中出现的最大的数据类型决定了表达式最终结果的数据类型，如果将一个float值与一个double值相乘，结果就是double；如果将一个int和一个long值相加，则结果为long。</p>
+<h3 id="“-”-与equals"><a href="#“-”-与equals" class="headerlink" title="“==” 与equals()"></a>“==” 与equals()</h3><p>“==”比较基本数据类型，相同返回true不用返回false<br>比较引用时，如果引用指向内存中的同一对象则返回true。</p>
+<p>equals()<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span>  <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object obj)</span></span></span><br></pre></td></tr></table></figure></p>
+<p>当参数obj引用的对象与当前对象为同一个对象时，就返回true,否则返回false。<br>equals()方法的本意为确定两个对象的引用是否相同，而JDK类中有一些类覆盖了oject类的equals()方法，比较规则为：如果两个对象的类型一致，并且内容一致，则返回true,这些类有：java.io.file,java.util.Date,java.lang.string,包装类（Integer,Double等）<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EqualsTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        String s1=<span class="keyword">new</span> String(<span class="string">"sss"</span>);</span><br><span class="line">        String s2=<span class="keyword">new</span> String(<span class="string">"sss"</span>);</span><br><span class="line">        </span><br><span class="line">        System.out.println(s1==s2);</span><br><span class="line">        System.out.println(s1.equals(s2));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//————————运行结果为——————</span></span><br><span class="line"><span class="comment">//false</span></span><br><span class="line"><span class="comment">//true</span></span><br></pre></td></tr></table></figure></p>
+<p>由此知道，在String中equals()方法被进行了覆盖，使其意义变为比较两个对象的内容是否一致</p>
+<h3 id="Foreach"><a href="#Foreach" class="headerlink" title="Foreach"></a>Foreach</h3><p>遍历数组并输出<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">double</span> d[] = <span class="keyword">new</span> <span class="keyword">double</span>[<span class="number">10</span>];</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)</span><br><span class="line">    d[i] = Math.random();</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">double</span> t : d)</span><br><span class="line">    System.out.println(t);</span><br><span class="line">    </span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i : range(<span class="number">100</span>))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(i == <span class="number">74</span>)<span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">else</span> System.out.print(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h3><p>标签是后面根有冒号的标识符：<br>label1:<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">label1:</span><br><span class="line">outer-iteration&#123;</span><br><span class="line">    inner-iteration&#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">        <span class="keyword">continue</span>;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">        <span class="keyword">continue</span> label1;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">        <span class="keyword">break</span> label1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>break中断内部迭代，回到外部迭代。<br>continue使执行点移回内部迭代的起始处<br>continue label1中断内部迭代以及外部迭代，直接转到label1处，重新开始迭代过程。<br>break label1也会中断所有迭代，并回到label1，但并不重新开始迭代</p>
+<h3 id="构造器初始化之初始化顺序"><a href="#构造器初始化之初始化顺序" class="headerlink" title="构造器初始化之初始化顺序"></a>构造器初始化之初始化顺序</h3><p>在类的内部，变量定义的先后顺序决定了初始化的顺序。即使变量定义散布于方法定义之间，它们人就会在任何方法（包括构造器）被调用之前得到初始化。例如<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Window</span></span>&#123;</span><br><span class="line">    Window(<span class="keyword">int</span> marker)&#123; print(<span class="string">"Window("</span> + marker + <span class="string">")"</span>); &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">clase House&#123;</span><br><span class="line">    Window w1 = <span class="keyword">new</span> Window(<span class="number">1</span>);</span><br><span class="line">    House()&#123;</span><br><span class="line">        print(<span class="string">"House()"</span>);</span><br><span class="line">        w3 = <span class="keyword">new</span> Window(<span class="number">33</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    Window w2 = <span class="keyword">new</span> Window(<span class="number">2</span>);</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">()</span></span>&#123; print(<span class="string">"f()"</span>) &#125;;</span><br><span class="line">    Window w3 = <span class="keyword">new</span> Window(<span class="number">3</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderOfInitialization</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        House h = <span class="keyword">new</span> House();</span><br><span class="line">        h.f();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Output:</span></span><br><span class="line"><span class="comment">Window(1)</span></span><br><span class="line"><span class="comment">Window(2)</span></span><br><span class="line"><span class="comment">Window(3)</span></span><br><span class="line"><span class="comment">House()</span></span><br><span class="line"><span class="comment">Window(33)</span></span><br><span class="line"><span class="comment">f()</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure></p>
+<p>显然定义的变量最先初始化，并且先定义的变量先初始化</p>
+<h3 id="instanceof"><a href="#instanceof" class="headerlink" title="instanceof"></a>instanceof</h3><p>fun1 extends fun<br>fun1 instanceof fun     //返回true</p>
+<h3 id="super"><a href="#super" class="headerlink" title="super"></a>super</h3><p>super 指向父类的方法<br>例如重写了父类的方法，又想用父类原来的方法</p>
+<h3 id="this"><a href="#this" class="headerlink" title="this"></a>this</h3><p>this 指向本类的方法</p>
+
+        </div>
+        <div class="post-tool">
+            <a class="btn-thumbs-up" href="javascript:void(0);" data-cid="52" title="95">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i> 打赏
+            </a>
+        </div>
+        
+        <div class="post-tags">标签：
+            
+            <a href="/tags/JAVA/">JAVA</a>
+            
+        </div>
+        
+    </article>
+    
+    <p>新手上路，若有不恰当之处，望不吝赐教！</p>
+    
+    
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    var disqus_config = function () {
+        this.page.url = 'http://heolis.info/language/Java常用基础（一）.html';
+        this.page.identifier = 'language/Java常用基础（一）.html';
+    };
+    (function () { // DON'T EDIT BELOW THIS LINE
+        var d = document, disqus_shortname = 'HeoLis', s = d.createElement('script');
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by
+        Disqus.</a></noscript>
+
+</div>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        </div><!-- end #main-->
+    </div><!-- end #body -->
+    <footer class="footer">
+    <div class="footer-inner">
+        <p>
+            <a href="/links" title="友情链接">友情链接</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            本站已建立<a id="siteBuildingTime"></a>天&nbsp<em>·</em>&nbsp;
+        <span id="busuanzi_container_site_uv">
+            总访客数为
+            <span id="busuanzi_value_site_uv"></span>人次
+        </span>
+        </p>
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    </div>
+</footer>
+
+<!-- Tencent Analytics
+<script type="text/javascript" src="//tajs.qq.com/stats?sId=66072444" charset="UTF-8"></script> -->
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?1762d61c140d8360105c1f427350ad71";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="/js/InsightSearch.js"></script>
+<script src="/js/SimpleCore.js"></script>
+
+</div>
+<div class="fixed-btn">
+    <a class="btn-gotop" href="javascript:"> <i class="fa fa-angle-up"></i></a>
+</div>
+<script>
+    $(function () {
+        SimpleCore.init({
+            buildingTime: '11/26/2017',
+            current: $('.post-tags').length > 0 ? 'post' : 'archive',
+            snsQRCode: '/images/sns-qrcode.png',
+            donateImg: '/images/donate-qr.png',
+        });
+    });
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("MathJax config");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

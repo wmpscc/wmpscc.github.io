@@ -1,0 +1,440 @@
+<!DOCTYPE HTML>
+<html class="no-js" lang="zh-CN">
+
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lte IE 9]>
+<meta http-equiv="refresh" content="0;url=http://heolis.info/warn.html">
+<![endif]-->
+<meta charset="utf-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+<meta http-equiv="mobile-agent" content="format=html5; url=http://heolis.info">
+<meta name="author" content="HeoLis(http://heolis.info/)">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/SimpleStyle.min.css">
+
+<link rel="shortcut icon" href="/images/favicon.jpg">
+
+
+<title>高级集成学习技巧 - Gain</title>
+
+<meta name="keywords" content="机器瞎学/数据掩埋/模式混淆/人工智障/深度遗忘/神经掉线/计算机幻觉">
+
+<meta name="description " content="这里将记录我的学习历程。个人公众号(机器视觉于算法建模）"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="nav">
+    <nav class="nav-menu">
+        <a class="site-name current" href="/" title="Epoch">Epoch</a>
+        <a class="site-index current" href="/"><i class="fa fa-home"></i><span>首页</span></a>
+        <a href="/archives" title="归档"><i class="fa fa-archives"></i><span>归档</span></a>
+        <a href="/tags" title="标签"><i class="fa fa-tags"></i><span>标签</span></a>
+        <!-- custom single page of menus -->
+        
+    </nav>
+</div>
+
+<div class="nav-user">
+    <a class="btn-search" href="#"><i class="fa fa-search"></i></a>
+    <a class="btn-read-mode" href="#"><i class="fa fa-sun-o"></i></a>
+    <a class="btn-sns-qr" href="javascript:"><i class="fa fa-telegram"></i></a>
+</div>
+
+<div id="wrapper" class="clearfix">
+    <div id="body">
+        <div class="main" id="main">
+            <div id="cover">
+    <div class="cover-img"></div>
+    <div class="cover-info">
+        
+        <h1 class="cover-siteName">MachineEpoch</h1>
+        <h3 class="cover-siteTitle">学习、记录、分享、获得</h3>
+        <p class="cover-siteDesc">一个技术新人的博客</p>
+        <div class="cover-sns">
+            
+            <div class="btn btn-github">
+                <a href="https://github.com/wmpscc" target="_blank" title="github" ref="friend">
+                    <i class="fa fa-github"></i>
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</div>
+            <div class="page-title">
+    <ul>
+        <li><a href="/">最新</a></li>
+        
+            
+                <li class="active">
+                    <a href="/categories/machinelearning" data-name="人工智障">人工智障</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/CV" data-name="计算机幻觉">计算机幻觉</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/language" data-name="编程语言">编程语言</a>
+                </li>
+            
+        
+        <li class="page-search">
+    <form id="search" class="search-form">
+        <label for="s" class="sr-only">请输入关键字</label>
+        <input class="search-field" type="text" name="s" class="text" placeholder="请输入关键字" />
+        <button type="submit" class="search-form-submit" title="搜索"><i class="fa fa-search"></i></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..."/>
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+</li>
+
+    </ul>
+</div>
+<div class="main-inner">
+    <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <div class="post-header">
+            <div class="post-author clearfix">
+                <a class="avatar fleft" href="https://github.com/wmpscc" target="_blank">
+                    <img width="48" src="/images/favicon.png" alt="avatar"/>
+                </a>
+                <p><span class="label">作者</span>
+                    <a href="https://github.com/wmpscc" target="_blank">wmpscc</a>
+                    <span title="最后编辑于2018-10-17">2018-10-17</span>
+                </p>
+                <p>Why become a pirate if you can join the Navy?</p>
+            </div>
+            <h2 class="post-title">高级集成学习技巧</h2>
+            <div class="post-meta">
+                本文总共5520个字 | 您是第<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
+            </div>
+        </div>
+        <div class="post-content markdown-body">
+            <h3 id="Examined-ensemble-methods"><a href="#Examined-ensemble-methods" class="headerlink" title="Examined ensemble methods"></a>Examined ensemble methods</h3><ul>
+<li>Averaging (or blending)</li>
+<li>Weighted averaging</li>
+<li>Conditional averaging</li>
+<li>Bagging</li>
+<li>Boosting</li>
+<li>Stacking</li>
+<li>StackNet</li>
+</ul>
+<h2 id="Averaging-ensemble-methods"><a href="#Averaging-ensemble-methods" class="headerlink" title="Averaging ensemble methods"></a>Averaging ensemble methods</h2><p>举个例子，假设我们有一个名为age的变量，就像年龄一样，我们试着预测它。我们有两个模型：</p>
+<ul>
+<li><p>低于50，模型效果更好<br><img src="https://upload-images.jianshu.io/upload_images/7007489-ce10cea3e177f3d9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="model1.png"></p>
+</li>
+<li><p>高于50，模型效果更好<br><img src="https://upload-images.jianshu.io/upload_images/7007489-bb5c8f1ab8827049.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="model2.png"></p>
+</li>
+</ul>
+<p>那么如果我们试图结合它们将会发生什么呢？</p>
+<p><strong>Averaging(or blending)</strong><br></p>
+<ul>
+<li><strong>(model1 + model2) / 2</strong><br><img src="https://upload-images.jianshu.io/upload_images/7007489-6fee37f7025518aa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="model12.png"></li>
+</ul>
+<p>$R^2$上升到0.95，较之前有所改善。但该模型并没有比单模型做的好的地方更好，尽管如此，它平均表现更好。也许可能会有更好的组合呢？来试试加权平均</p>
+<p><strong>Weighted averaging</strong><br></p>
+<ul>
+<li><strong>(model1 x 0.7 + model 2 x 0.3)</strong><br><img src="https://upload-images.jianshu.io/upload_images/7007489-45c39bb970aba276.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="model_weight.png"></li>
+</ul>
+<p>看起来没有之前的好</p>
+<p><strong>Conditional averaging</strong><br></p>
+<ul>
+<li><strong>各取好的部分</strong><br><img src="https://upload-images.jianshu.io/upload_images/7007489-be6b99fde879472b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="model_best.png"></li>
+</ul>
+<p>理想情况下，我们希望得到类似的结果</p>
+<h2 id="Bagging"><a href="#Bagging" class="headerlink" title="Bagging"></a>Bagging</h2><h3 id="Why-Bagging"><a href="#Why-Bagging" class="headerlink" title="Why Bagging"></a>Why Bagging</h3><p>建模中有两个主要误差来源</p>
+<ul>
+<li>1.由于偏差而存在误差（underfitting）</li>
+<li>2.由于方差而存在误差（overfitting）</li>
+</ul>
+<p>通过略微不同的模型，确保预测不会有读取非常高的方差。这通常使它更具普遍性。</p>
+<h3 id="Parameters-that-control-bagging"><a href="#Parameters-that-control-bagging" class="headerlink" title="Parameters that control bagging?"></a>Parameters that control bagging?</h3><ul>
+<li>Changing the seed</li>
+<li>Row(Sub) sampling or Bootstrapping</li>
+<li>Shuffling</li>
+<li>Column(Sub) sampling</li>
+<li>Model-specific parameters</li>
+<li>Number of models (or bags)</li>
+<li>(Optionally) parallelism</li>
+</ul>
+<h3 id="Examples-of-bagging"><a href="#Examples-of-bagging" class="headerlink" title="Examples of bagging"></a>Examples of bagging</h3><p><img src="https://upload-images.jianshu.io/upload_images/7007489-0272fa1ff817054f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="bagging_code.png"></p>
+<h2 id="Boosting"><a href="#Boosting" class="headerlink" title="Boosting"></a>Boosting</h2><p>Boosting是对每个模型构建的模型进行加权平均的一种形式，顺序地考虑以前的模型性能。</p>
+<h3 id="Weight-based-boosting"><a href="#Weight-based-boosting" class="headerlink" title="Weight based boosting"></a>Weight based boosting</h3><p><img src="https://upload-images.jianshu.io/upload_images/7007489-6328bfed9be0eb5d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="weight_based.png"></p>
+<p>假设我们有一个表格数据集，有四个特征。 我们称它们为x0，x1，x2和x3，我们希望使用这些功能来预测目标变量y。<br>我们将预测值称为pred，这些预测有一定的误差。我们可以计算这些绝对误差，<code>|y - pred|</code>。我们可以基于此生成一个新列或向量，在这里我们创建一个权重列，使用1加上绝对误差。当然有不同的方法来计算这个权重，现在我们只是以此为例。</p>
+<p>所有接下来要做的是用这些特征去拟合新的模型，但每次也要增加这个权重列。这就是按顺序添加模型的方法。</p>
+<h4 id="Weight-based-boosting-parameters"><a href="#Weight-based-boosting-parameters" class="headerlink" title="Weight based boosting parameters"></a>Weight based boosting parameters</h4><ul>
+<li>Learning rate (or shrinkage or eta)<ul>
+<li>每个模型只相信一点点：<code>predictionN = pred0*eta + pred1*eta + ... + predN*eta</code></li>
+</ul>
+</li>
+<li>Number of estimators<ul>
+<li>estimators扩大一倍，eta减小一倍</li>
+</ul>
+</li>
+<li>Input model - can be anything that accepts weights</li>
+<li>Sub boosting type:<ul>
+<li>AdaBoost-Good implementation in sklearn(python)</li>
+<li>LogitBoost-Good implementation in Weka(Java)</li>
+</ul>
+</li>
+</ul>
+<h3 id="Residual-based-boosting-amp"><a href="#Residual-based-boosting-amp" class="headerlink" title="Residual based boosting [&amp;]"></a>Residual based boosting [&amp;]</h3><p>我们使用同样的数据集做相同的事。预测出pred后<br><img src="https://upload-images.jianshu.io/upload_images/7007489-609f34f51dfc5b71.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="residual_pred.png"></p>
+<p>接下来会计算误差<br><img src="https://upload-images.jianshu.io/upload_images/7007489-5b4b8324dc20bf42.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="residual_error.png"></p>
+<p>将error作为新的y得到新的预测new_pred<br><img src="https://upload-images.jianshu.io/upload_images/7007489-f41235cc31c1de1a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="residual_new_pred.png"></p>
+<p>以Rownum=1为例：<br><br>最终预测=0.75 + 0.20 = 0.95更接近于1</p>
+<p>这种方法很有效，可以很好的减小误差。</p>
+<h4 id="Residual-based-boosting-parameters"><a href="#Residual-based-boosting-parameters" class="headerlink" title="Residual based boosting parameters"></a>Residual based boosting parameters</h4><ul>
+<li>Learning rate (or shrinkage or eta)<ul>
+<li><code>predictionN = pred0 + pred1*eta + ... + predN*eta</code></li>
+<li>前面的例子，如果eta为0.1，则Prediction=0.75 + 0.2*(0.1) = 0.77</li>
+</ul>
+</li>
+<li>Number of estimators</li>
+<li>Row (sub)sampling</li>
+<li>Column (sub)sampling</li>
+<li>Input model - better be trees.</li>
+<li>Sub boosting type:<ul>
+<li>Full gradient based</li>
+<li>Dart</li>
+</ul>
+</li>
+</ul>
+<h4 id="Residual-based-favourite-implementations"><a href="#Residual-based-favourite-implementations" class="headerlink" title="Residual based favourite implementations"></a>Residual based favourite implementations</h4><ul>
+<li>Xgboost</li>
+<li>Lightgbm</li>
+<li>H2O’s GBM</li>
+<li>Catboost</li>
+<li>Sklearn’s GBM</li>
+</ul>
+<h2 id="Stacking"><a href="#Stacking" class="headerlink" title="Stacking"></a>Stacking</h2><h3 id="Methodology"><a href="#Methodology" class="headerlink" title="Methodology"></a>Methodology</h3><ul>
+<li>Wolpert in 1992 introduced stacking. It involves:<ul>
+<li><ol>
+<li><strong>Splitting</strong> the train set into two disjoint sets.</li>
+</ol>
+</li>
+<li><ol start="2">
+<li><strong>Train</strong> several base learners on the first part.</li>
+</ol>
+</li>
+<li><ol start="3">
+<li><strong>Make predictions</strong> with the base learners on the second (validation) part.</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="具体步骤"><a href="#具体步骤" class="headerlink" title="具体步骤"></a>具体步骤</h3><p>假设有A,B,C三个数据集，其中A,B的目标变量y已知。<br><img src="https://upload-images.jianshu.io/upload_images/7007489-af6f2bea04760aa2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="stacking_data.png"></p>
+<p>然后</p>
+<ul>
+<li>算法0拟合A，预测B和C，然后保存pred0到B1,C1</li>
+<li>算法1拟合A，预测B和C，然后保存pred1到B1,C1</li>
+<li><p>算法2拟合A，预测B和C，然后保存pred2到B1,C1<br><img src="https://upload-images.jianshu.io/upload_images/7007489-0924be7b3c85822b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="stacking_data2.png"></p>
+</li>
+<li><p>算法3拟合B1，预测C1，得到最终结果preds3</p>
+</li>
+</ul>
+<h3 id="Stacking-example"><a href="#Stacking-example" class="headerlink" title="Stacking example"></a>Stacking example</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestRegressor</span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LinearRegression</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line">train = <span class="string">''</span> <span class="comment"># your training set</span></span><br><span class="line">y = <span class="string">''</span>     <span class="comment"># your target variable</span></span><br><span class="line"><span class="comment"># split train data in 2 part, training and valdiation.</span></span><br><span class="line">training, valid, ytraining, yvalid = train_test_split(train, y, test_size=<span class="number">0.5</span>)</span><br><span class="line"><span class="comment"># specify models</span></span><br><span class="line">model1 = RandomForestRegressor()</span><br><span class="line">model2 = LinearRegression()</span><br><span class="line"><span class="comment">#fit models</span></span><br><span class="line">model1.fit(training, ytraining)</span><br><span class="line">model2.fit(trainging, ytraining)</span><br><span class="line"><span class="comment"># make predictions for validation</span></span><br><span class="line">preds1 = model1.predict(valid)</span><br><span class="line">preds2 = model2.predict(valid)</span><br><span class="line"><span class="comment"># make predictions for test data</span></span><br><span class="line">test_preds1 = model1.predict(test)</span><br><span class="line">test_preds2 = model2.predict(test)</span><br><span class="line"><span class="comment"># From a new dataset for valid and test via stacking the predictions</span></span><br><span class="line">stacked_predictions = np.colum_stack((preds1, preds2))</span><br><span class="line">stacked_test_predictions = np.column_stack((test_preds1, test_preds2))</span><br><span class="line"><span class="comment"># specify meta model</span></span><br><span class="line">meta_model = LinearRegression()</span><br><span class="line">meta_model.fit(stacked_predictions, yvalid)</span><br><span class="line"><span class="comment"># make predictions on the stacked predictions of the test data</span></span><br><span class="line">final_predictions = meta_model.predict(stacked_test_predictions)</span><br></pre></td></tr></table></figure>
+<h3 id="Stacking-past-example"><a href="#Stacking-past-example" class="headerlink" title="Stacking(past) example"></a>Stacking(past) example</h3><p><img src="https://upload-images.jianshu.io/upload_images/7007489-3378350b440b5e17.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="stacking_past.png"></p>
+<p>可以看到，它与我们使用<code>Conditional averaging</code>的结果非常近似。只是在50附件做的不够好，这是有道理的，因为模型没有见到目标变量，无法准确识别出50这个缺口。所以它只是尝试根据模型的输入来确定。</p>
+<h3 id="Things-to-be-mindful-of"><a href="#Things-to-be-mindful-of" class="headerlink" title="Things to be mindful of"></a>Things to be mindful of</h3><ul>
+<li>With time sensitive data - respect time <ul>
+<li>如果你的数据带有时间元素，你需要指定你的stacking，以便尊重时间。</li>
+</ul>
+</li>
+<li>Diversity as important as performance<ul>
+<li>单一模型表现很重要，但模型的多样性也非常重要。当模型是坏的或弱的情况，你不需太担心，stacking实际上可以从每个预测中提取到精华，得到好的结果。因此，你真正需要关注的是，我正在制作的模型能给我带来哪些信息，即使它通常很弱。</li>
+</ul>
+</li>
+<li>Diversity may come from:<ul>
+<li>Different algorithms</li>
+<li>Different input features</li>
+</ul>
+</li>
+<li>Performance plateauing after N models</li>
+<li>Meta model is normally modest</li>
+</ul>
+<h2 id="StackNet"><a href="#StackNet" class="headerlink" title="StackNet"></a>StackNet</h2><p><a href="https://github.com/kaz-Anova/StackNet">https://github.com/kaz-Anova/StackNet</a></p>
+<h2 id="Ensembling-Tips-and-Tricks"><a href="#Ensembling-Tips-and-Tricks" class="headerlink" title="Ensembling Tips and Tricks"></a>Ensembling Tips and Tricks</h2><h3 id="1-st-level-tips"><a href="#1-st-level-tips" class="headerlink" title="$1^{st}$ level tips"></a>$1^{st}$ level tips</h3><ul>
+<li>Diversity based on algorithms:<ul>
+<li>2-3 gradient boosted trees (lightgbm, xgboost, H2O, catboost)</li>
+<li>2-3 Neural nets (keras, pytorch)</li>
+<li>1-2 ExtraTrees/RandomForest (sklearn)</li>
+<li>1-2 linear models as in logistic/ridge regression, linear svm (sklearn)</li>
+<li>1-2 knn models (sklearn)</li>
+<li>1 Factorization machine (libfm)</li>
+<li>1 svm with nonlinear kernel(like RBF) if size/memory allows (sklearn)</li>
+</ul>
+</li>
+<li>Diversity based on input data:<ul>
+<li>Categorical features: One hot, label encoding, target encoding, likelihood encoding, frequency or counts</li>
+<li>Numerical features: outliers, binning, derivatives, percentiles, scaling</li>
+<li>Interactions: col1*/+-col2, groupby, unsupervised</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-st-level-tips"><a href="#2-st-level-tips" class="headerlink" title="$2^{st}$ level tips"></a>$2^{st}$ level tips</h3><ul>
+<li><p>Simpler (or shallower) Algorithms:</p>
+<ul>
+<li>gradient boosted trees with small depth(like 2 or 3)</li>
+<li>Linear models with high regularization</li>
+<li>Extra Trees (just don’t make them too big)</li>
+<li>Shallow networks (as in 1 hidden layer, with not that many hidden neurons)</li>
+<li>knn with BrayCurtis Distance</li>
+<li>Brute forcing a search for best linear weights based on cv</li>
+</ul>
+</li>
+<li><p>Feature engineering:</p>
+<ul>
+<li>pairwise differences between meta features</li>
+<li>row-wise statistics like averages or stds</li>
+<li>Standard feature selection techniques</li>
+</ul>
+</li>
+<li>For every 7.5 models in previous level we add 1 in meta (经验)</li>
+<li>Be mindful to target leakage</li>
+</ul>
+<h2 id="Additional-materials"><a href="#Additional-materials" class="headerlink" title="Additional materials"></a>Additional materials</h2><ul>
+<li><a href="https://mlwave.com/kaggle-ensembling-guide/">MLWave.com的Kaggle 集成指南（方法概述）</a></li>
+<li><a href="https://github.com/kaz-Anova/StackNet">StackNet - 一个计算，可扩展和分析的元建模框架（KazAnova）</a></li>
+<li><a href="https://github.com/rushter/heamy">Heamy - 一套用于竞争数据科学（包括整合）的有用工具</a></li>
+</ul>
+
+        </div>
+        <div class="post-tool">
+            <a class="btn-thumbs-up" href="javascript:void(0);" data-cid="52" title="95">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i> 打赏
+            </a>
+        </div>
+        
+        <div class="post-tags">标签：
+            
+            <a href="/tags/DataMining/">DataMining</a>
+            
+            <a href="/tags/MachineLearning/">MachineLearning</a>
+            
+            <a href="/tags/Kaggle/">Kaggle</a>
+            
+        </div>
+        
+    </article>
+    
+    <p>新手上路，若有不恰当之处，望不吝赐教！</p>
+    
+    
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    var disqus_config = function () {
+        this.page.url = 'http://heolis.info/machinelearning/高级集成学习技巧.html';
+        this.page.identifier = 'machinelearning/高级集成学习技巧.html';
+    };
+    (function () { // DON'T EDIT BELOW THIS LINE
+        var d = document, disqus_shortname = 'HeoLis', s = d.createElement('script');
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by
+        Disqus.</a></noscript>
+
+</div>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        </div><!-- end #main-->
+    </div><!-- end #body -->
+    <footer class="footer">
+    <div class="footer-inner">
+        <p>
+            <a href="/links" title="友情链接">友情链接</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            本站已建立<a id="siteBuildingTime"></a>天&nbsp<em>·</em>&nbsp;
+        <span id="busuanzi_container_site_uv">
+            总访客数为
+            <span id="busuanzi_value_site_uv"></span>人次
+        </span>
+        </p>
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    </div>
+</footer>
+
+<!-- Tencent Analytics
+<script type="text/javascript" src="//tajs.qq.com/stats?sId=66072444" charset="UTF-8"></script> -->
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?1762d61c140d8360105c1f427350ad71";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="/js/InsightSearch.js"></script>
+<script src="/js/SimpleCore.js"></script>
+
+</div>
+<div class="fixed-btn">
+    <a class="btn-gotop" href="javascript:"> <i class="fa fa-angle-up"></i></a>
+</div>
+<script>
+    $(function () {
+        SimpleCore.init({
+            buildingTime: '11/26/2017',
+            current: $('.post-tags').length > 0 ? 'post' : 'archive',
+            snsQRCode: '/images/sns-qrcode.png',
+            donateImg: '/images/donate-qr.png',
+        });
+    });
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("MathJax config");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

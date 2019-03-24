@@ -1,0 +1,352 @@
+<!DOCTYPE HTML>
+<html class="no-js" lang="zh-CN">
+
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lte IE 9]>
+<meta http-equiv="refresh" content="0;url=http://heolis.info/warn.html">
+<![endif]-->
+<meta charset="utf-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+<meta http-equiv="mobile-agent" content="format=html5; url=http://heolis.info">
+<meta name="author" content="HeoLis(http://heolis.info/)">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/SimpleStyle.min.css">
+
+<link rel="shortcut icon" href="/images/favicon.jpg">
+
+
+<title>数据挖掘之数据预处理 - Gain</title>
+
+<meta name="keywords" content="机器瞎学/数据掩埋/模式混淆/人工智障/深度遗忘/神经掉线/计算机幻觉">
+
+<meta name="description " content="这里将记录我的学习历程。个人公众号(机器视觉于算法建模）"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="nav">
+    <nav class="nav-menu">
+        <a class="site-name current" href="/" title="Epoch">Epoch</a>
+        <a class="site-index current" href="/"><i class="fa fa-home"></i><span>首页</span></a>
+        <a href="/archives" title="归档"><i class="fa fa-archives"></i><span>归档</span></a>
+        <a href="/tags" title="标签"><i class="fa fa-tags"></i><span>标签</span></a>
+        <!-- custom single page of menus -->
+        
+    </nav>
+</div>
+
+<div class="nav-user">
+    <a class="btn-search" href="#"><i class="fa fa-search"></i></a>
+    <a class="btn-read-mode" href="#"><i class="fa fa-sun-o"></i></a>
+    <a class="btn-sns-qr" href="javascript:"><i class="fa fa-telegram"></i></a>
+</div>
+
+<div id="wrapper" class="clearfix">
+    <div id="body">
+        <div class="main" id="main">
+            <div id="cover">
+    <div class="cover-img"></div>
+    <div class="cover-info">
+        
+        <h1 class="cover-siteName">MachineEpoch</h1>
+        <h3 class="cover-siteTitle">学习、记录、分享、获得</h3>
+        <p class="cover-siteDesc">一个技术新人的博客</p>
+        <div class="cover-sns">
+            
+            <div class="btn btn-github">
+                <a href="https://github.com/wmpscc" target="_blank" title="github" ref="friend">
+                    <i class="fa fa-github"></i>
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</div>
+            <div class="page-title">
+    <ul>
+        <li><a href="/">最新</a></li>
+        
+            
+                <li class="active">
+                    <a href="/categories/machinelearning" data-name="人工智障">人工智障</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/CV" data-name="计算机幻觉">计算机幻觉</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/language" data-name="编程语言">编程语言</a>
+                </li>
+            
+        
+        <li class="page-search">
+    <form id="search" class="search-form">
+        <label for="s" class="sr-only">请输入关键字</label>
+        <input class="search-field" type="text" name="s" class="text" placeholder="请输入关键字" />
+        <button type="submit" class="search-form-submit" title="搜索"><i class="fa fa-search"></i></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..."/>
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+</li>
+
+    </ul>
+</div>
+<div class="main-inner">
+    <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <div class="post-header">
+            <div class="post-author clearfix">
+                <a class="avatar fleft" href="https://github.com/wmpscc" target="_blank">
+                    <img width="48" src="/images/favicon.png" alt="avatar"/>
+                </a>
+                <p><span class="label">作者</span>
+                    <a href="https://github.com/wmpscc" target="_blank">wmpscc</a>
+                    <span title="最后编辑于2018-05-27">2018-05-27</span>
+                </p>
+                <p>Why become a pirate if you can join the Navy?</p>
+            </div>
+            <h2 class="post-title">数据挖掘之数据预处理</h2>
+            <div class="post-meta">
+                本文总共10924个字 | 您是第<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
+            </div>
+        </div>
+        <div class="post-content markdown-body">
+            <blockquote>
+<p>记录实战过程中在数据预处理环节用到的方法<br>更多笔记：<a href="https://github.com/wmpscc/DataMiningNotesAndPractice">https://github.com/wmpscc/DataMiningNotesAndPractice</a></p>
+</blockquote>
+<h1 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h1><h2 id="常用方法"><a href="#常用方法" class="headerlink" title="常用方法"></a>常用方法</h2><h4 id="生成随机数序列"><a href="#生成随机数序列" class="headerlink" title="生成随机数序列"></a>生成随机数序列</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">randIndex = random.sample(range(trainSize, len(trainData_copy)), <span class="number">5</span>*trainSize)</span><br></pre></td></tr></table></figure>
+<h4 id="计算某个值出现的次数"><a href="#计算某个值出现的次数" class="headerlink" title="计算某个值出现的次数"></a>计算某个值出现的次数</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">titleSet = set(titleData)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> titleSet:</span><br><span class="line">    count = titleData.count(i)</span><br></pre></td></tr></table></figure>
+<p>用文本出现的次数替换非空的地方。词袋模型 Word Count<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">titleData = allData[<span class="string">'title'</span>]</span><br><span class="line">titleSet = set(list(titleData))</span><br><span class="line">title_counts = titleData.value_counts()</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> titleSet:</span><br><span class="line">    <span class="keyword">if</span> isNaN(i):</span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    count = title_counts[i]</span><br><span class="line">    titleData.replace(i, count, axis=<span class="number">0</span>, inplace=<span class="keyword">True</span>)</span><br><span class="line">title = pd.DataFrame(titleData)</span><br><span class="line">allData[<span class="string">'title'</span>] = title</span><br></pre></td></tr></table></figure></p>
+<h4 id="判断值是否为NaN"><a href="#判断值是否为NaN" class="headerlink" title="判断值是否为NaN"></a>判断值是否为NaN</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">isNaN</span><span class="params">(num)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> num != num</span><br></pre></td></tr></table></figure>
+<h4 id="Matplotlib在jupyter中显示图像"><a href="#Matplotlib在jupyter中显示图像" class="headerlink" title="Matplotlib在jupyter中显示图像"></a>Matplotlib在jupyter中显示图像</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">%matplotlib inline</span><br></pre></td></tr></table></figure>
+<h4 id="处理日期"><a href="#处理日期" class="headerlink" title="处理日期"></a>处理日期</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">birth = trainData[<span class="string">'birth_date'</span>]</span><br><span class="line">birthDate = pd.to_datetime(birth)</span><br><span class="line">end = pd.datetime(<span class="number">2018</span>, <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line"><span class="comment"># 计算天数</span></span><br><span class="line">birthDay = end - birthDate</span><br><span class="line">birthDay.astype(<span class="string">'timedelta64[D]'</span>)</span><br><span class="line"><span class="comment"># timedelta64 转到 int64</span></span><br><span class="line">trainData[<span class="string">'birth_date'</span>] = birthDay.dt.days</span><br></pre></td></tr></table></figure>
+<h4 id="计算多列数的平均值等"><a href="#计算多列数的平均值等" class="headerlink" title="计算多列数的平均值等"></a>计算多列数的平均值等</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">trainData[<span class="string">'operate_able'</span>] = trainData.iloc[ : , <span class="number">20</span>:<span class="number">53</span>].mean(axis=<span class="number">1</span>)</span><br><span class="line">trainData[<span class="string">'local_able'</span>] = trainData.iloc[ : , <span class="number">53</span>:<span class="number">64</span>].mean(axis=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="数据分列（对列进行one-hot）"><a href="#数据分列（对列进行one-hot）" class="headerlink" title="数据分列（对列进行one-hot）"></a>数据分列（对列进行one-hot）</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">train_test = pd.get_dummies(train_test,columns=[<span class="string">"Embarked"</span>])</span><br><span class="line">train_test = pd.get_dummies(train_test,columns = [<span class="string">'SibSp'</span>,<span class="string">'Parch'</span>,<span class="string">'SibSp_Parch'</span>])</span><br></pre></td></tr></table></figure>
+<h3 id="正则提取指定内容"><a href="#正则提取指定内容" class="headerlink" title="正则提取指定内容"></a>正则提取指定内容</h3><p>df[‘Name].str.extract()是提取函数,配合正则一起使用<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">train_test[<span class="string">'Name1'</span>] = train_test[<span class="string">'Name'</span>].str.extract(<span class="string">'.+,(.+)'</span>).str.extract( <span class="string">'^(.+?)\.'</span>).str.strip()</span><br></pre></td></tr></table></figure></p>
+<h3 id="根据数据是否缺失进行处理"><a href="#根据数据是否缺失进行处理" class="headerlink" title="根据数据是否缺失进行处理"></a>根据数据是否缺失进行处理</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">train_test.loc[train_test[<span class="string">"Age"</span>].isnull() ,<span class="string">"age_nan"</span>] = <span class="number">1</span></span><br><span class="line">train_test.loc[train_test[<span class="string">"Age"</span>].notnull() ,<span class="string">"age_nan"</span>] = <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<h3 id="按区间分割-数据离散化"><a href="#按区间分割-数据离散化" class="headerlink" title="按区间分割-数据离散化"></a>按区间分割-数据离散化</h3><p>返回x所属区间的索引值，半开区间<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#将年龄划分四个阶段10以下,10-18,18-30,30-50,50以上</span></span><br><span class="line">train_test[<span class="string">'Age'</span>] = pd.cut(train_test[<span class="string">'Age'</span>], bins=[<span class="number">0</span>,<span class="number">10</span>,<span class="number">18</span>,<span class="number">30</span>,<span class="number">50</span>,<span class="number">100</span>],labels=[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>])</span><br></pre></td></tr></table></figure></p>
+<h2 id="Numpy部分"><a href="#Numpy部分" class="headerlink" title="Numpy部分"></a>Numpy部分</h2><h4 id="where索引列表"><a href="#where索引列表" class="headerlink" title="where索引列表"></a>where索引列表</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">delLocal = np.array(np.where(np.array(trainData[<span class="string">'acc_now_delinq'</span>]) == <span class="number">1</span>))</span><br></pre></td></tr></table></figure>
+<h4 id="permutation-x-随机生成一个排列或返回一个range"><a href="#permutation-x-随机生成一个排列或返回一个range" class="headerlink" title="permutation(x) 随机生成一个排列或返回一个range"></a>permutation(x) 随机生成一个排列或返回一个range</h4><p>如果x是一个多维数组，则只会沿着它的第一个索引进行混洗。<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">shuffle_index = np.random.permutation(<span class="number">60000</span>)</span><br><span class="line">X_train, y_train = X_train[shuffle_index], y_train[shuffle_index]</span><br></pre></td></tr></table></figure></p>
+<h4 id="numpy-argmax-返回沿轴的最大值的索引"><a href="#numpy-argmax-返回沿轴的最大值的索引" class="headerlink" title="numpy.argmax() 返回沿轴的最大值的索引"></a>numpy.argmax() 返回沿轴的最大值的<code>索引</code></h4><p>返回沿轴的最大值的索引。<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">np.argmax(some_digit_scores)</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>a : array_like;   输入数组</li>
+<li>axis : int, optional;   默认情况下，索引是放在平面数组中，否则沿着指定的轴。</li>
+<li>out : array, optional;    如果提供，结果将被插入到这个数组中。它应该是适当的形状和dtype。<h4 id="numpy-dot-a-b-out-None-nbsp-计算两个数组的点积"><a href="#numpy-dot-a-b-out-None-nbsp-计算两个数组的点积" class="headerlink" title="numpy.dot(a, b, out=None)&nbsp;计算两个数组的点积"></a>numpy.dot(a, b, out=None)&nbsp;计算两个数组的点积</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.dot(<span class="number">3</span>, <span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="numpy-random-randn-nbsp-从标准正太分布返回样本"><a href="#numpy-random-randn-nbsp-从标准正太分布返回样本" class="headerlink" title="numpy.random.randn()&nbsp;从标准正太分布返回样本"></a>numpy.random.randn()&nbsp;从标准正太分布返回样本</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.random.seed(<span class="number">42</span>) <span class="comment"># 可设置随机数种子</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>theta = np.random.randn(<span class="number">2</span>,<span class="number">1</span>)</span><br><span class="line">array([[ <span class="number">4.21509616</span>],</span><br><span class="line">       [ <span class="number">2.77011339</span>]])</span><br></pre></td></tr></table></figure>
+<p>参数</p>
+<ul>
+<li>d0, d1, …, dn : int, optional；返回的数组维度，应该都是正值。如果没有给出，将返回一个Python float值。</li>
+</ul>
+<h3 id="numpy-linspace-nbsp-在指定区间返回间隔均匀的样本-start-stop"><a href="#numpy-linspace-nbsp-在指定区间返回间隔均匀的样本-start-stop" class="headerlink" title="numpy.linspace()&nbsp;在指定区间返回间隔均匀的样本[start, stop]"></a>numpy.linspace()&nbsp;在指定区间返回间隔均匀的样本[start, stop]</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">X_new=np.linspace(<span class="number">-3</span>, <span class="number">3</span>, <span class="number">100</span>).reshape(<span class="number">100</span>, <span class="number">1</span>)</span><br><span class="line">X_new_poly = poly_features.transform(X_new)</span><br><span class="line">y_new = lin_reg.predict(X_new_poly)</span><br><span class="line">plt.plot(X, y, <span class="string">"b."</span>)</span><br><span class="line">plt.plot(X_new, y_new, <span class="string">"r-"</span>, linewidth=<span class="number">2</span>, label=<span class="string">"Predictions"</span>)</span><br><span class="line">plt.xlabel(<span class="string">"$x_1$"</span>, fontsize=<span class="number">18</span>)</span><br><span class="line">plt.ylabel(<span class="string">"$y$"</span>, rotation=<span class="number">0</span>, fontsize=<span class="number">18</span>)</span><br><span class="line">plt.legend(loc=<span class="string">"upper left"</span>, fontsize=<span class="number">14</span>)</span><br><span class="line">plt.axis([<span class="number">-3</span>, <span class="number">3</span>, <span class="number">0</span>, <span class="number">10</span>])</span><br><span class="line">save_fig(<span class="string">"quadratic_predictions_plot"</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<ul>
+<li>start : scalar；序列的起始值</li>
+<li>stop : scalar；序列的结束值</li>
+<li>num : int, optional；要生成的样本数量，默认为50个。</li>
+<li>endpoint : bool, optional；若为True则包括结束值，否则不包括结束值，即[start, stop)区间。默认为True。</li>
+<li>dtype : dtype, optional；输出数组的类型，若未给出则从输入数据推断类型。</li>
+</ul>
+<h2 id="Pandas部分"><a href="#Pandas部分" class="headerlink" title="Pandas部分"></a>Pandas部分</h2><h4 id="Jupyter-notebook中设置最大显示行列数"><a href="#Jupyter-notebook中设置最大显示行列数" class="headerlink" title="Jupyter notebook中设置最大显示行列数"></a>Jupyter notebook中设置最大显示行列数</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pd.set_option(<span class="string">'display.max_columns'</span>, <span class="number">64</span>)</span><br><span class="line">pd.set_option(<span class="string">'display.max_rows'</span>, <span class="number">1000000</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="读入数据"><a href="#读入数据" class="headerlink" title="读入数据"></a>读入数据</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">homePath = <span class="string">'game'</span></span><br><span class="line">trainPath = os.path.join(homePath, <span class="string">'train.csv'</span>)</span><br><span class="line">testPath = os.path.join(homePath, <span class="string">'test.csv'</span>)</span><br><span class="line">trainData = pd.read_csv(trainPath)</span><br><span class="line">testData = pd.read_csv(testPath)</span><br></pre></td></tr></table></figure>
+<h4 id="数据简单预览"><a href="#数据简单预览" class="headerlink" title="数据简单预览"></a>数据简单预览</h4><ul>
+<li>~head()<br>获取前五行数据，供快速参考。</li>
+<li>~info()<br>获取总行数、每个属性的类型、非空值的数量。</li>
+<li>~value_counts()<br>获取每个值出现的次数</li>
+<li>~hist()<br>直方图的形式展示数值型数据</li>
+<li>~describe()<br>简要显示数据的数字特征；例如：总数、平均值、标准差、最大值最小值、25%/50%/75%值</li>
+</ul>
+<h4 id="拷贝数据"><a href="#拷贝数据" class="headerlink" title="拷贝数据"></a>拷贝数据</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">mthsMajorTest = fullData.copy()</span><br></pre></td></tr></table></figure>
+<h4 id="数据相关性"><a href="#数据相关性" class="headerlink" title="数据相关性"></a>数据相关性</h4><ul>
+<li><p>计算相关性矩阵</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">corrMatrix = trainData.corr()</span><br><span class="line">corrMatrix[<span class="string">'acc_now_delinq'</span>].sort_values(ascending=<span class="keyword">False</span>) <span class="comment"># 降序排列</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>相关系数矩阵图</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy</span><br><span class="line">correlations = data.corr()  <span class="comment">#计算变量之间的相关系数矩阵</span></span><br><span class="line"><span class="comment"># plot correlation matrix</span></span><br><span class="line">fig = plt.figure() <span class="comment">#调用figure创建一个绘图对象</span></span><br><span class="line">ax = fig.add_subplot(<span class="number">111</span>)</span><br><span class="line">cax = ax.matshow(correlations, vmin=<span class="number">-1</span>, vmax=<span class="number">1</span>)  <span class="comment">#绘制热力图，从-1到1</span></span><br><span class="line">fig.colorbar(cax)  <span class="comment">#将matshow生成热力图设置为颜色渐变条</span></span><br><span class="line">ticks = numpy.arange(<span class="number">0</span>,<span class="number">9</span>,<span class="number">1</span>) <span class="comment">#生成0-9，步长为1</span></span><br><span class="line">ax.set_xticks(ticks)  <span class="comment">#生成刻度</span></span><br><span class="line">ax.set_yticks(ticks)</span><br><span class="line">ax.set_xticklabels(names) <span class="comment">#生成x轴标签</span></span><br><span class="line">ax.set_yticklabels(names)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>颜色越深表明二者相关性越强</p>
+<h4 id="删除某列"><a href="#删除某列" class="headerlink" title="删除某列"></a>删除某列</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">trainData.drop(<span class="string">'acc_now_delinq'</span>, axis=<span class="number">1</span>, inplace=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 此方法并不会从内存中释放内存</span></span><br><span class="line"><span class="keyword">del</span> fullData[<span class="string">'member_id'</span>]</span><br></pre></td></tr></table></figure>
+<h4 id="列表类型转换"><a href="#列表类型转换" class="headerlink" title="列表类型转换"></a>列表类型转换</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">termData = list(map(int, termData))</span><br></pre></td></tr></table></figure>
+<h4 id="替换数据"><a href="#替换数据" class="headerlink" title="替换数据"></a>替换数据</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">gradeData.replace([<span class="string">'A'</span>,<span class="string">'B'</span>,<span class="string">'C'</span>,<span class="string">'D'</span>,<span class="string">'E'</span>,<span class="string">'F'</span>,<span class="string">'G'</span>], [<span class="number">7</span>,<span class="number">6</span>,<span class="number">5</span>,<span class="number">4</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">1</span>],inplace=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="数据集合并"><a href="#数据集合并" class="headerlink" title="数据集合并"></a>数据集合并</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">allData = trainData.append(testData)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">allData = pd.concat([trainData, testData], axis=<span class="number">0</span>, ignore_index=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="分割"><a href="#分割" class="headerlink" title="分割"></a>分割</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">termData = termData.str.split(<span class="string">' '</span>, n=<span class="number">2</span>, expand=<span class="keyword">True</span>)[<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<h4 id="where-相当于三目运算符"><a href="#where-相当于三目运算符" class="headerlink" title="~where() 相当于三目运算符( ? : )"></a>~where() 相当于三目运算符( ? : )</h4><p>通过判断自身的值来修改自身对应的值，相当于三目运算符( ? : )<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">housing[<span class="string">"income_cat"</span>].where(housing[<span class="string">"income_cat"</span>] &lt; <span class="number">5</span>, <span class="number">5.0</span>, inplace=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>cond 如果为True则保持原始值，若为False则使用第二个参数other替换值。</li>
+<li>other 替换的目标值</li>
+<li>inplace 是否在数据上执行操作<h4 id="np-ceil-x-y-限制元素范围"><a href="#np-ceil-x-y-限制元素范围" class="headerlink" title="np.ceil(x, y) 限制元素范围"></a>np.ceil(x, y) 限制元素范围</h4></li>
+<li>x 输入的数据</li>
+<li>y float型，每个元素的上限<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">housing[<span class="string">"income_cat"</span>] = np.ceil(housing[<span class="string">"median_income"</span>] / <span class="number">1.5</span>)     <span class="comment"># 每个元素都除1.5</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="loc-纯粹基于标签位置的索引器"><a href="#loc-纯粹基于标签位置的索引器" class="headerlink" title="~loc[]                  纯粹基于标签位置的索引器"></a>~loc[]                  纯粹基于标签位置的索引器</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">strat_train_set = housing.loc[train_index]</span><br><span class="line">strat_test_set = housing.loc[test_index]</span><br></pre></td></tr></table></figure>
+<h4 id="dropna-返回略去丢失数据部分后的剩余数据"><a href="#dropna-返回略去丢失数据部分后的剩余数据" class="headerlink" title="~dropna()               返回略去丢失数据部分后的剩余数据"></a>~dropna()               返回略去丢失数据部分后的剩余数据</h4><p>Return object with labels on given axis omitted where alternately any or all of the data are missing<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sample_incomplete_rows.dropna(subset=[<span class="string">"total_bedrooms"</span>])</span><br></pre></td></tr></table></figure></p>
+<h4 id="fillna-用指定的方法填充"><a href="#fillna-用指定的方法填充" class="headerlink" title="~fillna()               用指定的方法填充"></a>~fillna()               用指定的方法填充</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 用中位数填充</span></span><br><span class="line">median = housing[<span class="string">"total_bedrooms"</span>].median()</span><br><span class="line">sample_incomplete_rows[<span class="string">"total_bedrooms"</span>].fillna(median, inplace=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="重置索引"><a href="#重置索引" class="headerlink" title="重置索引"></a>重置索引</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">allData = subTrain.reset_index()</span><br></pre></td></tr></table></figure>
+<h1 id="缺失值处理"><a href="#缺失值处理" class="headerlink" title="缺失值处理"></a>缺失值处理</h1><h2 id="Sklearn-部分"><a href="#Sklearn-部分" class="headerlink" title="Sklearn 部分"></a>Sklearn 部分</h2><h4 id="数据标准化"><a href="#数据标准化" class="headerlink" title="数据标准化"></a>数据标准化</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler</span><br><span class="line">ss = StandardScaler()</span><br><span class="line">ss.fit(mthsMajorTrain)</span><br><span class="line">mthsMajorTrain_d = ss.transform(mthsMajorTrain)</span><br><span class="line">mthsMajorTest_d = ss.transform(mthsMajorTest)</span><br></pre></td></tr></table></figure>
+<h4 id="预测缺失值"><a href="#预测缺失值" class="headerlink" title="预测缺失值"></a>预测缺失值</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> linear_model</span><br><span class="line">lin = linear_model.BayesianRidge()</span><br><span class="line">lin.fit(mthsMajorTrain_d, mthsMajorTrainLabel)</span><br><span class="line">trainData.loc[(trainData[<span class="string">'mths_since_last_major_derog'</span>].isnull()), <span class="string">'mths_since_last_major_derog'</span>] = lin.predict(mthsMajorTest_d)</span><br></pre></td></tr></table></figure>
+<h4 id="Lightgbm提供的特征重要性"><a href="#Lightgbm提供的特征重要性" class="headerlink" title="Lightgbm提供的特征重要性"></a>Lightgbm提供的特征重要性</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> lightgbm <span class="keyword">as</span> lgb</span><br><span class="line"></span><br><span class="line">params = &#123;</span><br><span class="line">    <span class="string">'task'</span>: <span class="string">'train'</span>,</span><br><span class="line">    <span class="string">'boosting_type'</span>: <span class="string">'gbdt'</span>,</span><br><span class="line">    <span class="string">'objective'</span>: <span class="string">'regression'</span>,</span><br><span class="line">    <span class="string">'metric'</span>: &#123;<span class="string">'l2'</span>, <span class="string">'auc'</span>&#125;,</span><br><span class="line">    <span class="string">'num_leaves'</span>: <span class="number">31</span>,</span><br><span class="line">    <span class="string">'learning_rate'</span>: <span class="number">0.05</span>,</span><br><span class="line">    <span class="string">'feature_fraction'</span>: <span class="number">0.9</span>,</span><br><span class="line">    <span class="string">'bagging_fraction'</span>: <span class="number">0.8</span>,</span><br><span class="line">    <span class="string">'bagging_freq'</span>: <span class="number">5</span>,</span><br><span class="line">    <span class="string">'verbose'</span>: <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">lgb_train = lgb.Dataset(totTrain[:<span class="number">400000</span>], totLabel[:<span class="number">400000</span>])</span><br><span class="line">lgb_eval = lgb.Dataset(totTrain[<span class="number">400000</span>:], totLabel[<span class="number">400000</span>:])</span><br><span class="line">gbm = lgb.train(params,</span><br><span class="line">                lgb_train,</span><br><span class="line">                num_boost_round=<span class="number">20</span>,</span><br><span class="line">                valid_sets=lgb_eval,</span><br><span class="line">                early_stopping_rounds=<span class="number">5</span>)</span><br><span class="line">lgb.plot_importance(gbm, figsize=(<span class="number">10</span>,<span class="number">10</span>))</span><br></pre></td></tr></table></figure>
+<p>对于缺失值，一般手动挑选几个重要的特征，然后进行预测<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">upFeatures = [<span class="string">'revol_util'</span>, <span class="string">'revol_bal'</span>, <span class="string">'annual_inc'</span>]  <span class="comment"># 通过上一步挑选出的特征</span></span><br><span class="line">totTrain = totTrain[upFeatures]</span><br><span class="line">totTest = trainData.loc[(trainData[<span class="string">'total_rev_hi_lim'</span>].isnull())][upFeatures]</span><br><span class="line">totTest[<span class="string">'annual_inc'</span>].fillna(<span class="number">-9999</span>, inplace=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler</span><br><span class="line">ss = StandardScaler()</span><br><span class="line">ss.fit(totTrain)</span><br><span class="line">train_d = ss.transform(totTrain)</span><br><span class="line">test_d = ss.transform(totTest)</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> linear_model</span><br><span class="line">lin = linear_model.BayesianRidge()</span><br><span class="line">lin.fit(train_d, totLabel)</span><br><span class="line">trainData.loc[(trainData[<span class="string">'total_rev_hi_lim'</span>].isnull()), <span class="string">'total_rev_hi_lim'</span>] = lin.predict(test_d)</span><br></pre></td></tr></table></figure></p>
+<h4 id="用中位数填充"><a href="#用中位数填充" class="headerlink" title="用中位数填充"></a>用中位数填充</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">trainData[<span class="string">'total_acc'</span>].fillna(trainData[<span class="string">'total_acc'</span>].median(), inplace=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="用均值填充"><a href="#用均值填充" class="headerlink" title="用均值填充"></a>用均值填充</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">trainData[<span class="string">'total_acc'</span>].fillna(trainData[<span class="string">'total_acc'</span>].mean(), inplace=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="Imputer-处理丢失值"><a href="#Imputer-处理丢失值" class="headerlink" title="Imputer() 处理丢失值"></a>Imputer() 处理丢失值</h2><p>各属性必须是数值<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> Imputer</span><br><span class="line"><span class="comment"># 指定用何值替换丢失的值，此处为中位数</span></span><br><span class="line">imputer = Imputer(strategy=<span class="string">"median"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使实例适应数据</span></span><br><span class="line">imputer.fit(housing_num)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果在statistics_ 变量中</span></span><br><span class="line">imputer.statistics_</span><br><span class="line"></span><br><span class="line"><span class="comment"># 替换</span></span><br><span class="line">X = imputer.transform(housing_num)</span><br><span class="line">housing_tr = pd.DataFrame(X, columns=housing_num.columns,</span><br><span class="line">                          index = list(housing.index.values))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 预览</span></span><br><span class="line">housing_tr.loc[sample_incomplete_rows.index.values]</span><br></pre></td></tr></table></figure></p>
+<h2 id="处理文本数据"><a href="#处理文本数据" class="headerlink" title="处理文本数据"></a>处理文本数据</h2><h3 id="pandas-factorize-将输入值编码为枚举类型或分类变量"><a href="#pandas-factorize-将输入值编码为枚举类型或分类变量" class="headerlink" title="pandas.factorize()            将输入值编码为枚举类型或分类变量"></a>pandas.factorize()            将输入值编码为枚举类型或分类变量</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">housing_cat = housing[<span class="string">'ocean_proximity'</span>]</span><br><span class="line">housing_cat.head(<span class="number">10</span>)</span><br><span class="line"><span class="comment"># 输出</span></span><br><span class="line"><span class="comment"># 17606     &lt;1H OCEAN</span></span><br><span class="line"><span class="comment"># 18632     &lt;1H OCEAN</span></span><br><span class="line"><span class="comment"># 14650    NEAR OCEAN</span></span><br><span class="line"><span class="comment"># 3230         INLAND</span></span><br><span class="line"><span class="comment"># 3555      &lt;1H OCEAN</span></span><br><span class="line"><span class="comment"># 19480        INLAND</span></span><br><span class="line"><span class="comment"># 8879      &lt;1H OCEAN</span></span><br><span class="line"><span class="comment"># 13685        INLAND</span></span><br><span class="line"><span class="comment"># 4937      &lt;1H OCEAN</span></span><br><span class="line"><span class="comment"># 4861      &lt;1H OCEAN</span></span><br><span class="line"><span class="comment"># Name: ocean_proximity, dtype: object</span></span><br><span class="line"></span><br><span class="line">housing_cat_encoded, housing_categories = housing_cat.factorize()</span><br><span class="line">housing_cat_encoded[:<span class="number">10</span>]</span><br><span class="line"><span class="comment"># 输出</span></span><br><span class="line"><span class="comment"># array([0, 0, 1, 2, 0, 2, 0, 2, 0, 0], dtype=int64)</span></span><br></pre></td></tr></table></figure>
+<h5 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h5><ul>
+<li>values : ndarray (1-d)；序列</li>
+<li>sort : boolean, default False；根据值排序</li>
+<li>na_sentinel : int, default -1；给未找到赋的值</li>
+<li>size_hint : hint to the hashtable sizer</li>
+</ul>
+<h5 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h5><ul>
+<li>labels : the indexer to the original array</li>
+<li>uniques : ndarray (1-d) or Index；当传递的值是Index或Series时，返回独特的索引。</li>
+</ul>
+<h3 id="OneHotEncoder-编码整数特征为one-hot向量"><a href="#OneHotEncoder-编码整数特征为one-hot向量" class="headerlink" title="OneHotEncoder   编码整数特征为one-hot向量"></a>OneHotEncoder   编码整数特征为one-hot向量</h3><p>返回值为稀疏矩阵<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> OneHotEncoder</span><br><span class="line"></span><br><span class="line">encoder = OneHotEncoder()</span><br><span class="line">housing_cat_1hot = encoder.fit_transform(housing_cat_encoded.reshape(<span class="number">-1</span>,<span class="number">1</span>))</span><br><span class="line">housing_cat_1hot</span><br></pre></td></tr></table></figure></p>
+<p>注意<code>fit_transform()</code>期望一个二维数组，所以这里将数据reshape了。</p>
+<h4 id="处理文本特征示例"><a href="#处理文本特征示例" class="headerlink" title="处理文本特征示例"></a>处理文本特征示例</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">housing_cat = housing[<span class="string">'ocean_proximity'</span>]</span><br><span class="line">housing_cat.head(<span class="number">10</span>)</span><br><span class="line"><span class="comment"># 17606     &lt;1H OCEAN</span></span><br><span class="line"><span class="comment"># 18632     &lt;1H OCEAN</span></span><br><span class="line"><span class="comment"># 14650    NEAR OCEAN</span></span><br><span class="line"><span class="comment"># 3230         INLAND</span></span><br><span class="line"><span class="comment"># 3555      &lt;1H OCEAN</span></span><br><span class="line"><span class="comment"># 19480        INLAND</span></span><br><span class="line"><span class="comment"># 8879      &lt;1H OCEAN</span></span><br><span class="line"><span class="comment"># 13685        INLAND</span></span><br><span class="line"><span class="comment"># 4937      &lt;1H OCEAN</span></span><br><span class="line"><span class="comment"># 4861      &lt;1H OCEAN</span></span><br><span class="line"><span class="comment"># Name: ocean_proximity, dtype: object</span></span><br><span class="line"></span><br><span class="line">housing_cat_encoded, housing_categories = housing_cat.factorize()</span><br><span class="line">housing_cat_encoded[:<span class="number">10</span>]</span><br><span class="line"><span class="comment"># array([0, 0, 1, 2, 0, 2, 0, 2, 0, 0], dtype=int64)</span></span><br><span class="line"></span><br><span class="line">housing_categories</span><br><span class="line"><span class="comment"># Index(['&lt;1H OCEAN', 'NEAR OCEAN', 'INLAND', 'NEAR BAY', 'ISLAND'], dtype='object')</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> OneHotEncoder</span><br><span class="line"></span><br><span class="line">encoder = OneHotEncoder()</span><br><span class="line">print(housing_cat_encoded.reshape(<span class="number">-1</span>,<span class="number">1</span>))</span><br><span class="line">housing_cat_1hot = encoder.fit_transform(housing_cat_encoded.reshape(<span class="number">-1</span>,<span class="number">1</span>))</span><br><span class="line">housing_cat_1hot</span><br><span class="line"><span class="comment"># [[0]</span></span><br><span class="line"><span class="comment">#  [0]</span></span><br><span class="line"><span class="comment">#  [1]</span></span><br><span class="line"><span class="comment">#  ..., </span></span><br><span class="line"><span class="comment">#  [2]</span></span><br><span class="line"><span class="comment">#  [0]</span></span><br><span class="line"><span class="comment">#  [3]]</span></span><br><span class="line"><span class="comment"># &lt;16512x5 sparse matrix of type '&lt;class 'numpy.float64'&gt;'</span></span><br><span class="line"><span class="comment"># 	with 16512 stored elements in Compressed Sparse Row format&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="LabelEncoder-nbsp-标签编码"><a href="#LabelEncoder-nbsp-标签编码" class="headerlink" title="LabelEncoder &nbsp;标签编码"></a>LabelEncoder &nbsp;标签编码</h3><p>LabelEncoder`是一个可以用来将标签规范化的工具类，它可以将标签的编码值范围限定在[0,n_classes-1]。简单来说就是对不连续的数字或者文本进行编号。<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> sklearn <span class="keyword">import</span> preprocessing</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>le = preprocessing.LabelEncoder()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>le.fit([<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">6</span>])</span><br><span class="line">LabelEncoder()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>le.classes_</span><br><span class="line">array([<span class="number">1</span>, <span class="number">2</span>, <span class="number">6</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>le.transform([<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">6</span>])</span><br><span class="line">array([<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>le.inverse_transform([<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>])</span><br><span class="line">array([<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">6</span>])</span><br></pre></td></tr></table></figure></p>
+<p>当然，它也可以用于非数值型标签的编码转换成数值标签（只要它们是可哈希并且可比较的）:<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>le = preprocessing.LabelEncoder()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>le.fit([<span class="string">"paris"</span>, <span class="string">"paris"</span>, <span class="string">"tokyo"</span>, <span class="string">"amsterdam"</span>])</span><br><span class="line">LabelEncoder()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>list(le.classes_)</span><br><span class="line">[<span class="string">'amsterdam'</span>, <span class="string">'paris'</span>, <span class="string">'tokyo'</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>le.transform([<span class="string">"tokyo"</span>, <span class="string">"tokyo"</span>, <span class="string">"paris"</span>])</span><br><span class="line">array([<span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>list(le.inverse_transform([<span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>]))</span><br><span class="line">[<span class="string">'tokyo'</span>, <span class="string">'tokyo'</span>, <span class="string">'paris'</span>]</span><br></pre></td></tr></table></figure></p>
+<h3 id="LabelBinarizer-nbsp-标签二值化"><a href="#LabelBinarizer-nbsp-标签二值化" class="headerlink" title="LabelBinarizer &nbsp;标签二值化"></a>LabelBinarizer &nbsp;标签二值化</h3><p>LabelBinarizer 是一个用来从多类别列表创建标签矩阵的工具类:<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> sklearn <span class="keyword">import</span> preprocessing</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>lb = preprocessing.LabelBinarizer()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>lb.fit([<span class="number">1</span>, <span class="number">2</span>, <span class="number">6</span>, <span class="number">4</span>, <span class="number">2</span>])</span><br><span class="line">LabelBinarizer(neg_label=<span class="number">0</span>, pos_label=<span class="number">1</span>, sparse_output=<span class="keyword">False</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>lb.classes_</span><br><span class="line">array([<span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>lb.transform([<span class="number">1</span>, <span class="number">6</span>])</span><br><span class="line">array([[<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">       [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>]])</span><br></pre></td></tr></table></figure></p>
+<p>对于多类别是实例，可以使用:class:MultiLabelBinarizer:<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>lb = preprocessing.MultiLabelBinarizer()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>lb.fit_transform([(<span class="number">1</span>, <span class="number">2</span>), (<span class="number">3</span>,)])</span><br><span class="line">array([[<span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>],</span><br><span class="line">       [<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>]])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>lb.classes_</span><br><span class="line">array([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])</span><br></pre></td></tr></table></figure></p>
+
+        </div>
+        <div class="post-tool">
+            <a class="btn-thumbs-up" href="javascript:void(0);" data-cid="52" title="95">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i> 打赏
+            </a>
+        </div>
+        
+        <div class="post-tags">标签：
+            
+            <a href="/tags/DataMining/">DataMining</a>
+            
+            <a href="/tags/MachineLearning/">MachineLearning</a>
+            
+            <a href="/tags/Kaggle/">Kaggle</a>
+            
+        </div>
+        
+    </article>
+    
+    <p>新手上路，若有不恰当之处，望不吝赐教！</p>
+    
+    
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    var disqus_config = function () {
+        this.page.url = 'http://heolis.info/machinelearning/数据挖掘之数据预处理.html';
+        this.page.identifier = 'machinelearning/数据挖掘之数据预处理.html';
+    };
+    (function () { // DON'T EDIT BELOW THIS LINE
+        var d = document, disqus_shortname = 'HeoLis', s = d.createElement('script');
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by
+        Disqus.</a></noscript>
+
+</div>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        </div><!-- end #main-->
+    </div><!-- end #body -->
+    <footer class="footer">
+    <div class="footer-inner">
+        <p>
+            <a href="/links" title="友情链接">友情链接</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            本站已建立<a id="siteBuildingTime"></a>天&nbsp<em>·</em>&nbsp;
+        <span id="busuanzi_container_site_uv">
+            总访客数为
+            <span id="busuanzi_value_site_uv"></span>人次
+        </span>
+        </p>
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    </div>
+</footer>
+
+<!-- Tencent Analytics
+<script type="text/javascript" src="//tajs.qq.com/stats?sId=66072444" charset="UTF-8"></script> -->
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?1762d61c140d8360105c1f427350ad71";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="/js/InsightSearch.js"></script>
+<script src="/js/SimpleCore.js"></script>
+
+</div>
+<div class="fixed-btn">
+    <a class="btn-gotop" href="javascript:"> <i class="fa fa-angle-up"></i></a>
+</div>
+<script>
+    $(function () {
+        SimpleCore.init({
+            buildingTime: '11/26/2017',
+            current: $('.post-tags').length > 0 ? 'post' : 'archive',
+            snsQRCode: '/images/sns-qrcode.png',
+            donateImg: '/images/donate-qr.png',
+        });
+    });
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("MathJax config");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

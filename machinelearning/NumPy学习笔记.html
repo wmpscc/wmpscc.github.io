@@ -1,0 +1,330 @@
+<!DOCTYPE HTML>
+<html class="no-js" lang="zh-CN">
+
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lte IE 9]>
+<meta http-equiv="refresh" content="0;url=http://heolis.info/warn.html">
+<![endif]-->
+<meta charset="utf-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+<meta http-equiv="mobile-agent" content="format=html5; url=http://heolis.info">
+<meta name="author" content="HeoLis(http://heolis.info/)">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/SimpleStyle.min.css">
+
+<link rel="shortcut icon" href="/images/favicon.jpg">
+
+
+<title>numpy学习笔记 - Gain</title>
+
+<meta name="keywords" content="机器瞎学/数据掩埋/模式混淆/人工智障/深度遗忘/神经掉线/计算机幻觉">
+
+<meta name="description " content="这里将记录我的学习历程。个人公众号(机器视觉于算法建模）"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="nav">
+    <nav class="nav-menu">
+        <a class="site-name current" href="/" title="Epoch">Epoch</a>
+        <a class="site-index current" href="/"><i class="fa fa-home"></i><span>首页</span></a>
+        <a href="/archives" title="归档"><i class="fa fa-archives"></i><span>归档</span></a>
+        <a href="/tags" title="标签"><i class="fa fa-tags"></i><span>标签</span></a>
+        <!-- custom single page of menus -->
+        
+    </nav>
+</div>
+
+<div class="nav-user">
+    <a class="btn-search" href="#"><i class="fa fa-search"></i></a>
+    <a class="btn-read-mode" href="#"><i class="fa fa-sun-o"></i></a>
+    <a class="btn-sns-qr" href="javascript:"><i class="fa fa-telegram"></i></a>
+</div>
+
+<div id="wrapper" class="clearfix">
+    <div id="body">
+        <div class="main" id="main">
+            <div id="cover">
+    <div class="cover-img"></div>
+    <div class="cover-info">
+        
+        <h1 class="cover-siteName">MachineEpoch</h1>
+        <h3 class="cover-siteTitle">学习、记录、分享、获得</h3>
+        <p class="cover-siteDesc">一个技术新人的博客</p>
+        <div class="cover-sns">
+            
+            <div class="btn btn-github">
+                <a href="https://github.com/wmpscc" target="_blank" title="github" ref="friend">
+                    <i class="fa fa-github"></i>
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</div>
+            <div class="page-title">
+    <ul>
+        <li><a href="/">最新</a></li>
+        
+            
+                <li class="active">
+                    <a href="/categories/machinelearning" data-name="人工智障">人工智障</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/CV" data-name="计算机幻觉">计算机幻觉</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/language" data-name="编程语言">编程语言</a>
+                </li>
+            
+        
+        <li class="page-search">
+    <form id="search" class="search-form">
+        <label for="s" class="sr-only">请输入关键字</label>
+        <input class="search-field" type="text" name="s" class="text" placeholder="请输入关键字" />
+        <button type="submit" class="search-form-submit" title="搜索"><i class="fa fa-search"></i></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..."/>
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+</li>
+
+    </ul>
+</div>
+<div class="main-inner">
+    <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <div class="post-header">
+            <div class="post-author clearfix">
+                <a class="avatar fleft" href="https://github.com/wmpscc" target="_blank">
+                    <img width="48" src="/images/favicon.png" alt="avatar"/>
+                </a>
+                <p><span class="label">作者</span>
+                    <a href="https://github.com/wmpscc" target="_blank">wmpscc</a>
+                    <span title="最后编辑于2018-02-10">2018-02-10</span>
+                </p>
+                <p>Why become a pirate if you can join the Navy?</p>
+            </div>
+            <h2 class="post-title">NumPy学习笔记</h2>
+            <div class="post-meta">
+                本文总共6571个字 | 您是第<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
+            </div>
+        </div>
+        <div class="post-content markdown-body">
+            <p>本文是我在学习过程中收集的numpy方法，并做了记录。</p>
+<h2 id="NumPy-方法"><a href="#NumPy-方法" class="headerlink" title="NumPy 方法"></a>NumPy 方法</h2><h3 id="np-ceil-x-y-限制元素范围"><a href="#np-ceil-x-y-限制元素范围" class="headerlink" title="np.ceil(x, y)           限制元素范围"></a>np.ceil(x, y)           限制元素范围</h3><ul>
+<li>x 输入的数据</li>
+<li>y float型，每个元素的上限<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">housing[<span class="string">"income_cat"</span>] = np.ceil(housing[<span class="string">"median_income"</span>] / <span class="number">1.5</span>)     <span class="comment"># 每个元素都除1.5</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="permutation-x-随机生成一个排列或返回一个range"><a href="#permutation-x-随机生成一个排列或返回一个range" class="headerlink" title="permutation(x) 随机生成一个排列或返回一个range"></a>permutation(x) 随机生成一个排列或返回一个range</h3><p>如果x是一个多维数组，则只会沿着它的第一个索引进行混洗。<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">shuffle_index = np.random.permutation(<span class="number">60000</span>)</span><br><span class="line">X_train, y_train = X_train[shuffle_index], y_train[shuffle_index]</span><br></pre></td></tr></table></figure></p>
+<h3 id="numpy-argmax-返回沿轴的最大值的索引"><a href="#numpy-argmax-返回沿轴的最大值的索引" class="headerlink" title="numpy.argmax() 返回沿轴的最大值的索引"></a>numpy.argmax() 返回沿轴的最大值的索引</h3><p>返回沿轴的最大值的索引。<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># some_digit_scores 内容</span></span><br><span class="line"><span class="comment"># array([[-311402.62954431, -363517.28355739, -446449.5306454 ,</span></span><br><span class="line"><span class="comment">#         -183226.61023518, -414337.15339485,  161855.74572176,</span></span><br><span class="line"><span class="comment">#         -452576.39616343, -471957.14962573, -518542.33997148,</span></span><br><span class="line"><span class="comment">#         -536774.63961222]])</span></span><br><span class="line">np.argmax(some_digit_scores)</span><br><span class="line"><span class="comment"># Out</span></span><br><span class="line"><span class="comment"># 5</span></span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>a : array_like;   输入数组</li>
+<li>axis : int, optional;   默认情况下，索引是放在平面数组中，否则沿着指定的轴。</li>
+<li>out : array, optional;    如果提供，结果将被插入到这个数组中。它应该是适当的形状和dtype。</li>
+</ul>
+<h3 id="np-linalg-inv-nbsp-计算矩阵的逆"><a href="#np-linalg-inv-nbsp-计算矩阵的逆" class="headerlink" title="np.linalg.inv()&nbsp;计算矩阵的逆"></a>np.linalg.inv()&nbsp;计算矩阵的逆</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">X_b = np.c_[np.ones((<span class="number">100</span>, <span class="number">1</span>)), X]  <span class="comment"># add x0 = 1 to each instance</span></span><br><span class="line">theta_best = np.linalg.inv(X_b.T.dot(X_b)).dot(X_b.T).dot(y)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>a : (…, M, M) array_like；被求逆的矩阵</li>
+</ul>
+<h3 id="numpy-dot-a-b-out-None-nbsp-计算两个数组的点积"><a href="#numpy-dot-a-b-out-None-nbsp-计算两个数组的点积" class="headerlink" title="numpy.dot(a, b, out=None)&nbsp;计算两个数组的点积"></a>numpy.dot(a, b, out=None)&nbsp;计算两个数组的点积</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.dot(<span class="number">3</span>, <span class="number">4</span>)</span><br><span class="line"><span class="number">12</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Neither argument is complex-conjugated:</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.dot([<span class="number">2j</span>, <span class="number">3j</span>], [<span class="number">2j</span>, <span class="number">3j</span>])</span><br><span class="line">(<span class="number">-13</span>+<span class="number">0j</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># For 2-D arrays it is the matrix product:</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = [[<span class="number">1</span>, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">1</span>]]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = [[<span class="number">4</span>, <span class="number">1</span>], [<span class="number">2</span>, <span class="number">2</span>]]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.dot(a, b)</span><br><span class="line">array([[<span class="number">4</span>, <span class="number">1</span>],</span><br><span class="line">       [<span class="number">2</span>, <span class="number">2</span>]])</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = np.arange(<span class="number">3</span>*<span class="number">4</span>*<span class="number">5</span>*<span class="number">6</span>).reshape((<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>))</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = np.arange(<span class="number">3</span>*<span class="number">4</span>*<span class="number">5</span>*<span class="number">6</span>)[::<span class="number">-1</span>].reshape((<span class="number">5</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">3</span>))</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.dot(a, b)[<span class="number">2</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>]</span><br><span class="line"><span class="number">499128</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>sum(a[<span class="number">2</span>,<span class="number">3</span>,<span class="number">2</span>,:] * b[<span class="number">1</span>,<span class="number">2</span>,:,<span class="number">2</span>])</span><br><span class="line"><span class="number">499128</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>a : array_like；First argument.</li>
+<li>b : array_like；Second argument.</li>
+</ul>
+<h3 id="numpy-ndarray-T-nbsp-计算矩阵的转置"><a href="#numpy-ndarray-T-nbsp-计算矩阵的转置" class="headerlink" title="numpy.ndarray.T()&nbsp;计算矩阵的转置"></a>numpy.ndarray.T()&nbsp;计算矩阵的转置</h3><p>与<code>self.transpose()</code>相同，如果<code>self.ndim &lt; 2</code>则返回它自身。<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>x = np.array([[<span class="number">1.</span>,<span class="number">2.</span>],[<span class="number">3.</span>,<span class="number">4.</span>]])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>x</span><br><span class="line">array([[ <span class="number">1.</span>,  <span class="number">2.</span>],</span><br><span class="line">       [ <span class="number">3.</span>,  <span class="number">4.</span>]])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>x.T</span><br><span class="line">array([[ <span class="number">1.</span>,  <span class="number">3.</span>],</span><br><span class="line">       [ <span class="number">2.</span>,  <span class="number">4.</span>]])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>x = np.array([<span class="number">1.</span>,<span class="number">2.</span>,<span class="number">3.</span>,<span class="number">4.</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>x</span><br><span class="line">array([ <span class="number">1.</span>,  <span class="number">2.</span>,  <span class="number">3.</span>,  <span class="number">4.</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>x.T</span><br><span class="line">array([ <span class="number">1.</span>,  <span class="number">2.</span>,  <span class="number">3.</span>,  <span class="number">4.</span>])</span><br></pre></td></tr></table></figure></p>
+<h3 id="numpy-random-seed-nbsp-生成器种子"><a href="#numpy-random-seed-nbsp-生成器种子" class="headerlink" title="numpy.random.seed()&nbsp;生成器种子"></a>numpy.random.seed()&nbsp;生成器种子</h3><p>该方法由<code>RandomState</code>初始化，它可以被重新设置。<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">np.random.seed(<span class="number">42</span>)</span><br><span class="line">theta = np.random.randn(<span class="number">2</span>,<span class="number">1</span>)  <span class="comment"># random initialization</span></span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>seed : int or array_like, optional；必须为32位无符号整数。</li>
+</ul>
+<h3 id="numpy-random-randn-nbsp-从标准正太分布返回样本"><a href="#numpy-random-randn-nbsp-从标准正太分布返回样本" class="headerlink" title="numpy.random.randn()&nbsp;从标准正太分布返回样本"></a>numpy.random.randn()&nbsp;从标准正太分布返回样本</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>theta = np.random.randn(<span class="number">2</span>,<span class="number">1</span>)</span><br><span class="line">array([[ <span class="number">4.21509616</span>],</span><br><span class="line">       [ <span class="number">2.77011339</span>]])</span><br></pre></td></tr></table></figure>
+<h6 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h6><ul>
+<li>d0, d1, …, dn : int, optional；返回的数组维度，应该都是正值。如果没有给出，将返回一个Python float值。</li>
+</ul>
+<h6 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h6><ul>
+<li>Z : ndarray or float；一个经过标准正态分布抽样的，<code>(d0, d1, ..., dn)</code>维度的浮点数组。</li>
+</ul>
+<h3 id="numpy-array-nbsp-创建一个数组"><a href="#numpy-array-nbsp-创建一个数组" class="headerlink" title="numpy.array()&nbsp;创建一个数组"></a>numpy.array()&nbsp;创建一个数组</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">theta_path_bgd = np.array(theta_path_bgd)</span><br><span class="line">theta_path_sgd = np.array(theta_path_sgd)</span><br><span class="line">theta_path_mgd = np.array(theta_path_mgd)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>object : array_like</li>
+<li>dtype : data-type, optional</li>
+</ul>
+<h3 id="numpy-random-rand-nmbsp-生成给定shap的随机值"><a href="#numpy-random-rand-nmbsp-生成给定shap的随机值" class="headerlink" title="numpy.random.rand()&nmbsp;生成给定shap的随机值"></a>numpy.random.rand()&nmbsp;生成给定shap的随机值</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">m = <span class="number">100</span></span><br><span class="line">X = <span class="number">6</span> * np.random.rand(m, <span class="number">1</span>) - <span class="number">3</span></span><br><span class="line">y = <span class="number">0.5</span> * X**<span class="number">2</span> + X + <span class="number">2</span> + np.random.randn(m, <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.random.rand(<span class="number">3</span>,<span class="number">2</span>)</span><br><span class="line">array([[ <span class="number">0.14022471</span>,  <span class="number">0.96360618</span>],  <span class="comment">#random</span></span><br><span class="line">       [ <span class="number">0.37601032</span>,  <span class="number">0.25528411</span>],  <span class="comment">#random</span></span><br><span class="line">       [ <span class="number">0.49313049</span>,  <span class="number">0.94909878</span>]]) <span class="comment">#random</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>d0, d1, …, dn : int, optional；返回的数组维度，必须是正值。如果为空，则返回一个Python float值。</li>
+</ul>
+<h3 id="numpy-linspace-nbsp-在指定区间返回间隔均匀的样本-start-stop"><a href="#numpy-linspace-nbsp-在指定区间返回间隔均匀的样本-start-stop" class="headerlink" title="numpy.linspace()&nbsp;在指定区间返回间隔均匀的样本[start, stop]"></a>numpy.linspace()&nbsp;在指定区间返回间隔均匀的样本[start, stop]</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">X_new=np.linspace(<span class="number">-3</span>, <span class="number">3</span>, <span class="number">100</span>).reshape(<span class="number">100</span>, <span class="number">1</span>)</span><br><span class="line">X_new_poly = poly_features.transform(X_new)</span><br><span class="line">y_new = lin_reg.predict(X_new_poly)</span><br><span class="line">plt.plot(X, y, <span class="string">"b."</span>)</span><br><span class="line">plt.plot(X_new, y_new, <span class="string">"r-"</span>, linewidth=<span class="number">2</span>, label=<span class="string">"Predictions"</span>)</span><br><span class="line">plt.xlabel(<span class="string">"$x_1$"</span>, fontsize=<span class="number">18</span>)</span><br><span class="line">plt.ylabel(<span class="string">"$y$"</span>, rotation=<span class="number">0</span>, fontsize=<span class="number">18</span>)</span><br><span class="line">plt.legend(loc=<span class="string">"upper left"</span>, fontsize=<span class="number">14</span>)</span><br><span class="line">plt.axis([<span class="number">-3</span>, <span class="number">3</span>, <span class="number">0</span>, <span class="number">10</span>])</span><br><span class="line">save_fig(<span class="string">"quadratic_predictions_plot"</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<ul>
+<li>start : scalar；序列的起始值</li>
+<li>stop : scalar；序列的结束值</li>
+<li>num : int, optional；要生成的样本数量，默认为50个。</li>
+<li>endpoint : bool, optional；若为True则包括结束值，否则不包括结束值，即[start, stop)区间。默认为True。</li>
+<li>dtype : dtype, optional；输出数组的类型，若未给出则从输入数据推断类型。</li>
+</ul>
+<h3 id="meshgrid-nbsp-从坐标向量返回坐标矩阵"><a href="#meshgrid-nbsp-从坐标向量返回坐标矩阵" class="headerlink" title="meshgrid()&nbsp; 从坐标向量返回坐标矩阵"></a>meshgrid()&nbsp; 从坐标向量返回坐标矩阵</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>nx, ny = (<span class="number">3</span>, <span class="number">2</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>x = np.linspace(<span class="number">0</span>, <span class="number">1</span>, nx)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>y = np.linspace(<span class="number">0</span>, <span class="number">1</span>, ny)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>xv, yv = np.meshgrid(x, y)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>xv</span><br><span class="line">array([[ <span class="number">0.</span> ,  <span class="number">0.5</span>,  <span class="number">1.</span> ],</span><br><span class="line">       [ <span class="number">0.</span> ,  <span class="number">0.5</span>,  <span class="number">1.</span> ]])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>yv</span><br><span class="line">array([[ <span class="number">0.</span>,  <span class="number">0.</span>,  <span class="number">0.</span>],</span><br><span class="line">       [ <span class="number">1.</span>,  <span class="number">1.</span>,  <span class="number">1.</span>]])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>xv, yv = np.meshgrid(x, y, sparse=<span class="keyword">True</span>)  <span class="comment"># make sparse output arrays</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>xv</span><br><span class="line">array([[ <span class="number">0.</span> ,  <span class="number">0.5</span>,  <span class="number">1.</span> ]])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>yv</span><br><span class="line">array([[ <span class="number">0.</span>],</span><br><span class="line">       [ <span class="number">1.</span>]])</span><br></pre></td></tr></table></figure>
+<ul>
+<li>x1, x2,…, xn : array_like；代表网格坐标的一维数组。</li>
+<li>indexing : {‘xy’, ‘ij’}, optional；输出的笛卡儿（’xy’，默认）或矩阵（’ij’）索引。</li>
+<li><p>sparse : bool, optional；如果为True则返回稀疏矩阵以减少内存，默认为False。</p>
+<h3 id="norm-nbsp-矩阵或向量范数"><a href="#norm-nbsp-矩阵或向量范数" class="headerlink" title="norm()&nbsp; 矩阵或向量范数"></a>norm()&nbsp; 矩阵或向量范数</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">t1a, t1b, t2a, t2b = <span class="number">-1</span>, <span class="number">3</span>, <span class="number">-1.5</span>, <span class="number">1.5</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ignoring bias term</span></span><br><span class="line">t1s = np.linspace(t1a, t1b, <span class="number">500</span>)</span><br><span class="line">t2s = np.linspace(t2a, t2b, <span class="number">500</span>)</span><br><span class="line">t1, t2 = np.meshgrid(t1s, t2s)</span><br><span class="line">T = np.c_[t1.ravel(), t2.ravel()]</span><br><span class="line">Xr = np.array([[<span class="number">-1</span>, <span class="number">1</span>], [<span class="number">-0.3</span>, <span class="number">-1</span>], [<span class="number">1</span>, <span class="number">0.1</span>]])</span><br><span class="line">yr = <span class="number">2</span> * Xr[:, :<span class="number">1</span>] + <span class="number">0.5</span> * Xr[:, <span class="number">1</span>:]</span><br><span class="line"></span><br><span class="line">J = (<span class="number">1</span>/len(Xr) * np.sum((T.dot(Xr.T) - yr.T)**<span class="number">2</span>, axis=<span class="number">1</span>)).reshape(t1.shape)</span><br><span class="line"></span><br><span class="line">N1 = np.linalg.norm(T, ord=<span class="number">1</span>, axis=<span class="number">1</span>).reshape(t1.shape)</span><br><span class="line">N2 = np.linalg.norm(T, ord=<span class="number">2</span>, axis=<span class="number">1</span>).reshape(t1.shape)</span><br><span class="line"></span><br><span class="line">t_min_idx = np.unravel_index(np.argmin(J), J.shape)</span><br><span class="line">t1_min, t2_min = t1[t_min_idx], t2[t_min_idx]</span><br><span class="line"></span><br><span class="line">t_init = np.array([[<span class="number">0.25</span>], [<span class="number">-1</span>]])</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>x : array_like；输入的数组，如果<code>axis</code>是None，则<code>x</code>必须是1-D或2-D。</p>
+</li>
+<li>ord : {non-zero int, inf, -inf, ‘fro’, ‘nuc’}, optional；范数的顺序，inf表示numpy的inf对象。</li>
+<li>axis : {int, 2-tuple of ints, None}, optional</li>
+<li>keepdims : bool, optional</li>
+</ul>
+<p>以下范数可以被计算：<br>| ord |    norm for matrices |    norm for vectors|<br>|–|–|–|<br>|None    | Frobenius norm |     2-norm|<br>|‘fro’    | Frobenius norm |    –|<br>|‘nuc’    | nuclear norm    | –|<br>|inf    | max(sum(abs(x), axis=1)) |    max(abs(x))|<br>|-inf    | min(sum(abs(x), axis=1))    | min(abs(x))|<br>|0    | –    | sum(x != 0)|<br>|1    | max(sum(abs(x), axis=0)) |    as below|<br>|-1    | min(sum(abs(x), axis=0))    | as below|<br>|2    | 2-norm (largest sing. value)    | as below|<br>|-2    | smallest singular value    | as below|<br>|other |    –    | sum(abs(x)<strong>ord)</strong>(1./ord)|</p>
+<p>对于<code>ord &lt;= 0</code>的值，它严格来说不是数学规范的范数，但它作为数值目的任然有用。</p>
+<h3 id="unravel-index-nbsp-将平面索引或平面索引数组转换为坐标数组的元组"><a href="#unravel-index-nbsp-将平面索引或平面索引数组转换为坐标数组的元组" class="headerlink" title="unravel_index()&nbsp; 将平面索引或平面索引数组转换为坐标数组的元组"></a>unravel_index()&nbsp; 将平面索引或平面索引数组转换为坐标数组的元组</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.unravel_index([<span class="number">22</span>, <span class="number">41</span>, <span class="number">37</span>], (<span class="number">7</span>,<span class="number">6</span>))</span><br><span class="line">(array([<span class="number">3</span>, <span class="number">6</span>, <span class="number">6</span>]), array([<span class="number">4</span>, <span class="number">5</span>, <span class="number">1</span>]))</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.unravel_index([<span class="number">31</span>, <span class="number">41</span>, <span class="number">13</span>], (<span class="number">7</span>,<span class="number">6</span>), order=<span class="string">'F'</span>)</span><br><span class="line">(array([<span class="number">3</span>, <span class="number">6</span>, <span class="number">6</span>]), array([<span class="number">4</span>, <span class="number">5</span>, <span class="number">1</span>]))</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.unravel_index(<span class="number">1621</span>, (<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>))</span><br><span class="line">(<span class="number">3</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>indices : array_like；一个整数数组，其元素是索引到维数组dims的平坦版本中。</li>
+<li>dims : tuple of ints；用于分解索引的数组的形状。</li>
+<li>order : {‘C’, ‘F’}, optional；决定<code>indices</code>应该按row-major (C-style) or column-major (Fortran-style) 顺序。</li>
+</ul>
+<h3 id="mean-nbsp-计算沿指定轴的算术平均值"><a href="#mean-nbsp-计算沿指定轴的算术平均值" class="headerlink" title="mean()&nbsp; 计算沿指定轴的算术平均值"></a>mean()&nbsp; 计算沿指定轴的算术平均值</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = np.array([[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.mean(a)</span><br><span class="line"><span class="number">2.5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.mean(a, axis=<span class="number">0</span>)</span><br><span class="line">array([ <span class="number">2.</span>,  <span class="number">3.</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.mean(a, axis=<span class="number">1</span>)</span><br><span class="line">array([ <span class="number">1.5</span>,  <span class="number">3.5</span>])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = np.zeros((<span class="number">2</span>, <span class="number">512</span>*<span class="number">512</span>), dtype=np.float32)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a[<span class="number">0</span>, :] = <span class="number">1.0</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a[<span class="number">1</span>, :] = <span class="number">0.1</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>np.mean(a)</span><br><span class="line"><span class="number">0.54999924</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>a : array_like；包含要求平均值的数组，如果不是数组，则尝试进行转换。</li>
+<li>axis : None or int or tuple of ints, optional；计算平均值的轴，默认计算扁平数组。</li>
+<li>dtype : data-type, optional；用于计算平均值的类型。</li>
+<li>out : ndarray, optional</li>
+</ul>
+
+        </div>
+        <div class="post-tool">
+            <a class="btn-thumbs-up" href="javascript:void(0);" data-cid="52" title="95">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i> 打赏
+            </a>
+        </div>
+        
+        <div class="post-tags">标签：
+            
+            <a href="/tags/MachineLearning/">MachineLearning</a>
+            
+            <a href="/tags/Numpy/">Numpy</a>
+            
+        </div>
+        
+    </article>
+    
+    <p>新手上路，若有不恰当之处，望不吝赐教！</p>
+    
+    
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    var disqus_config = function () {
+        this.page.url = 'http://heolis.info/machinelearning/NumPy学习笔记.html';
+        this.page.identifier = 'machinelearning/NumPy学习笔记.html';
+    };
+    (function () { // DON'T EDIT BELOW THIS LINE
+        var d = document, disqus_shortname = 'HeoLis', s = d.createElement('script');
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by
+        Disqus.</a></noscript>
+
+</div>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        </div><!-- end #main-->
+    </div><!-- end #body -->
+    <footer class="footer">
+    <div class="footer-inner">
+        <p>
+            <a href="/links" title="友情链接">友情链接</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            本站已建立<a id="siteBuildingTime"></a>天&nbsp<em>·</em>&nbsp;
+        <span id="busuanzi_container_site_uv">
+            总访客数为
+            <span id="busuanzi_value_site_uv"></span>人次
+        </span>
+        </p>
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    </div>
+</footer>
+
+<!-- Tencent Analytics
+<script type="text/javascript" src="//tajs.qq.com/stats?sId=66072444" charset="UTF-8"></script> -->
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?1762d61c140d8360105c1f427350ad71";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="/js/InsightSearch.js"></script>
+<script src="/js/SimpleCore.js"></script>
+
+</div>
+<div class="fixed-btn">
+    <a class="btn-gotop" href="javascript:"> <i class="fa fa-angle-up"></i></a>
+</div>
+<script>
+    $(function () {
+        SimpleCore.init({
+            buildingTime: '11/26/2017',
+            current: $('.post-tags').length > 0 ? 'post' : 'archive',
+            snsQRCode: '/images/sns-qrcode.png',
+            donateImg: '/images/donate-qr.png',
+        });
+    });
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("MathJax config");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

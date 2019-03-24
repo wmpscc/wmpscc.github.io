@@ -1,0 +1,748 @@
+<!DOCTYPE HTML>
+<html class="no-js" lang="zh-CN">
+
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lte IE 9]>
+<meta http-equiv="refresh" content="0;url=http://heolis.info/warn.html">
+<![endif]-->
+<meta charset="utf-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+<meta http-equiv="mobile-agent" content="format=html5; url=http://heolis.info">
+<meta name="author" content="HeoLis(http://heolis.info/)">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/SimpleStyle.min.css">
+
+<link rel="shortcut icon" href="/images/favicon.jpg">
+
+
+<title>matplotlib学习笔记 - Gain</title>
+
+<meta name="keywords" content="机器瞎学/数据掩埋/模式混淆/人工智障/深度遗忘/神经掉线/计算机幻觉">
+
+<meta name="description " content="这里将记录我的学习历程。个人公众号(机器视觉于算法建模）"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="nav">
+    <nav class="nav-menu">
+        <a class="site-name current" href="/" title="Epoch">Epoch</a>
+        <a class="site-index current" href="/"><i class="fa fa-home"></i><span>首页</span></a>
+        <a href="/archives" title="归档"><i class="fa fa-archives"></i><span>归档</span></a>
+        <a href="/tags" title="标签"><i class="fa fa-tags"></i><span>标签</span></a>
+        <!-- custom single page of menus -->
+        
+    </nav>
+</div>
+
+<div class="nav-user">
+    <a class="btn-search" href="#"><i class="fa fa-search"></i></a>
+    <a class="btn-read-mode" href="#"><i class="fa fa-sun-o"></i></a>
+    <a class="btn-sns-qr" href="javascript:"><i class="fa fa-telegram"></i></a>
+</div>
+
+<div id="wrapper" class="clearfix">
+    <div id="body">
+        <div class="main" id="main">
+            <div id="cover">
+    <div class="cover-img"></div>
+    <div class="cover-info">
+        
+        <h1 class="cover-siteName">MachineEpoch</h1>
+        <h3 class="cover-siteTitle">学习、记录、分享、获得</h3>
+        <p class="cover-siteDesc">一个技术新人的博客</p>
+        <div class="cover-sns">
+            
+            <div class="btn btn-github">
+                <a href="https://github.com/wmpscc" target="_blank" title="github" ref="friend">
+                    <i class="fa fa-github"></i>
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</div>
+            <div class="page-title">
+    <ul>
+        <li><a href="/">最新</a></li>
+        
+            
+                <li class="active">
+                    <a href="/categories/machinelearning" data-name="人工智障">人工智障</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/CV" data-name="计算机幻觉">计算机幻觉</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/language" data-name="编程语言">编程语言</a>
+                </li>
+            
+        
+        <li class="page-search">
+    <form id="search" class="search-form">
+        <label for="s" class="sr-only">请输入关键字</label>
+        <input class="search-field" type="text" name="s" class="text" placeholder="请输入关键字" />
+        <button type="submit" class="search-form-submit" title="搜索"><i class="fa fa-search"></i></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..."/>
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+</li>
+
+    </ul>
+</div>
+<div class="main-inner">
+    <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <div class="post-header">
+            <div class="post-author clearfix">
+                <a class="avatar fleft" href="https://github.com/wmpscc" target="_blank">
+                    <img width="48" src="/images/favicon.png" alt="avatar"/>
+                </a>
+                <p><span class="label">作者</span>
+                    <a href="https://github.com/wmpscc" target="_blank">wmpscc</a>
+                    <span title="最后编辑于2018-02-10">2018-02-10</span>
+                </p>
+                <p>Why become a pirate if you can join the Navy?</p>
+            </div>
+            <h2 class="post-title">Matplotlib学习笔记</h2>
+            <div class="post-meta">
+                本文总共13224个字 | 您是第<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
+            </div>
+        </div>
+        <div class="post-content markdown-body">
+            <blockquote>
+<p>整理翻译自<a href="https://github.com/ageron/handson-ml/blob/master/tools_matplotlib.ipynb">该项目</a></p>
+</blockquote>
+<h2 id="Matplotlib"><a href="#Matplotlib" class="headerlink" title="Matplotlib"></a>Matplotlib</h2><p>可能还有小伙伴不知道<code>Matplotlib</code>是什么，下面是维基百科的介绍。</p>
+<blockquote>
+<p>Matplotlib 是Python编程语言的一个绘图库及其数值数学扩展 NumPy。它为利用通用的图形用户界面工具包，如Tkinter, wxPython, Qt或GTK+向应用程序嵌入式绘图提供了面向对象的应用程序接口。</p>
+</blockquote>
+<p>简单说就是画图的工具包。本文将教会你如何使用<code>Matplotlib</code>绘图，如果你没有<code>Python</code>基础也没关系，依葫芦画瓢也完全OK的。关于如何安装Python以及Matplotlib，文末有链接。</p>
+<h2 id="绘制第一个图"><a href="#绘制第一个图" class="headerlink" title="绘制第一个图"></a>绘制第一个图</h2><ul>
+<li>如果给<code>plot</code>函数一个一维数组，则将该数组作为纵轴坐标，并且将数组中的每个数据点索引作为水平坐标<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">plt.plot([<span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">9</span>, <span class="number">5</span>, <span class="number">3</span>])</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/1.png" alt="1"></p>
+<ul>
+<li>如果提供两个数组，则将其分别作为x轴和y轴<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.plot([<span class="number">-3</span>, <span class="number">-2</span>, <span class="number">5</span>, <span class="number">0</span>], [<span class="number">1</span>, <span class="number">6</span>, <span class="number">4</span>, <span class="number">3</span>])</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/2.png" alt="2"></p>
+<ul>
+<li>坐标轴会自动匹配数据的范围，不过我们可以调用<code>axis</code>函数来改变每个轴的范围<code>[xmin, xmax, ymin, ymax]</code><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.plot([<span class="number">-3</span>, <span class="number">-2</span>, <span class="number">5</span>, <span class="number">0</span>], [<span class="number">1</span>, <span class="number">6</span>, <span class="number">4</span>, <span class="number">3</span>])</span><br><span class="line">plt.axis([<span class="number">-4</span>, <span class="number">6</span>, <span class="number">0</span>, <span class="number">7</span>])</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/3.png" alt="3"></p>
+<ul>
+<li>我们用NumPy’s的<code>linspace</code>函数在范围[-2, 2]内创建包含500个浮点数的数组<code>x</code>，计算数组<code>x</code>的平方作为数组<code>y</code><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">x = np.linspace(<span class="number">-2</span>, <span class="number">2</span>, <span class="number">500</span>)</span><br><span class="line">y = x**<span class="number">2</span></span><br><span class="line"></span><br><span class="line">plt.plot(x, y)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/4.png" alt="4"></p>
+<ul>
+<li>添加标题，x、y轴标签，并绘制网格<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.plot(x, y)</span><br><span class="line">plt.title(<span class="string">"Square function"</span>)</span><br><span class="line">plt.xlabel(<span class="string">"x"</span>)</span><br><span class="line">plt.ylabel(<span class="string">"y = x**2"</span>)</span><br><span class="line">plt.grid(<span class="keyword">True</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/5.png" alt="5"></p>
+<h2 id="线条样式和颜色"><a href="#线条样式和颜色" class="headerlink" title="线条样式和颜色"></a>线条样式和颜色</h2><ul>
+<li>默认情况下,matplotlib在连续的点之间绘制一条线。<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.plot([<span class="number">0</span>, <span class="number">100</span>, <span class="number">100</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">100</span>, <span class="number">50</span>, <span class="number">0</span>, <span class="number">100</span>], [<span class="number">0</span>, <span class="number">0</span>, <span class="number">100</span>, <span class="number">100</span>, <span class="number">0</span>, <span class="number">100</span>, <span class="number">130</span>, <span class="number">100</span>, <span class="number">0</span>])</span><br><span class="line">plt.axis([<span class="number">-10</span>, <span class="number">110</span>, <span class="number">-10</span>, <span class="number">140</span>])</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/6.png" alt="6"></p>
+<ul>
+<li>可在第三个参数更改线条的样式和颜色，比如“g–”表示“绿色虚线”<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.plot([<span class="number">0</span>, <span class="number">100</span>, <span class="number">100</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">100</span>, <span class="number">50</span>, <span class="number">0</span>, <span class="number">100</span>], [<span class="number">0</span>, <span class="number">0</span>, <span class="number">100</span>, <span class="number">100</span>, <span class="number">0</span>, <span class="number">100</span>, <span class="number">130</span>, <span class="number">100</span>, <span class="number">0</span>], <span class="string">"g--"</span>)</span><br><span class="line">plt.axis([<span class="number">-10</span>, <span class="number">110</span>, <span class="number">-10</span>, <span class="number">140</span>])</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/7.png" alt="7"></p>
+<ul>
+<li>你可以绘制多条线在同一个图上，仅仅通过重复<code>x1, y1, [style1], x2, y2, [style2], ...</code><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.plot([<span class="number">0</span>, <span class="number">100</span>, <span class="number">100</span>, <span class="number">0</span>, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">0</span>, <span class="number">100</span>, <span class="number">100</span>, <span class="number">0</span>], <span class="string">"r-"</span>, [<span class="number">0</span>, <span class="number">100</span>, <span class="number">50</span>, <span class="number">0</span>, <span class="number">100</span>], [<span class="number">0</span>, <span class="number">100</span>, <span class="number">130</span>, <span class="number">100</span>, <span class="number">0</span>], <span class="string">"g--"</span>)</span><br><span class="line">plt.axis([<span class="number">-10</span>, <span class="number">110</span>, <span class="number">-10</span>, <span class="number">140</span>])</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/8.png" alt="8"></p>
+<ul>
+<li>也可以在<code>show</code>之前<code>plot</code>多次<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.plot([<span class="number">0</span>, <span class="number">100</span>, <span class="number">100</span>, <span class="number">0</span>, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">0</span>, <span class="number">100</span>, <span class="number">100</span>, <span class="number">0</span>], <span class="string">"r-"</span>)</span><br><span class="line">plt.plot([<span class="number">0</span>, <span class="number">100</span>, <span class="number">50</span>, <span class="number">0</span>, <span class="number">100</span>], [<span class="number">0</span>, <span class="number">100</span>, <span class="number">130</span>, <span class="number">100</span>, <span class="number">0</span>], <span class="string">"g--"</span>)</span><br><span class="line">plt.axis([<span class="number">-10</span>, <span class="number">110</span>, <span class="number">-10</span>, <span class="number">140</span>])</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/9.png" alt="9"></p>
+<ul>
+<li>你也可以绘制点而不只是绘制直线<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = np.linspace(<span class="number">-1.4</span>, <span class="number">1.4</span>, <span class="number">30</span>)</span><br><span class="line">plt.plot(x, x, <span class="string">'g--'</span>, x, x**<span class="number">2</span>, <span class="string">'r:'</span>, x, x**<span class="number">3</span>, <span class="string">'b^'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/10.png" alt="10"></p>
+<h4 id="接受以下格式字符来控制线条样式或标记"><a href="#接受以下格式字符来控制线条样式或标记" class="headerlink" title="接受以下格式字符来控制线条样式或标记"></a>接受以下格式字符来控制线条样式或标记</h4><table>
+<thead>
+<tr>
+<th>character</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>‘-‘</td>
+<td>solid line style</td>
+</tr>
+<tr>
+<td>‘–’</td>
+<td>dashed line style</td>
+</tr>
+<tr>
+<td>‘-.’</td>
+<td>dash-dot line style</td>
+</tr>
+<tr>
+<td>‘:’</td>
+<td>dotted line style</td>
+</tr>
+<tr>
+<td>‘.’</td>
+<td>point marker</td>
+</tr>
+<tr>
+<td>‘,’</td>
+<td>pixel marker</td>
+</tr>
+<tr>
+<td>‘o’</td>
+<td>circle marker</td>
+</tr>
+<tr>
+<td>‘v’</td>
+<td>triangle_down marker</td>
+</tr>
+<tr>
+<td>‘^’</td>
+<td>triangle_up marker</td>
+</tr>
+<tr>
+<td>‘&lt;’</td>
+<td>triangle_left marker</td>
+</tr>
+<tr>
+<td>‘&gt;’</td>
+<td>triangle_right marker</td>
+</tr>
+<tr>
+<td>‘1’</td>
+<td>tri_down marker</td>
+</tr>
+<tr>
+<td>‘2’</td>
+<td>tri_up marker</td>
+</tr>
+<tr>
+<td>‘3’</td>
+<td>tri_left marker</td>
+</tr>
+<tr>
+<td>‘4’</td>
+<td>tri_right marker</td>
+</tr>
+<tr>
+<td>‘s’</td>
+<td>square marker</td>
+</tr>
+<tr>
+<td>‘p’</td>
+<td>pentagon marker</td>
+</tr>
+<tr>
+<td>‘*’</td>
+<td>star marker</td>
+</tr>
+<tr>
+<td>‘h’</td>
+<td>hexagon1 marker</td>
+</tr>
+<tr>
+<td>‘H’</td>
+<td>hexagon2 marker</td>
+</tr>
+<tr>
+<td>‘+’</td>
+<td>plus marker</td>
+</tr>
+<tr>
+<td>‘x’</td>
+<td>x marker</td>
+</tr>
+<tr>
+<td>‘D’</td>
+<td>diamond marker</td>
+</tr>
+<tr>
+<td>‘d’</td>
+<td>thin_diamond marker</td>
+</tr>
+<tr>
+<td>‘</td>
+<td>‘</td>
+<td>vline marker</td>
+</tr>
+<tr>
+<td>‘_’</td>
+<td>hline marker</td>
+</tr>
+</tbody>
+</table>
+<h4 id="支持以下颜色缩写"><a href="#支持以下颜色缩写" class="headerlink" title="支持以下颜色缩写"></a>支持以下颜色缩写</h4><table>
+<thead>
+<tr>
+<th>character</th>
+<th>color</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>‘b’</td>
+<td>blue</td>
+</tr>
+<tr>
+<td>‘g’</td>
+<td>green</td>
+</tr>
+<tr>
+<td>‘r’</td>
+<td>red</td>
+</tr>
+<tr>
+<td>‘c’</td>
+<td>cyan</td>
+</tr>
+<tr>
+<td>‘m’</td>
+<td>magenta</td>
+</tr>
+<tr>
+<td>‘y’</td>
+<td>yellow</td>
+</tr>
+<tr>
+<td>‘k’</td>
+<td>black</td>
+</tr>
+<tr>
+<td>‘w’</td>
+<td>white</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>plot</code>函数会返回一个<code>Line2D</code>对象列表，你可以额外设置一些属性，例如线的宽度，虚线风格等等。<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = np.linspace(<span class="number">-1.4</span>, <span class="number">1.4</span>, <span class="number">30</span>)</span><br><span class="line">line1, line2, line3 = plt.plot(x, x, <span class="string">'g--'</span>, x, x**<span class="number">2</span>, <span class="string">'r:'</span>, x, x**<span class="number">3</span>, <span class="string">'b^'</span>)</span><br><span class="line">line1.set_linewidth(<span class="number">3.0</span>)</span><br><span class="line">line1.set_dash_capstyle(<span class="string">"round"</span>)</span><br><span class="line">line3.set_alpha(<span class="number">0.2</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/11.png" alt="11"></p>
+<h4 id="Line2D属性"><a href="#Line2D属性" class="headerlink" title="Line2D属性"></a><code>Line2D</code>属性</h4><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>alpha</td>
+<td>float</td>
+</tr>
+<tr>
+<td>animated</td>
+<td>[True / False]</td>
+</tr>
+<tr>
+<td>antialiased or aa</td>
+<td>[True / False]</td>
+</tr>
+<tr>
+<td>clip_box</td>
+<td>a matplotlib.transform.Bbox instance</td>
+</tr>
+<tr>
+<td>clip_on</td>
+<td>[True</td>
+<td>False]</td>
+</tr>
+<tr>
+<td>clip_path</td>
+<td>a Path instance and a Transform instance, a Patch</td>
+</tr>
+<tr>
+<td>color or c</td>
+<td>any matplotlib color</td>
+</tr>
+<tr>
+<td>contains</td>
+<td>the hit testing function</td>
+</tr>
+<tr>
+<td>dash_capstyle</td>
+<td>[‘butt’ / ‘round’ / ‘projecting’]</td>
+</tr>
+<tr>
+<td>dash_joinstyle</td>
+<td>[‘miter’ / ‘round’ / ‘bevel’]</td>
+</tr>
+<tr>
+<td>dashes</td>
+<td>sequence of on/off ink in points</td>
+</tr>
+<tr>
+<td>data</td>
+<td>(np.array xdata, np.array ydata)</td>
+</tr>
+<tr>
+<td>figure</td>
+<td>a matplotlib.figure.Figure instance</td>
+</tr>
+<tr>
+<td>label</td>
+<td>any string</td>
+</tr>
+<tr>
+<td>linestyle or ls</td>
+<td>[ ‘-‘ / ‘–’ / ‘-.’ / ‘:’ / ‘steps’ / …]</td>
+</tr>
+<tr>
+<td>linewidth or lw</td>
+<td>float value in points</td>
+</tr>
+<tr>
+<td>lod</td>
+<td>[True / False]</td>
+</tr>
+<tr>
+<td>marker</td>
+<td>[ ‘+’ / ‘,’ / ‘.’ / ‘1’ / ‘2’ / ‘3’ / ‘4’ ]</td>
+</tr>
+<tr>
+<td>markeredgecolor or mec</td>
+<td>any matplotlib color</td>
+</tr>
+<tr>
+<td>markeredgewidth or mew</td>
+<td>float value in points</td>
+</tr>
+<tr>
+<td>markerfacecolor or mfc</td>
+<td>any matplotlib color</td>
+</tr>
+<tr>
+<td>markersize or ms</td>
+<td>float</td>
+</tr>
+<tr>
+<td>markevery</td>
+<td>[ None / integer / (startind, stride) ]</td>
+</tr>
+<tr>
+<td>picker</td>
+<td>used in interactive line selection</td>
+</tr>
+<tr>
+<td>pickradius</td>
+<td>the line pick selection radius</td>
+</tr>
+<tr>
+<td>solid_capstyle</td>
+<td>[‘butt’ / ‘round’ / ‘projecting’]</td>
+</tr>
+<tr>
+<td>solid_joinstyle</td>
+<td>[‘miter’ / ‘round’ / ‘bevel’]</td>
+</tr>
+<tr>
+<td>transform</td>
+<td>a matplotlib.transforms.Transform instance</td>
+</tr>
+<tr>
+<td>visible</td>
+<td>[True / False]</td>
+</tr>
+<tr>
+<td>xdata</td>
+<td>np.array</td>
+</tr>
+<tr>
+<td>ydata</td>
+<td>np.array</td>
+</tr>
+<tr>
+<td>zorder</td>
+<td>any number</td>
+</tr>
+</tbody>
+</table>
+<h2 id="保存图像"><a href="#保存图像" class="headerlink" title="保存图像"></a>保存图像</h2><ul>
+<li>可使用savefig函数保存图像<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">savefig(fname, dpi=<span class="keyword">None</span>, facecolor=<span class="string">'w'</span>, edgecolor=<span class="string">'w'</span>,</span><br><span class="line">        orientation=<span class="string">'portrait'</span>, papertype=<span class="keyword">None</span>, format=<span class="keyword">None</span>,</span><br><span class="line">        transparent=<span class="keyword">False</span>, bbox_inches=<span class="keyword">None</span>, pad_inches=<span class="number">0.1</span>,</span><br><span class="line">        frameon=<span class="keyword">None</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>参数</p>
+<ul>
+<li>fname:&nbsp; 包含文件名的路径字符串</li>
+<li>dpi: [ None | scalar &gt; 0 | ‘figure’]</li>
+<li>format:&nbsp; 文件扩展名，大多数后端支持<code>png, pdf, ps, eps and svg</code></li>
+<li>transparent:&nbsp; 如果为True则轴部分的背景透明。</li>
+</ul>
+<p>示例<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = np.linspace(<span class="number">-1.4</span>, <span class="number">1.4</span>, <span class="number">30</span>)</span><br><span class="line">plt.plot(x, x**<span class="number">2</span>)</span><br><span class="line">plt.savefig(<span class="string">"my_square_function.png"</span>, transparent=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/12.png" alt="12"></p>
+<h2 id="组合图"><a href="#组合图" class="headerlink" title="组合图"></a>组合图</h2><ul>
+<li>一个图可能需要包含多个子图，那么如何操作呢。要创建子图其实只需调用子图函数，并制定图中的行数和列数，以及要绘制的子图的索引（从1开始，然后从左到右，从上到下）。注意,pyplot会跟踪当前活动的子图（您可以调用<code>plt.gca()</code>来获得引用，可以借此添加额外属性），因此当您调用绘图函数时，它会绘制活动的子图。</li>
+<li>注意：<code>subplot(224)</code>是<code>subplot(2, 2, 4)</code>的缩写。<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = np.linspace(<span class="number">-1.4</span>, <span class="number">1.4</span>, <span class="number">30</span>)</span><br><span class="line">plt.subplot(<span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>)  <span class="comment"># 2 rows, 2 columns, 1st subplot = top left</span></span><br><span class="line">plt.plot(x, x)</span><br><span class="line">plt.subplot(<span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>)  <span class="comment"># 2 rows, 2 columns, 2nd subplot = top right</span></span><br><span class="line">plt.plot(x, x**<span class="number">2</span>)</span><br><span class="line">plt.subplot(<span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>)  <span class="comment"># 2 rows, 2 columns, 3rd subplot = bottow left</span></span><br><span class="line">plt.plot(x, x**<span class="number">3</span>)</span><br><span class="line">plt.subplot(<span class="number">224</span>)  <span class="comment"># 2 rows, 2 columns, 4th subplot = bottom right</span></span><br><span class="line">plt.plot(x, x**<span class="number">4</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/13.png" alt="13"></p>
+<ul>
+<li>创建跨多个网格单元的子图也很容易<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.subplot(<span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>)  <span class="comment"># 2 rows, 2 columns, 1st subplot = top left</span></span><br><span class="line">plt.plot(x, x)</span><br><span class="line">plt.subplot(<span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>)  <span class="comment"># 2 rows, 2 columns, 2nd subplot = top right</span></span><br><span class="line">plt.plot(x, x**<span class="number">2</span>)</span><br><span class="line">plt.subplot(<span class="number">2</span>, <span class="number">1</span>, <span class="number">2</span>)  <span class="comment"># 2 rows, *1* column, 2nd subplot = bottom</span></span><br><span class="line">plt.plot(x, x**<span class="number">3</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/14.png" alt="14"></p>
+<ul>
+<li>如果你需要更复杂的子图定位，你可以使用<code>subplot2grid</code>，你可以指定格子行数和列数，然后在格子上绘制子图(左上 = (0, 0))，并且可以指定它能跨越多少行和多少列。<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.subplot2grid((<span class="number">3</span>,<span class="number">3</span>), (<span class="number">0</span>, <span class="number">0</span>), rowspan=<span class="number">2</span>, colspan=<span class="number">2</span>)</span><br><span class="line">plt.plot(x, x**<span class="number">2</span>)</span><br><span class="line">plt.subplot2grid((<span class="number">3</span>,<span class="number">3</span>), (<span class="number">0</span>, <span class="number">2</span>))</span><br><span class="line">plt.plot(x, x**<span class="number">3</span>)</span><br><span class="line">plt.subplot2grid((<span class="number">3</span>,<span class="number">3</span>), (<span class="number">1</span>, <span class="number">2</span>), rowspan=<span class="number">2</span>)</span><br><span class="line">plt.plot(x, x**<span class="number">4</span>)</span><br><span class="line">plt.subplot2grid((<span class="number">3</span>,<span class="number">3</span>), (<span class="number">2</span>, <span class="number">0</span>), colspan=<span class="number">2</span>)</span><br><span class="line">plt.plot(x, x**<span class="number">5</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/15.png" alt="15"></p>
+<ul>
+<li>如果需要更灵活的子图定位，<a href="https://matplotlib.org/users/gridspec.html">看这里</a></li>
+</ul>
+<h2 id="绘制文本"><a href="#绘制文本" class="headerlink" title="绘制文本"></a>绘制文本</h2><ul>
+<li>你可以调用<code>call</code>在图像任意位置添加文本。仅需指定坐标选择一些额外属性。关于TeX方程表达式的细节<a href="https://matplotlib.org/users/mathtext.html">看这里</a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = np.linspace(<span class="number">-1.5</span>, <span class="number">1.5</span>, <span class="number">30</span>)</span><br><span class="line">px = <span class="number">0.8</span></span><br><span class="line">py = px**<span class="number">2</span></span><br><span class="line"></span><br><span class="line">plt.plot(x, x**<span class="number">2</span>, <span class="string">"b-"</span>, px, py, <span class="string">"ro"</span>)</span><br><span class="line"></span><br><span class="line">plt.text(<span class="number">0</span>, <span class="number">1.5</span>, <span class="string">"Square function\n$y = x^2$"</span>, fontsize=<span class="number">20</span>, color=<span class="string">'blue'</span>, horizontalalignment=<span class="string">"center"</span>)</span><br><span class="line">plt.text(px - <span class="number">0.08</span>, py, <span class="string">"Beautiful point"</span>, ha=<span class="string">"right"</span>, weight=<span class="string">"heavy"</span>) <span class="comment"># ha是horizontalalignment的别名。</span></span><br><span class="line">plt.text(px, py, <span class="string">"x = %0.2f\ny = %0.2f"</span>%(px, py), rotation=<span class="number">50</span>, color=<span class="string">'gray'</span>)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/20.png" alt="20"></p>
+<ul>
+<li>图像元素的注释使用非常频繁，<code>annotate</code>函数使得它非常简单，只需指定兴趣点的位置、文本的位置，加上文字和箭头的一些额外属性就能完成。<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.plot(x, x**<span class="number">2</span>, px, py, <span class="string">"ro"</span>)</span><br><span class="line">plt.annotate(<span class="string">"Beautiful point"</span>, xy=(px, py), xytext=(px<span class="number">-1.3</span>,py+<span class="number">0.5</span>),</span><br><span class="line">                           color=<span class="string">"green"</span>, weight=<span class="string">"heavy"</span>, fontsize=<span class="number">14</span>,</span><br><span class="line">                           arrowprops=&#123;<span class="string">"facecolor"</span>: <span class="string">"lightgreen"</span>&#125;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/21.png" alt="21"></p>
+<ul>
+<li>你可以使用<code>bbox</code>属性在文本周围加上框。<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.plot(x, x**<span class="number">2</span>, px, py, <span class="string">"ro"</span>)</span><br><span class="line"></span><br><span class="line">bbox_props = dict(boxstyle=<span class="string">"rarrow,pad=0.3"</span>, ec=<span class="string">"b"</span>, lw=<span class="number">2</span>, fc=<span class="string">"lightblue"</span>)</span><br><span class="line">plt.text(px<span class="number">-0.2</span>, py, <span class="string">"Beautiful point"</span>, bbox=bbox_props, ha=<span class="string">"right"</span>)</span><br><span class="line"></span><br><span class="line">bbox_props = dict(boxstyle=<span class="string">"round4,pad=1,rounding_size=0.2"</span>, ec=<span class="string">"black"</span>, fc=<span class="string">"#EEEEFF"</span>, lw=<span class="number">5</span>)</span><br><span class="line">plt.text(<span class="number">0</span>, <span class="number">1.5</span>, <span class="string">"Square function\n$y = x^2$"</span>, fontsize=<span class="number">20</span>, color=<span class="string">'black'</span>, ha=<span class="string">"center"</span>, bbox=bbox_props)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/22.png" alt="22"></p>
+<ul>
+<li>如果为了好玩可以绘制漫画风格的图(xkcd-style)，只需在<code>with plt.xkcd()</code>内写代码就好。<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> plt.xkcd():</span><br><span class="line">    plt.plot(x, x**<span class="number">2</span>, px, py, <span class="string">"ro"</span>)</span><br><span class="line"></span><br><span class="line">    bbox_props = dict(boxstyle=<span class="string">"rarrow,pad=0.3"</span>, ec=<span class="string">"b"</span>, lw=<span class="number">2</span>, fc=<span class="string">"lightblue"</span>)</span><br><span class="line">    plt.text(px<span class="number">-0.2</span>, py, <span class="string">"Beautiful point"</span>, bbox=bbox_props, ha=<span class="string">"right"</span>)</span><br><span class="line"></span><br><span class="line">    bbox_props = dict(boxstyle=<span class="string">"round4,pad=1,rounding_size=0.2"</span>, ec=<span class="string">"black"</span>, fc=<span class="string">"#EEEEFF"</span>, lw=<span class="number">5</span>)</span><br><span class="line">    plt.text(<span class="number">0</span>, <span class="number">1.5</span>, <span class="string">"Square function\n$y = x^2$"</span>, fontsize=<span class="number">20</span>, color=<span class="string">'black'</span>, ha=<span class="string">"center"</span>, bbox=bbox_props)</span><br><span class="line"></span><br><span class="line">    plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/23.png" alt="23"></p>
+<h2 id="图例"><a href="#图例" class="headerlink" title="图例"></a>图例</h2><ul>
+<li>添加图例最简单的方法是在对应位置添加标签，然后调用<code>legend</code>函数<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = np.linspace(<span class="number">-1.4</span>, <span class="number">1.4</span>, <span class="number">50</span>)</span><br><span class="line">plt.plot(x, x**<span class="number">2</span>, <span class="string">"r--"</span>, label=<span class="string">"Square function"</span>)</span><br><span class="line">plt.plot(x, x**<span class="number">3</span>, <span class="string">"g-"</span>, label=<span class="string">"Cube function"</span>)</span><br><span class="line">plt.legend(loc=<span class="string">"best"</span>)</span><br><span class="line">plt.grid(<span class="keyword">True</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/24.png" alt="24"></p>
+<h2 id="非线性尺度"><a href="#非线性尺度" class="headerlink" title="非线性尺度"></a>非线性尺度</h2><ul>
+<li>Matplotlib支持非线性尺度，例如对数或logit尺度<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = np.linspace(<span class="number">0.1</span>, <span class="number">15</span>, <span class="number">500</span>)</span><br><span class="line">y = x**<span class="number">3</span>/np.exp(<span class="number">2</span>*x)</span><br><span class="line"></span><br><span class="line">plt.figure(<span class="number">1</span>)</span><br><span class="line">plt.plot(x, y)</span><br><span class="line">plt.yscale(<span class="string">'linear'</span>)</span><br><span class="line">plt.title(<span class="string">'linear'</span>)</span><br><span class="line">plt.grid(<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">plt.figure(<span class="number">2</span>)</span><br><span class="line">plt.plot(x, y)</span><br><span class="line">plt.yscale(<span class="string">'log'</span>)</span><br><span class="line">plt.title(<span class="string">'log'</span>)</span><br><span class="line">plt.grid(<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">plt.figure(<span class="number">3</span>)</span><br><span class="line">plt.plot(x, y)</span><br><span class="line">plt.yscale(<span class="string">'logit'</span>)</span><br><span class="line">plt.title(<span class="string">'logit'</span>)</span><br><span class="line">plt.grid(<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">plt.figure(<span class="number">4</span>)</span><br><span class="line">plt.plot(x, y - y.mean())</span><br><span class="line">plt.yscale(<span class="string">'symlog'</span>, linthreshy=<span class="number">0.05</span>)</span><br><span class="line">plt.title(<span class="string">'symlog'</span>)</span><br><span class="line">plt.grid(<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/25.png" alt="25"><br><img src="http://ox5bam95j.bkt.clouddn.com/26.png" alt="26"><br><img src="http://ox5bam95j.bkt.clouddn.com/27.png" alt="27"><br><img src="http://ox5bam95j.bkt.clouddn.com/28.png" alt="28"></p>
+<h2 id="Ticks-and-tickers-刻度和刻度控制器"><a href="#Ticks-and-tickers-刻度和刻度控制器" class="headerlink" title="Ticks and tickers 刻度和刻度控制器"></a>Ticks and tickers 刻度和刻度控制器</h2><ul>
+<li>“ticks”是刻度的位置 (例如 (-1, 0, 1))，”tick lines”是在这些位置绘制的小线条(刻度线)，”tick labels”实在刻度线旁边绘制的标签(刻度线标签)。”tickers” 是决定在哪能放置刻度的对象，默认的tickers通常在合理的距离放置5到8个刻度。但有时候你需要控制它，幸运的是，matplotlib可以让你完全控制刻度。<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x = np.linspace(<span class="number">-2</span>, <span class="number">2</span>, <span class="number">100</span>)</span><br><span class="line"></span><br><span class="line">plt.figure(<span class="number">1</span>, figsize=(<span class="number">15</span>,<span class="number">10</span>))</span><br><span class="line">plt.subplot(<span class="number">131</span>)</span><br><span class="line">plt.plot(x, x**<span class="number">3</span>)</span><br><span class="line">plt.grid(<span class="keyword">True</span>)</span><br><span class="line">plt.title(<span class="string">"Default ticks"</span>)</span><br><span class="line"></span><br><span class="line">ax = plt.subplot(<span class="number">132</span>)</span><br><span class="line">plt.plot(x, x**<span class="number">3</span>)</span><br><span class="line">ax.xaxis.set_ticks(np.arange(<span class="number">-2</span>, <span class="number">2</span>, <span class="number">1</span>))</span><br><span class="line">plt.grid(<span class="keyword">True</span>)</span><br><span class="line">plt.title(<span class="string">"Manual ticks on the x-axis"</span>)</span><br><span class="line"></span><br><span class="line">ax = plt.subplot(<span class="number">133</span>)</span><br><span class="line">plt.plot(x, x**<span class="number">3</span>)</span><br><span class="line">plt.minorticks_on()</span><br><span class="line">ax.tick_params(axis=<span class="string">'x'</span>, which=<span class="string">'minor'</span>, bottom=<span class="string">'off'</span>)</span><br><span class="line">ax.xaxis.set_ticks([<span class="number">-2</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>])</span><br><span class="line">ax.yaxis.set_ticks(np.arange(<span class="number">-5</span>, <span class="number">5</span>, <span class="number">1</span>))</span><br><span class="line">ax.yaxis.set_ticklabels([<span class="string">"min"</span>, <span class="number">-4</span>, <span class="number">-3</span>, <span class="number">-2</span>, <span class="number">-1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="string">"max"</span>])</span><br><span class="line">plt.title(<span class="string">"Manual ticks and tick labels\n(plus minor ticks) on the y-axis"</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">plt.grid(<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/29.png" alt="29"></p>
+<h2 id="极坐标投影"><a href="#极坐标投影" class="headerlink" title="极坐标投影"></a>极坐标投影</h2><ul>
+<li>绘制极坐标图，只需在创建子图时，设定”projection”属性为”polar”即可。<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">radius = <span class="number">1</span></span><br><span class="line">theta = np.linspace(<span class="number">0</span>, <span class="number">2</span>*np.pi*radius, <span class="number">1000</span>)</span><br><span class="line"></span><br><span class="line">plt.subplot(<span class="number">111</span>, projection=<span class="string">'polar'</span>)</span><br><span class="line">plt.plot(theta, np.sin(<span class="number">5</span>*theta), <span class="string">"g-"</span>)</span><br><span class="line">plt.plot(theta, <span class="number">0.5</span>*np.cos(<span class="number">20</span>*theta), <span class="string">"b-"</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/30.png" alt="30"></p>
+<h2 id="3D投影"><a href="#3D投影" class="headerlink" title="3D投影"></a>3D投影</h2><ul>
+<li>绘制3D图像非常直接，你需要导入<code>Axes3D</code>，以注册<code>3d</code>投影。然后设定<code>projection</code>属性为<code>3d</code>。它将返回一个<code>Axes3DSubplot</code>对象，你可以调用<code>plot_surface</code>，给定x,y和z坐标加额外的属性来绘制。<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> mpl_toolkits.mplot3d <span class="keyword">import</span> Axes3D</span><br><span class="line"></span><br><span class="line">x = np.linspace(<span class="number">-5</span>, <span class="number">5</span>, <span class="number">50</span>)</span><br><span class="line">y = np.linspace(<span class="number">-5</span>, <span class="number">5</span>, <span class="number">50</span>)</span><br><span class="line">X, Y = np.meshgrid(x, y)</span><br><span class="line">R = np.sqrt(X**<span class="number">2</span> + Y**<span class="number">2</span>)</span><br><span class="line">Z = np.sin(R)</span><br><span class="line"></span><br><span class="line">figure = plt.figure(<span class="number">1</span>, figsize = (<span class="number">12</span>, <span class="number">4</span>))</span><br><span class="line">subplot3d = plt.subplot(<span class="number">111</span>, projection=<span class="string">'3d'</span>)</span><br><span class="line">surface = subplot3d.plot_surface(X, Y, Z, rstride=<span class="number">1</span>, cstride=<span class="number">1</span>, cmap=matplotlib.cm.coolwarm, linewidth=<span class="number">0.1</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/31.png" alt="31"></p>
+<ul>
+<li>显示相同数据的另外一种方法是用等高线图<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.contourf(X, Y, Z, cmap=matplotlib.cm.coolwarm)</span><br><span class="line">plt.colorbar()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/32.png" alt="32"></p>
+<h2 id="散点图"><a href="#散点图" class="headerlink" title="散点图"></a>散点图</h2><ul>
+<li>提供x和y的坐标就可以绘制散点图。<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> numpy.random <span class="keyword">import</span> rand</span><br><span class="line">x, y = rand(<span class="number">2</span>, <span class="number">100</span>)</span><br><span class="line">plt.scatter(x, y)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/33.png" alt="33"></p>
+<ul>
+<li>你也可以提供每个点的比例<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x, y, scale = rand(<span class="number">3</span>, <span class="number">100</span>)</span><br><span class="line">scale = <span class="number">500</span> * scale ** <span class="number">5</span></span><br><span class="line">plt.scatter(x, y, s=scale)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/34.png" alt="34"></p>
+<ul>
+<li>还可以设置些额外的属性，例如填充颜色、边缘颜色、透明度。<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> color <span class="keyword">in</span> [<span class="string">'red'</span>, <span class="string">'green'</span>, <span class="string">'blue'</span>]:</span><br><span class="line">    n = <span class="number">100</span></span><br><span class="line">    x, y = rand(<span class="number">2</span>, n)</span><br><span class="line">    scale = <span class="number">500.0</span> * rand(n) ** <span class="number">5</span></span><br><span class="line">    plt.scatter(x, y, s=scale, c=color, alpha=<span class="number">0.3</span>, edgecolors=<span class="string">'blue'</span>)</span><br><span class="line"></span><br><span class="line">plt.grid(<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/35.png" alt="35"></p>
+<h2 id="直线（工具函数）"><a href="#直线（工具函数）" class="headerlink" title="直线（工具函数）"></a>直线（工具函数）</h2><ul>
+<li>创建一个工具函数来画图通常会更方便，该函数会在给定斜率和截距的情况下在图上绘制一条看似无限长的线。<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> numpy.random <span class="keyword">import</span> randn</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">plot_line</span><span class="params">(axis, slope, intercept, **kargs)</span>:</span></span><br><span class="line">    xmin, xmax = axis.get_xlim()</span><br><span class="line">    plt.plot([xmin, xmax], [xmin*slope+intercept, xmax*slope+intercept], **kargs)</span><br><span class="line"></span><br><span class="line">x = randn(<span class="number">1000</span>)</span><br><span class="line">y = <span class="number">0.5</span>*x + <span class="number">5</span> + randn(<span class="number">1000</span>)*<span class="number">2</span></span><br><span class="line">plt.axis([<span class="number">-2.5</span>, <span class="number">2.5</span>, <span class="number">-5</span>, <span class="number">15</span>])</span><br><span class="line">plt.scatter(x, y, alpha=<span class="number">0.2</span>)</span><br><span class="line">plt.plot(<span class="number">1</span>, <span class="number">0</span>, <span class="string">"ro"</span>)</span><br><span class="line">plt.vlines(<span class="number">1</span>, <span class="number">-5</span>, <span class="number">0</span>, color=<span class="string">"red"</span>)</span><br><span class="line">plt.hlines(<span class="number">0</span>, <span class="number">-2.5</span>, <span class="number">1</span>, color=<span class="string">"red"</span>)</span><br><span class="line">plot_line(axis=plt.gca(), slope=<span class="number">0.5</span>, intercept=<span class="number">5</span>, color=<span class="string">"magenta"</span>)</span><br><span class="line">plt.grid(<span class="keyword">True</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/36.png" alt="36"></p>
+<h2 id="直方图"><a href="#直方图" class="headerlink" title="直方图"></a>直方图</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">data = [<span class="number">1</span>, <span class="number">1.1</span>, <span class="number">1.8</span>, <span class="number">2</span>, <span class="number">2.1</span>, <span class="number">3.2</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>]</span><br><span class="line">plt.subplot(<span class="number">211</span>)</span><br><span class="line">plt.hist(data, bins = <span class="number">10</span>, rwidth=<span class="number">0.8</span>)</span><br><span class="line"></span><br><span class="line">plt.subplot(<span class="number">212</span>)</span><br><span class="line">plt.hist(data, bins = [<span class="number">1</span>, <span class="number">1.5</span>, <span class="number">2</span>, <span class="number">2.5</span>, <span class="number">3</span>], rwidth=<span class="number">0.95</span>)</span><br><span class="line">plt.xlabel(<span class="string">"Value"</span>)</span><br><span class="line">plt.ylabel(<span class="string">"Frequency"</span>)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/37.png" alt="37"></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">data1 = np.random.randn(<span class="number">400</span>)</span><br><span class="line">data2 = np.random.randn(<span class="number">500</span>) + <span class="number">3</span></span><br><span class="line">data3 = np.random.randn(<span class="number">450</span>) + <span class="number">6</span></span><br><span class="line">data4a = np.random.randn(<span class="number">200</span>) + <span class="number">9</span></span><br><span class="line">data4b = np.random.randn(<span class="number">100</span>) + <span class="number">10</span></span><br><span class="line"></span><br><span class="line">plt.hist(data1, bins=<span class="number">5</span>, color=<span class="string">'g'</span>, alpha=<span class="number">0.75</span>, label=<span class="string">'bar hist'</span>) <span class="comment"># default histtype='bar'</span></span><br><span class="line">plt.hist(data2, color=<span class="string">'b'</span>, alpha=<span class="number">0.65</span>, histtype=<span class="string">'stepfilled'</span>, label=<span class="string">'stepfilled hist'</span>)</span><br><span class="line">plt.hist(data3, color=<span class="string">'r'</span>, histtype=<span class="string">'step'</span>, label=<span class="string">'step hist'</span>)</span><br><span class="line">plt.hist((data4a, data4b), color=(<span class="string">'r'</span>,<span class="string">'m'</span>), alpha=<span class="number">0.55</span>, histtype=<span class="string">'barstacked'</span>, label=(<span class="string">'barstacked a'</span>, <span class="string">'barstacked b'</span>))</span><br><span class="line"></span><br><span class="line">plt.xlabel(<span class="string">"Value"</span>)</span><br><span class="line">plt.ylabel(<span class="string">"Frequency"</span>)</span><br><span class="line">plt.legend()</span><br><span class="line">plt.grid(<span class="keyword">True</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/38.png" alt="38"></p>
+<h2 id="图像"><a href="#图像" class="headerlink" title="图像"></a>图像</h2><ul>
+<li><p>读取图像；仅需导入<code>matplotlib.image</code>moudle，再调用<code>imread</code>函数(传入文件名)，它将以NumPy’s数组形式返回图像数据。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.image <span class="keyword">as</span> mpimg</span><br><span class="line"></span><br><span class="line">img = mpimg.imread(<span class="string">'my_square_function.png'</span>)</span><br><span class="line">print(img.shape, img.dtype)</span><br><span class="line"><span class="comment"># Out:(288, 432, 4) float32</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>生成图像也很简单</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">img = np.arange(<span class="number">100</span>*<span class="number">100</span>).reshape(<span class="number">100</span>, <span class="number">100</span>)</span><br><span class="line">print(img)</span><br><span class="line">plt.imshow(img)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/41.png" alt="41"></p>
+<ul>
+<li>由于我们没有提供RGB等级，<code>imshow</code>函数自动将值映射到颜色渐变。默认情况，颜色渐变从蓝色(低值)变为红色(高值)，但你可以选择其他颜色映射。例如：<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.imshow(img, cmap=<span class="string">"hot"</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/42.png" alt="42"></p>
+<ul>
+<li>你也可以直接产生RGB图像<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">img = np.empty((<span class="number">20</span>,<span class="number">30</span>,<span class="number">3</span>))</span><br><span class="line">img[:, :<span class="number">10</span>] = [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0.6</span>]</span><br><span class="line">img[:, <span class="number">10</span>:<span class="number">20</span>] = [<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>]</span><br><span class="line">img[:, <span class="number">20</span>:] = [<span class="number">0.6</span>, <span class="number">0</span>, <span class="number">0</span>]</span><br><span class="line">plt.imshow(img)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/43.png" alt="43"></p>
+<ul>
+<li>由于img数组非常小（20x30），所以当imshow函数显示它时，它会将图像增大图像的大小。 默认情况下，它使用双线性插值来填充所添加的像素。 这就是边缘看起来模糊的原因。 您可以选择另一种插值算法，例如复制最近像素的颜色：<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.imshow(img, interpolation=<span class="string">"nearest"</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/44.png" alt="44"></p>
+<h2 id="动画"><a href="#动画" class="headerlink" title="动画"></a>动画</h2><h3 id="绘制"><a href="#绘制" class="headerlink" title="绘制"></a>绘制</h3><ul>
+<li><code>FuncAnimation</code>构造函数接受一个图形，一个更新函数和可选参数。 我们指定我们需要一个100帧长的动画，每帧之间有20ms。 在每次迭代中，FuncAnimation调用我们的更新函数，并将帧号传递给<code>num</code>（在我们的例子中是从0到99），接着是我们用<code>fargs</code>指定额外的参数。</li>
+<li>我们的更新函数简单地将行数据设置为第一个数据点（所以数据将逐渐绘制），并且为了好玩，我们还为每个数据点添加一个小的随机数，这样该行似乎在摆动。<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.animation <span class="keyword">as</span> animation</span><br><span class="line"></span><br><span class="line">x = np.linspace(<span class="number">-1</span>, <span class="number">1</span>, <span class="number">100</span>)</span><br><span class="line">y = np.sin(x**<span class="number">2</span>*<span class="number">25</span>)</span><br><span class="line">data = np.array([x, y])</span><br><span class="line"></span><br><span class="line">fig = plt.figure()</span><br><span class="line">line, = plt.plot([], [], <span class="string">"r-"</span>) <span class="comment"># start with an empty plot</span></span><br><span class="line">plt.axis([<span class="number">-1.1</span>, <span class="number">1.1</span>, <span class="number">-1.1</span>, <span class="number">1.1</span>])</span><br><span class="line">plt.plot([<span class="number">-0.5</span>, <span class="number">0.5</span>], [<span class="number">0</span>, <span class="number">0</span>], <span class="string">"b-"</span>, [<span class="number">0</span>, <span class="number">0</span>], [<span class="number">-0.5</span>, <span class="number">0.5</span>], <span class="string">"b-"</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="string">"ro"</span>)</span><br><span class="line">plt.grid(<span class="keyword">True</span>)</span><br><span class="line">plt.title(<span class="string">"Marvelous animation"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># this function will be called at every iteration</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">update_line</span><span class="params">(num, data, line)</span>:</span></span><br><span class="line">    line.set_data(data[..., :num] + np.random.rand(<span class="number">2</span>, num) / <span class="number">25</span>)  <span class="comment"># we only plot the first `num` data points.</span></span><br><span class="line">    <span class="keyword">return</span> line,</span><br><span class="line"></span><br><span class="line">line_ani = animation.FuncAnimation(fig, update_line, frames=<span class="number">100</span>, fargs=(data, line), interval=<span class="number">67</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="保存"><a href="#保存" class="headerlink" title="保存"></a>保存</h3><ul>
+<li>Matplotlib依靠第三方库来编写视频，如FFMPEG或mencoder。 在这个例子中，我们将使用FFMPEG，所以一定要先安装它。<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Writer = animation.writers[<span class="string">'ffmpeg'</span>]</span><br><span class="line">writer = Writer(fps=<span class="number">15</span>, metadata=dict(artist=<span class="string">'Me'</span>), bitrate=<span class="number">1800</span>)</span><br><span class="line">line_ani.save(<span class="string">'my_wiggly_animation.mp4'</span>, writer=writer)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h2><p><a href="https://matplotlib.org/gallery.html">Matplotlib</a>官网</p>
+<p><a href="http://blog.csdn.net/sinat_28224453/article/details/51462935">安装Python以及Matplotlib</a></p>
+
+        </div>
+        <div class="post-tool">
+            <a class="btn-thumbs-up" href="javascript:void(0);" data-cid="52" title="95">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i> 打赏
+            </a>
+        </div>
+        
+        <div class="post-tags">标签：
+            
+            <a href="/tags/Matplotlib/">Matplotlib</a>
+            
+        </div>
+        
+    </article>
+    
+    <p>新手上路，若有不恰当之处，望不吝赐教！</p>
+    
+    
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    var disqus_config = function () {
+        this.page.url = 'http://heolis.info/machinelearning/Matplotlib学习笔记.html';
+        this.page.identifier = 'machinelearning/Matplotlib学习笔记.html';
+    };
+    (function () { // DON'T EDIT BELOW THIS LINE
+        var d = document, disqus_shortname = 'HeoLis', s = d.createElement('script');
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by
+        Disqus.</a></noscript>
+
+</div>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        </div><!-- end #main-->
+    </div><!-- end #body -->
+    <footer class="footer">
+    <div class="footer-inner">
+        <p>
+            <a href="/links" title="友情链接">友情链接</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            本站已建立<a id="siteBuildingTime"></a>天&nbsp<em>·</em>&nbsp;
+        <span id="busuanzi_container_site_uv">
+            总访客数为
+            <span id="busuanzi_value_site_uv"></span>人次
+        </span>
+        </p>
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    </div>
+</footer>
+
+<!-- Tencent Analytics
+<script type="text/javascript" src="//tajs.qq.com/stats?sId=66072444" charset="UTF-8"></script> -->
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?1762d61c140d8360105c1f427350ad71";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="/js/InsightSearch.js"></script>
+<script src="/js/SimpleCore.js"></script>
+
+</div>
+<div class="fixed-btn">
+    <a class="btn-gotop" href="javascript:"> <i class="fa fa-angle-up"></i></a>
+</div>
+<script>
+    $(function () {
+        SimpleCore.init({
+            buildingTime: '11/26/2017',
+            current: $('.post-tags').length > 0 ? 'post' : 'archive',
+            snsQRCode: '/images/sns-qrcode.png',
+            donateImg: '/images/donate-qr.png',
+        });
+    });
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("MathJax config");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

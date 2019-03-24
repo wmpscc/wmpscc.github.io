@@ -1,0 +1,318 @@
+<!DOCTYPE HTML>
+<html class="no-js" lang="zh-CN">
+
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lte IE 9]>
+<meta http-equiv="refresh" content="0;url=http://heolis.info/warn.html">
+<![endif]-->
+<meta charset="utf-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+<meta http-equiv="mobile-agent" content="format=html5; url=http://heolis.info">
+<meta name="author" content="HeoLis(http://heolis.info/)">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/SimpleStyle.min.css">
+
+<link rel="shortcut icon" href="/images/favicon.jpg">
+
+
+<title>opencv之core组件进阶 - Gain</title>
+
+<meta name="keywords" content="机器瞎学/数据掩埋/模式混淆/人工智障/深度遗忘/神经掉线/计算机幻觉">
+
+<meta name="description " content="这里将记录我的学习历程。个人公众号(机器视觉于算法建模）"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="nav">
+    <nav class="nav-menu">
+        <a class="site-name current" href="/" title="Epoch">Epoch</a>
+        <a class="site-index current" href="/"><i class="fa fa-home"></i><span>首页</span></a>
+        <a href="/archives" title="归档"><i class="fa fa-archives"></i><span>归档</span></a>
+        <a href="/tags" title="标签"><i class="fa fa-tags"></i><span>标签</span></a>
+        <!-- custom single page of menus -->
+        
+    </nav>
+</div>
+
+<div class="nav-user">
+    <a class="btn-search" href="#"><i class="fa fa-search"></i></a>
+    <a class="btn-read-mode" href="#"><i class="fa fa-sun-o"></i></a>
+    <a class="btn-sns-qr" href="javascript:"><i class="fa fa-telegram"></i></a>
+</div>
+
+<div id="wrapper" class="clearfix">
+    <div id="body">
+        <div class="main" id="main">
+            <div id="cover">
+    <div class="cover-img"></div>
+    <div class="cover-info">
+        
+        <h1 class="cover-siteName">MachineEpoch</h1>
+        <h3 class="cover-siteTitle">学习、记录、分享、获得</h3>
+        <p class="cover-siteDesc">一个技术新人的博客</p>
+        <div class="cover-sns">
+            
+            <div class="btn btn-github">
+                <a href="https://github.com/wmpscc" target="_blank" title="github" ref="friend">
+                    <i class="fa fa-github"></i>
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</div>
+            <div class="page-title">
+    <ul>
+        <li><a href="/">最新</a></li>
+        
+            
+                <li class="">
+                    <a href="/categories/machinelearning" data-name="人工智障">人工智障</a>
+                </li>
+            
+                <li class="active">
+                    <a href="/categories/CV" data-name="计算机幻觉">计算机幻觉</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/language" data-name="编程语言">编程语言</a>
+                </li>
+            
+        
+        <li class="page-search">
+    <form id="search" class="search-form">
+        <label for="s" class="sr-only">请输入关键字</label>
+        <input class="search-field" type="text" name="s" class="text" placeholder="请输入关键字" />
+        <button type="submit" class="search-form-submit" title="搜索"><i class="fa fa-search"></i></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..."/>
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+</li>
+
+    </ul>
+</div>
+<div class="main-inner">
+    <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <div class="post-header">
+            <div class="post-author clearfix">
+                <a class="avatar fleft" href="https://github.com/wmpscc" target="_blank">
+                    <img width="48" src="/images/favicon.png" alt="avatar"/>
+                </a>
+                <p><span class="label">作者</span>
+                    <a href="https://github.com/wmpscc" target="_blank">wmpscc</a>
+                    <span title="最后编辑于2017-12-31">2017-12-31</span>
+                </p>
+                <p>Why become a pirate if you can join the Navy?</p>
+            </div>
+            <h2 class="post-title">OpenCV之Core组件进阶</h2>
+            <div class="post-meta">
+                本文总共10993个字 | 您是第<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
+            </div>
+        </div>
+        <div class="post-content markdown-body">
+            <h2 id="颜色空间缩减"><a href="#颜色空间缩减" class="headerlink" title="颜色空间缩减"></a>颜色空间缩减</h2><p>利用C++类型转换时向下取整操作，实现定义域内颜色缩减。表达式如下</p>
+<blockquote>
+<p>Inew = (Iold/10)*10</p>
+</blockquote>
+<p>简单的颜色空间缩减算法可由以下两步组成：</p>
+<p>（1）遍历图像矩阵的每个元素<br>（2）对像应用上述公式</p>
+<h3 id="LUT函数：Look-up-table操作"><a href="#LUT函数：Look-up-table操作" class="headerlink" title="LUT函数：Look up table操作"></a>LUT函数：Look up table操作</h3><p>上文提到的Look up table操作，OpenCV官方文档中强烈推荐使用一个原型为operationsOnArrays:LUT()<lut>的函数来进行。使用方法如下：<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//首先我们建立一个mat型用于查表</span></span><br><span class="line"><span class="function">Mat <span class="title">lookUpTable</span><span class="params">(<span class="number">1</span>, <span class="number">256</span>, CV_8U)</span></span>;</span><br><span class="line">uchar* p = lookUpTable.data;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">256</span>; ++i)</span><br><span class="line">  p[i] = table[i];</span><br><span class="line"></span><br><span class="line"><span class="comment">//然后我们调用函数（I是输入J是输出）：</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; times; ++i)</span><br><span class="line">  LUT(I, lookUpTable, J);</span><br></pre></td></tr></table></figure></p>
+<h3 id="计时函数"><a href="#计时函数" class="headerlink" title="计时函数"></a>计时函数</h3><ul>
+<li>getTickCount()函数返回CPU自时间以来走过的时钟周期数</li>
+<li>getTickFrequency()函数返回CPU一秒钟所走的时钟周期数。<h3 id="访问图像中像素的三类方法"><a href="#访问图像中像素的三类方法" class="headerlink" title="访问图像中像素的三类方法"></a>访问图像中像素的三类方法</h3></li>
+<li>指针访问：C语言操作符[];  (最快)</li>
+<li>迭代器iterator;  (最安全)</li>
+<li>动态地址计算;  (最直观)</li>
+</ul>
+<p>示例程序如下<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#include&lt;core.hpp&gt;</span><br><span class="line">#include&lt;highgui.hpp&gt;</span><br><span class="line">#include&lt;iostream&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">using namespace cv;</span><br><span class="line"></span><br><span class="line">void colorReduce1(Mat&amp; inputImage, Mat&amp; outputImage, int div);//用指针访问像素（这种方法最快）</span><br><span class="line">void colorReduce2(Mat&amp; inputimage, Mat&amp; outputImage, int div);//用迭代器操作像素</span><br><span class="line">void colorReduce3(Mat&amp; inputImage, Mat&amp; outputImage, int div);//动态地址计算</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">	//1.创建原始图并显示</span><br><span class="line">	Mat srcImage = imread(&quot;..//..//3.jpg&quot;);</span><br><span class="line">	imshow(&quot;原始图像&quot;, srcImage);</span><br><span class="line"></span><br><span class="line">	//2.按原始图的参数规格来创建效果图</span><br><span class="line">	Mat dstImage;</span><br><span class="line">	dstImage.create(srcImage.rows, srcImage.cols, srcImage.type());	//效果图的大小、类型与原始图片相同</span><br><span class="line"></span><br><span class="line">	//3.记录起始时间</span><br><span class="line">	double time0 = static_cast&lt;double&gt;(getTickCount());</span><br><span class="line"></span><br><span class="line">	//4.调用颜色空间缩减函数</span><br><span class="line">	colorReduce2(srcImage, dstImage, 32);</span><br><span class="line"></span><br><span class="line">	//5.计算运行时间并输出</span><br><span class="line">	time0 = ((double)getTickCount() - time0) / getTickFrequency();</span><br><span class="line">	cout &lt;&lt; &quot;此方法运行时间为：&quot; &lt;&lt; time0 &lt;&lt; &quot;秒&quot; &lt;&lt; endl;	//输出运行时间</span><br><span class="line"></span><br><span class="line">	//6.显示效果图</span><br><span class="line">	imshow(&quot;效果图&quot;, dstImage);</span><br><span class="line">	waitKey(0);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//用指针访问像素（这种方法最快）</span><br><span class="line">void colorReduce1(Mat&amp; inputImage, Mat&amp; outputImage, int div)</span><br><span class="line">&#123;</span><br><span class="line">	//参数准备</span><br><span class="line">	outputImage = inputImage.clone();	//复制实参到临时变量</span><br><span class="line">	int rowNumber = outputImage.rows;	//行数</span><br><span class="line">	int colNumber = outputImage.cols * outputImage.channels();	//列数x通道数=每个元素的个数</span><br><span class="line"></span><br><span class="line">	//双重循环，遍历所有的像素值</span><br><span class="line">	for (int i = 0; i &lt; rowNumber; i++)	//行循环</span><br><span class="line">	&#123;</span><br><span class="line">		uchar* data = outputImage.ptr&lt;uchar&gt;(i);	//获取第i行的首地址</span><br><span class="line">		for (int j = 0; j &lt; colNumber; j++)	//列循环</span><br><span class="line">		&#123;</span><br><span class="line">			//-----开始处理每个像素------</span><br><span class="line">			data[j] = data[j] / div* div + div / 2;</span><br><span class="line">			//-----处理结束-----</span><br><span class="line">		&#125;	//行处理结束</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//用迭代器操作像素</span><br><span class="line">void colorReduce2(Mat&amp; inputimage, Mat&amp; outputImage, int div)</span><br><span class="line">&#123;</span><br><span class="line">	//参数准备</span><br><span class="line">	outputImage = inputimage.clone();	//复制实参到临时变量</span><br><span class="line">	//获取迭代器</span><br><span class="line">	Mat_&lt;Vec3b&gt;::iterator it = outputImage.begin&lt;Vec3b&gt;();	//初始位置的迭代器</span><br><span class="line">	Mat_&lt;Vec3b&gt;::iterator itend = outputImage.end&lt;Vec3b&gt;();	//终止位置的迭代器</span><br><span class="line"></span><br><span class="line">	//存取彩色图像像素</span><br><span class="line">	for (; it != itend; ++it)</span><br><span class="line">	&#123;</span><br><span class="line">		//----开始处理每个像素----</span><br><span class="line">		(*it)[0] = (*it)[0] / div * div + div / 2;</span><br><span class="line">		(*it)[1] = (*it)[1] / div * div + div / 2;</span><br><span class="line">		(*it)[2] = (*it)[2] / div * div + div / 2;</span><br><span class="line"></span><br><span class="line">		//----处理结束----</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//动态地址计算</span><br><span class="line">void colorReduce3(Mat&amp; inputImage, Mat&amp; outputImage, int div)</span><br><span class="line">&#123;</span><br><span class="line">	//参数准备</span><br><span class="line">	outputImage = inputImage.clone(); //复制实参到临时变量</span><br><span class="line">	int rowNumber = outputImage.rows; //行数</span><br><span class="line">	int colNumber = outputImage.cols; //列数</span><br><span class="line"></span><br><span class="line">	//存取彩色图像像素</span><br><span class="line">	for (int i = 0; i &lt; rowNumber; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		for (int j = 0; j &lt; colNumber; j++)</span><br><span class="line">		&#123;</span><br><span class="line">			//----开始处理每个像素----</span><br><span class="line">			outputImage.at&lt;Vec3b&gt;(i, j)[0] = outputImage.at&lt;Vec3b&gt;(i, j)[0] / div*div + div / 2; //蓝色通道</span><br><span class="line">			outputImage.at&lt;Vec3b&gt;(i, j)[1] = outputImage.at&lt;Vec3b&gt;(i, j)[1] / div*div + div / 2; //绿色通道</span><br><span class="line">			outputImage.at&lt;Vec3b&gt;(i, j)[2] = outputImage.at&lt;Vec3b&gt;(i, j)[2] / div*div + div / 2; //红色通道</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="感兴趣区域：ROI"><a href="#感兴趣区域：ROI" class="headerlink" title="感兴趣区域：ROI"></a>感兴趣区域：ROI</h2><ul>
+<li><p>使用Rect指定区域</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//定义一个Mat类型并给其设定ROI区域</span></span><br><span class="line">Mat imageROI;</span><br><span class="line"><span class="comment">//方法一</span></span><br><span class="line">imageROI = image(Rect (<span class="number">500</span>, <span class="number">250</span>, logo.cols, logo.rows));</span><br><span class="line"><span class="comment">//image 为已载入的图片</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>用Range来定义ROI</p>
+<p>Range 是指从起始索引到终止索引（不包括终止索引）的一连续序列。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">imageROI = image(Range(<span class="number">250</span>, <span class="number">250</span>+logoImage.rows), Range(<span class="number">200</span>, <span class="number">200</span>+logoImage.cols));</span><br><span class="line"><span class="comment">// image 为已载入的图片</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>示例如下<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;core.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;highgui.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> cv;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">//1.input image</span></span><br><span class="line">	Mat srcImage1 = imread(<span class="string">"..//..//3.jpg"</span>);</span><br><span class="line">	Mat logoImage = imread(<span class="string">"..//..//1.jpg"</span>);</span><br><span class="line">	<span class="keyword">if</span> (!srcImage1.data)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"读取srcImage1错误\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (!logoImage.data)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"读取logoImage错误\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//2.define ROI</span></span><br><span class="line">	Mat imageROI = srcImage1(Rect(<span class="number">100</span>, <span class="number">150</span>, logoImage.cols, logoImage.rows));</span><br><span class="line"></span><br><span class="line">	<span class="comment">//3.make mask  (mast be grey value image)</span></span><br><span class="line">	Mat mask = imread(<span class="string">"..//..//4.img"</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//4.mask to ROI</span></span><br><span class="line">	logoImage.copyTo(imageROI, mask);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//show dstimage</span></span><br><span class="line">	namedWindow(<span class="string">"&lt;1&gt;利用ROI实现图像叠加示例窗口"</span>);</span><br><span class="line">	imshow(<span class="string">"&lt;1&gt;利用ROI实现图像叠加示例窗口"</span>, srcImage1);</span><br><span class="line">	waitKey(<span class="number">0</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="线性混合操作与addWeighted-函数"><a href="#线性混合操作与addWeighted-函数" class="headerlink" title="线性混合操作与addWeighted()函数"></a>线性混合操作与addWeighted()函数</h2><ul>
+<li>线性混合理论公式：g(x) = (1-a)fa(x)+ af3(x)</li>
+<li><p>addWeighted()函数<br>函数原型</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addWeighted</span><span class="params">(InputArray src1, <span class="keyword">double</span> alpha, InputArray src2, <span class="keyword">double</span> beta, <span class="keyword">double</span> gamma, OutputArray dst, <span class="keyword">int</span> dtype = <span class="number">-1</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>参数</p>
+<ul>
+<li>InputArray 类型的src1，表示需要加权的第一个数组，常常填一个Mat;</li>
+<li>double类型的alpha，表示第一个数组的权重</li>
+<li>InputArray 类型的src2，表示第二个数组，它需要和第一个数组拥有相同的尺寸和通道数</li>
+<li>double 类型的beta，表示第一个数组的权重值；</li>
+<li>double 类型的gamma，一个加到权重和上的标量值。</li>
+<li>OutputArray 类型的dst，输出的数组，它和输入的两个数组拥有相同的尺寸和通道数</li>
+<li>int 类型的dtype，输出阵列的可选深度，默认值-1。当两个输入数组具有相同的深度时，这个参数设置为-1(默认值)，即等同于src1.depth()。</li>
+</ul>
+<p>addWeighted 函数作用矩阵的表达式</p>
+<blockquote>
+<p>dst = src1[I]<em>alpha + src2[I]</em>beta + gamma;</p>
+</blockquote>
+</li>
+</ul>
+<p>示例如下<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;core.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;highgui.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> cv;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">//0.定义一些局部变量</span></span><br><span class="line">	<span class="keyword">double</span> alphaValue = <span class="number">0.5</span>;</span><br><span class="line">	<span class="keyword">double</span> betaValue;</span><br><span class="line">	Mat srcImage2, srcImage3, dstImage;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//1.读取图像（两幅图像需为同样的类型和尺寸)</span></span><br><span class="line">	srcImage2 = imread(<span class="string">"..//..//3.jpg"</span>);</span><br><span class="line">	srcImage3 = imread(<span class="string">"..//..//4.jpg"</span>);</span><br><span class="line">	<span class="keyword">if</span> (!srcImage2.data)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"读取srcImage2错误"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (!srcImage3.data)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"读取srcImage3错误"</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//2.做图像混合加权操作</span></span><br><span class="line">	betaValue = (<span class="number">1.0</span> - alphaValue);</span><br><span class="line">	addWeighted(srcImage2, alphaValue, srcImage3, betaValue, <span class="number">0.0</span>, dstImage);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//3.创建并显示原图窗口</span></span><br><span class="line">	namedWindow(<span class="string">"&lt;2&gt;线性混合示例窗口【原图】"</span>, <span class="number">1</span>);</span><br><span class="line">	imshow(<span class="string">"&lt;2&gt;线性混合示例窗口【原图】"</span>, srcImage2);</span><br><span class="line"></span><br><span class="line">	namedWindow(<span class="string">"&lt;3&gt;线性混合示例窗口【效果图】"</span>);</span><br><span class="line">	imshow(<span class="string">"&lt;3&gt;线性混合示例窗口【效果图】"</span>, dstImage);</span><br><span class="line">	waitKey(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="颜色通道的分离与混合"><a href="#颜色通道的分离与混合" class="headerlink" title="颜色通道的分离与混合"></a>颜色通道的分离与混合</h2><h3 id="通道分离：split-函数"><a href="#通道分离：split-函数" class="headerlink" title="通道分离：split()函数"></a>通道分离：split()函数</h3><p>函数原型<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">split</span><span class="params">(<span class="keyword">const</span> Mat&amp; src, Mat* mvbegin)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">split</span><span class="params">(InputArray m, OutputArrayOfArrays mv)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<p>参数</p>
+<ul>
+<li>InputArray 类型的m或者const Mat&amp;类型的src，填我们需要分离的多通道数组。</li>
+<li>OutputArrayOfArrays类型的mv，填函数的输出数组或者输出的vector容器</li>
+</ul>
+<p>示例<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="built_in">vector</span>&lt;Mat&gt; channels;</span><br><span class="line">Mat imageBlueChannel;</span><br><span class="line">Mat imageGreenChannel;</span><br><span class="line">Mat imageRedChannel;</span><br><span class="line">srcImage = imread(filename);</span><br><span class="line"><span class="comment">//把一个3通道图像转换成3个单通道图像</span></span><br><span class="line">split(srcImage, channels);  <span class="comment">//分离色彩通道</span></span><br><span class="line">imageBlueChannel = channels.at(<span class="number">0</span>);</span><br><span class="line">imageGreenChannel = channels.at(<span class="number">1</span>);</span><br><span class="line">imageRedChannel = chan.at(<span class="number">2</span>);</span><br></pre></td></tr></table></figure></p>
+<h3 id="通道合并：merge-函数"><a href="#通道合并：merge-函数" class="headerlink" title="通道合并：merge()函数"></a>通道合并：merge()函数</h3><p>函数原型<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">merge</span><span class="params">(<span class="keyword">const</span> Mat* mv,size_tcount, OutputArray dst)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">merge</span><span class="params">(InputArrayOfArrays mv, OutputArray dst)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<p>参数</p>
+<ul>
+<li>填需要被合并的输入矩阵或vector容器的阵列（数组），这个mv参数中所有的矩阵必须有着一样的尺寸和深度。</li>
+<li>当mv为一个空白的C语言数组时，代表输入矩阵的个数，这个参数显然必须大于1。</li>
+<li>dst即输出矩阵，和mv[0]具有一样的尺寸和深度，并且通道的数量是矩阵阵列中的通道的总数。</li>
+</ul>
+<p>示例如下<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;highgui.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;core.hpp&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> cv;</span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">MultiChannelBlending</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	system(<span class="string">"color 9F"</span>);</span><br><span class="line">	<span class="keyword">if</span> (MultiChannelBlending())</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span> &lt;&lt; <span class="string">"\n运行成功，得出了需要的图像"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	waitKey(<span class="number">0</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">MultiChannelBlending</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">//0.定义相关变量</span></span><br><span class="line">	Mat srcImage;</span><br><span class="line">	Mat logoImage;</span><br><span class="line">	<span class="built_in">vector</span>&lt;Mat&gt; channels;</span><br><span class="line">	Mat imageBlueChannel;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//多通道混合蓝色通道部分</span></span><br><span class="line">	<span class="comment">//1.读入图片</span></span><br><span class="line">	logoImage = imread(<span class="string">"..//..//1.jpg"</span>, <span class="number">0</span>);</span><br><span class="line">	srcImage = imread(<span class="string">"..//..//3.jpg"</span>);</span><br><span class="line">	<span class="keyword">if</span> (!logoImage.data)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"读取logoImage错误\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (!srcImage.data)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"读取srcImage错误\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	imshow(<span class="string">"srcImage【原图】"</span>, srcImage);</span><br><span class="line">	<span class="comment">//2.把一个3通道图像转换成3个单通道图像</span></span><br><span class="line">	split(srcImage, channels);	<span class="comment">//分离色彩通道</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">//3.将原图的蓝色通道引用返回给imageBlueChannel，注意是引用，相当于两者等价，修改一个另一个跟着变</span></span><br><span class="line">	imageBlueChannel = channels.at(<span class="number">0</span>);</span><br><span class="line">	<span class="comment">//4.将原图的蓝色通道的(500,250)坐标处右下方的一块区域和logo图进行加权操作，将得到的混合结果存到imageBlueChannel中</span></span><br><span class="line">	addWeighted(imageBlueChannel(Rect(<span class="number">100</span>, <span class="number">100</span>, logoImage.cols, logoImage.rows)), <span class="number">1.0</span>, logoImage, <span class="number">0.5</span>, <span class="number">0</span>, imageBlueChannel(Rect(<span class="number">100</span>, <span class="number">100</span>, logoImage.cols, logoImage.rows)));</span><br><span class="line">	<span class="comment">//5.将三个单通道重新合并成一个三通道</span></span><br><span class="line">	merge(channels, srcImage);</span><br><span class="line">	<span class="comment">//6.显示效果图</span></span><br><span class="line">	namedWindow(<span class="string">"&lt;1&gt;游戏原画+logo蓝色通道"</span>);</span><br><span class="line">	imshow(<span class="string">"&lt;1&gt;游戏原画+logo蓝色通道"</span>, srcImage);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="comment">//多通道混合绿色通道部分</span></span><br><span class="line">	<span class="comment">//0.定义相关变量</span></span><br><span class="line">	Mat imageGreenChannel;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//1.读入图片</span></span><br><span class="line">	logoImage = imread(<span class="string">"..//..//1.jpg"</span>, <span class="number">0</span>);</span><br><span class="line">	srcImage = imread(<span class="string">"..//..//3.jpg"</span>);</span><br><span class="line">	<span class="keyword">if</span> (!logoImage.data)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"读取logoImage错误\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (!srcImage.data)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"读取srcImage错误\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//2.把一个3通道图像转换成3个单通道图像</span></span><br><span class="line">	split(srcImage, channels);	<span class="comment">//分离色彩通道</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//3.将原图的蓝色通道引用返回给imageGreenChannel，注意是引用，相当于两者等价，修改一个另一个跟着变</span></span><br><span class="line">	imageGreenChannel = channels.at(<span class="number">1</span>);</span><br><span class="line">	<span class="comment">//4.将原图的蓝色通道的(500,250)坐标处右下方的一块区域和logo图进行加权操作，将得到的混合结果存到imageGreenChannel中</span></span><br><span class="line">	addWeighted(imageGreenChannel(Rect(<span class="number">100</span>, <span class="number">100</span>, logoImage.cols, logoImage.rows)), <span class="number">1.0</span>, logoImage, <span class="number">0.5</span>, <span class="number">0</span>, imageGreenChannel(Rect(<span class="number">100</span>, <span class="number">100</span>, logoImage.cols, logoImage.rows)));</span><br><span class="line">	<span class="comment">//5.将三个单通道重新合并成一个三通道</span></span><br><span class="line">	merge(channels, srcImage);</span><br><span class="line">	<span class="comment">//6.显示效果图</span></span><br><span class="line">	namedWindow(<span class="string">"&lt;2&gt;游戏原画+logo绿色通道"</span>);</span><br><span class="line">	imshow(<span class="string">"&lt;2&gt;游戏原画+logo绿色通道"</span>, srcImage);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="comment">//多通道混合红色通道部分</span></span><br><span class="line">	<span class="comment">//0.定义相关变量</span></span><br><span class="line">	Mat imageRedChannel;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//1.读入图片</span></span><br><span class="line">	logoImage = imread(<span class="string">"..//..//1.jpg"</span>, <span class="number">0</span>);</span><br><span class="line">	srcImage = imread(<span class="string">"..//..//3.jpg"</span>);</span><br><span class="line">	<span class="keyword">if</span> (!logoImage.data)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"读取logoImage错误\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (!srcImage.data)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"读取srcImage错误\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//2.把一个3通道图像转换成3个单通道图像</span></span><br><span class="line">	split(srcImage, channels);	<span class="comment">//分离色彩通道</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">//3.将原图的蓝色通道引用返回给imageRedChannel，注意是引用，相当于两者等价，修改一个另一个跟着变</span></span><br><span class="line">	imageRedChannel = channels.at(<span class="number">2</span>);</span><br><span class="line">	<span class="comment">//4.将原图的蓝色通道的(500,250)坐标处右下方的一块区域和logo图进行加权操作，将得到的混合结果存到imageRedChannel中</span></span><br><span class="line">	addWeighted(imageRedChannel(Rect(<span class="number">100</span>, <span class="number">100</span>, logoImage.cols, logoImage.rows)), <span class="number">1.0</span>, logoImage, <span class="number">0.5</span>, <span class="number">0</span>, imageRedChannel(Rect(<span class="number">100</span>, <span class="number">100</span>, logoImage.cols, logoImage.rows)));</span><br><span class="line">	<span class="comment">//5.将三个单通道重新合并成一个三通道</span></span><br><span class="line">	merge(channels, srcImage);</span><br><span class="line">	<span class="comment">//6.显示效果图</span></span><br><span class="line">	namedWindow(<span class="string">"&lt;3&gt;游戏原画+logo红色通道"</span>);</span><br><span class="line">	imshow(<span class="string">"&lt;3&gt;游戏原画+logo红色通道"</span>, srcImage);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="图像对比度、亮度值调整"><a href="#图像对比度、亮度值调整" class="headerlink" title="图像对比度、亮度值调整"></a>图像对比度、亮度值调整</h2><p>理论公式：g(i,j) = a*f(i,j) + b<br>其中</p>
+<ul>
+<li>参数f(x)表示源图像像素</li>
+<li>参数g(x)表示输出图像像素</li>
+<li>参数a（需要满足a&gt;0）被称为增益（gain），常常被用来控制图像的对比度。</li>
+<li>参数b通常被称为偏置(bias)，常常被用来控制图像的亮度。</li>
+</ul>
+<p>示例如下<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;core.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;highgui.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> cv;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">on_ContrastAndBright</span><span class="params">(<span class="keyword">int</span>, <span class="keyword">void</span>*)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> g_nContrastValue;	<span class="comment">//对比度值</span></span><br><span class="line"><span class="keyword">int</span> g_nBrightValue;		<span class="comment">//亮度值</span></span><br><span class="line">Mat g_srcImage, g_dstImage;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">//1.读取输入图像</span></span><br><span class="line">	g_srcImage = imread(<span class="string">"..//..//3.jpg"</span>);</span><br><span class="line">	<span class="keyword">if</span> (!g_srcImage.data)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"读取图片错误，请确定目录下是否有该图片"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	g_dstImage = Mat::zeros(g_srcImage.size(), g_srcImage.type());</span><br><span class="line"></span><br><span class="line">	<span class="comment">//2.设定对比度和亮度的初值</span></span><br><span class="line">	g_nContrastValue = <span class="number">80</span>;</span><br><span class="line">	g_nBrightValue = <span class="number">80</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//3.创建效果图窗口</span></span><br><span class="line">	namedWindow(<span class="string">"【效果图窗口】"</span>, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//4.创建轨迹条</span></span><br><span class="line">	createTrackbar(<span class="string">"对比度："</span>, <span class="string">"【效果图窗口】"</span>, &amp;g_nContrastValue, <span class="number">300</span>, on_ContrastAndBright);</span><br><span class="line">	createTrackbar(<span class="string">"亮度："</span>, <span class="string">"【效果图窗口】"</span>, &amp;g_nBrightValue, <span class="number">200</span>, on_ContrastAndBright);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//5.进行回调函数初始化</span></span><br><span class="line">	on_ContrastAndBright(g_nContrastValue, <span class="number">0</span>);</span><br><span class="line">	on_ContrastAndBright(g_nBrightValue, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//6.按下"q"键是，程序退出</span></span><br><span class="line">	<span class="keyword">while</span> (<span class="keyword">char</span>(waitKey(<span class="number">1</span>)) != <span class="string">'q'</span>) &#123;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">on_ContrastAndBright</span><span class="params">(<span class="keyword">int</span>, <span class="keyword">void</span>*)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">//创建窗口</span></span><br><span class="line">	namedWindow(<span class="string">"【原始图窗口】"</span>, <span class="number">1</span>);</span><br><span class="line">	<span class="comment">//三个for循环，执行运算 g_dstImage(i,j) = a*g_srcImage(i,j) + b</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> y = <span class="number">0</span>; y &lt; g_srcImage.rows; y++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> x = <span class="number">0</span>; x &lt; g_srcImage.cols; x++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> c = <span class="number">0</span>; c &lt; <span class="number">3</span>; c++)</span><br><span class="line">			&#123;</span><br><span class="line">				g_dstImage.at&lt;Vec3b&gt;(y, x)[c] = saturate_cast&lt;uchar&gt;((g_nContrastValue*<span class="number">0.01</span>)*( g_srcImage.at&lt;Vec3b&gt;(y, x)[c] ) + g_nBrightValue);</span><br><span class="line"></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//显示图像</span></span><br><span class="line">	imshow(<span class="string">"【原始图窗口】"</span>, g_srcImage);</span><br><span class="line">	imshow(<span class="string">"【效果图窗口】"</span>, g_dstImage);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其中saturate_cast是对结果进行转换防止溢出，原理大致如下<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (data &lt; <span class="number">0</span>)</span><br><span class="line">  data = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (data &gt; <span class="number">255</span>)</span><br><span class="line">  data = <span class="number">255</span>;</span><br></pre></td></tr></table></figure></p>
+
+        </div>
+        <div class="post-tool">
+            <a class="btn-thumbs-up" href="javascript:void(0);" data-cid="52" title="95">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i> 打赏
+            </a>
+        </div>
+        
+        <div class="post-tags">标签：
+            
+            <a href="/tags/OpenCV/">OpenCV</a>
+            
+        </div>
+        
+    </article>
+    
+    <p>新手上路，若有不恰当之处，望不吝赐教！</p>
+    
+    
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    var disqus_config = function () {
+        this.page.url = 'http://heolis.info/CV/OpenCV之Core组件进阶.html';
+        this.page.identifier = 'CV/OpenCV之Core组件进阶.html';
+    };
+    (function () { // DON'T EDIT BELOW THIS LINE
+        var d = document, disqus_shortname = 'HeoLis', s = d.createElement('script');
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by
+        Disqus.</a></noscript>
+
+</div>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        </div><!-- end #main-->
+    </div><!-- end #body -->
+    <footer class="footer">
+    <div class="footer-inner">
+        <p>
+            <a href="/links" title="友情链接">友情链接</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            本站已建立<a id="siteBuildingTime"></a>天&nbsp<em>·</em>&nbsp;
+        <span id="busuanzi_container_site_uv">
+            总访客数为
+            <span id="busuanzi_value_site_uv"></span>人次
+        </span>
+        </p>
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    </div>
+</footer>
+
+<!-- Tencent Analytics
+<script type="text/javascript" src="//tajs.qq.com/stats?sId=66072444" charset="UTF-8"></script> -->
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?1762d61c140d8360105c1f427350ad71";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="/js/InsightSearch.js"></script>
+<script src="/js/SimpleCore.js"></script>
+
+</div>
+<div class="fixed-btn">
+    <a class="btn-gotop" href="javascript:"> <i class="fa fa-angle-up"></i></a>
+</div>
+<script>
+    $(function () {
+        SimpleCore.init({
+            buildingTime: '11/26/2017',
+            current: $('.post-tags').length > 0 ? 'post' : 'archive',
+            snsQRCode: '/images/sns-qrcode.png',
+            donateImg: '/images/donate-qr.png',
+        });
+    });
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("MathJax config");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

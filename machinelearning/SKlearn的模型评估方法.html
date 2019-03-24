@@ -1,0 +1,288 @@
+<!DOCTYPE HTML>
+<html class="no-js" lang="zh-CN">
+
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lte IE 9]>
+<meta http-equiv="refresh" content="0;url=http://heolis.info/warn.html">
+<![endif]-->
+<meta charset="utf-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+<meta http-equiv="mobile-agent" content="format=html5; url=http://heolis.info">
+<meta name="author" content="HeoLis(http://heolis.info/)">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/SimpleStyle.min.css">
+
+<link rel="shortcut icon" href="/images/favicon.jpg">
+
+
+<title>sklearn的模型评估方法 - Gain</title>
+
+<meta name="keywords" content="机器瞎学/数据掩埋/模式混淆/人工智障/深度遗忘/神经掉线/计算机幻觉">
+
+<meta name="description " content="这里将记录我的学习历程。个人公众号(机器视觉于算法建模）"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="nav">
+    <nav class="nav-menu">
+        <a class="site-name current" href="/" title="Epoch">Epoch</a>
+        <a class="site-index current" href="/"><i class="fa fa-home"></i><span>首页</span></a>
+        <a href="/archives" title="归档"><i class="fa fa-archives"></i><span>归档</span></a>
+        <a href="/tags" title="标签"><i class="fa fa-tags"></i><span>标签</span></a>
+        <!-- custom single page of menus -->
+        
+    </nav>
+</div>
+
+<div class="nav-user">
+    <a class="btn-search" href="#"><i class="fa fa-search"></i></a>
+    <a class="btn-read-mode" href="#"><i class="fa fa-sun-o"></i></a>
+    <a class="btn-sns-qr" href="javascript:"><i class="fa fa-telegram"></i></a>
+</div>
+
+<div id="wrapper" class="clearfix">
+    <div id="body">
+        <div class="main" id="main">
+            <div id="cover">
+    <div class="cover-img"></div>
+    <div class="cover-info">
+        
+        <h1 class="cover-siteName">MachineEpoch</h1>
+        <h3 class="cover-siteTitle">学习、记录、分享、获得</h3>
+        <p class="cover-siteDesc">一个技术新人的博客</p>
+        <div class="cover-sns">
+            
+            <div class="btn btn-github">
+                <a href="https://github.com/wmpscc" target="_blank" title="github" ref="friend">
+                    <i class="fa fa-github"></i>
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</div>
+            <div class="page-title">
+    <ul>
+        <li><a href="/">最新</a></li>
+        
+            
+                <li class="active">
+                    <a href="/categories/machinelearning" data-name="人工智障">人工智障</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/CV" data-name="计算机幻觉">计算机幻觉</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/language" data-name="编程语言">编程语言</a>
+                </li>
+            
+        
+        <li class="page-search">
+    <form id="search" class="search-form">
+        <label for="s" class="sr-only">请输入关键字</label>
+        <input class="search-field" type="text" name="s" class="text" placeholder="请输入关键字" />
+        <button type="submit" class="search-form-submit" title="搜索"><i class="fa fa-search"></i></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..."/>
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+</li>
+
+    </ul>
+</div>
+<div class="main-inner">
+    <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <div class="post-header">
+            <div class="post-author clearfix">
+                <a class="avatar fleft" href="https://github.com/wmpscc" target="_blank">
+                    <img width="48" src="/images/favicon.png" alt="avatar"/>
+                </a>
+                <p><span class="label">作者</span>
+                    <a href="https://github.com/wmpscc" target="_blank">wmpscc</a>
+                    <span title="最后编辑于2018-05-27">2018-05-27</span>
+                </p>
+                <p>Why become a pirate if you can join the Navy?</p>
+            </div>
+            <h2 class="post-title">SKlearn的模型评估方法</h2>
+            <div class="post-meta">
+                本文总共3876个字 | 您是第<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
+            </div>
+        </div>
+        <div class="post-content markdown-body">
+            <h1 id="SKlearn模型评估方法"><a href="#SKlearn模型评估方法" class="headerlink" title="SKlearn模型评估方法"></a>SKlearn模型评估方法</h1><h3 id="准确率"><a href="#准确率" class="headerlink" title="准确率"></a>准确率</h3><h4 id="1-accuracy-score"><a href="#1-accuracy-score" class="headerlink" title="1.accuracy_score"></a>1.accuracy_score</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 准确率</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> accuracy_score</span><br><span class="line">y_pred = [<span class="number">0</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">3</span>,<span class="number">9</span>,<span class="number">9</span>,<span class="number">8</span>,<span class="number">5</span>,<span class="number">8</span>]</span><br><span class="line">y_true = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>,<span class="number">2</span>,<span class="number">6</span>,<span class="number">3</span>,<span class="number">5</span>,<span class="number">9</span>]</span><br><span class="line"></span><br><span class="line">accuracy_score(y_true, y_pred)</span><br><span class="line">Out[<span class="number">127</span>]: <span class="number">0.33333333333333331</span></span><br><span class="line"></span><br><span class="line">accuracy_score(y_true, y_pred, normalize=<span class="keyword">False</span>)  <span class="comment"># 类似海明距离，每个类别求准确后，再求微平均</span></span><br><span class="line">Out[<span class="number">128</span>]: <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<h4 id="2-metrics"><a href="#2-metrics" class="headerlink" title="2.metrics"></a>2.metrics</h4><ul>
+<li>宏平均比微平均更合理，但也不是说微平均一无是处，具体使用哪种评测机制，还是要取决于数据集中样本分布</li>
+<li>宏平均（Macro-averaging），是先对每一个类统计指标值，然后在对所有类求算术平均值。 </li>
+<li><p>微平均（Micro-averaging），是对数据集中的每一个实例不分类别进行统计建立全局混淆矩阵，然后计算相应指标。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> metrics</span><br><span class="line">metrics.precision_score(y_true, y_pred, average=<span class="string">'micro'</span>)  <span class="comment"># 微平均，精确率</span></span><br><span class="line">Out[<span class="number">130</span>]: <span class="number">0.33333333333333331</span></span><br><span class="line"></span><br><span class="line">metrics.precision_score(y_true, y_pred, average=<span class="string">'macro'</span>)  <span class="comment"># 宏平均，精确率</span></span><br><span class="line">Out[<span class="number">131</span>]: <span class="number">0.375</span></span><br><span class="line"></span><br><span class="line">metrics.precision_score(y_true, y_pred, labels=[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], average=<span class="string">'macro'</span>)  <span class="comment"># 指定特定分类标签的精确率</span></span><br><span class="line">Out[<span class="number">133</span>]: <span class="number">0.5</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>其中average参数有五种：(None, ‘micro’, ‘macro’, ‘weighted’, ‘samples’) </p>
+<h3 id="召回率"><a href="#召回率" class="headerlink" title="召回率"></a>召回率</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">metrics.recall_score(y_true, y_pred, average=<span class="string">'micro'</span>)</span><br><span class="line">Out[<span class="number">134</span>]: <span class="number">0.33333333333333331</span></span><br><span class="line"></span><br><span class="line">metrics.recall_score(y_true, y_pred, average=<span class="string">'macro'</span>)</span><br><span class="line">Out[<span class="number">135</span>]: <span class="number">0.3125</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="F1"><a href="#F1" class="headerlink" title="F1"></a>F1</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">metrics.f1_score(y_true, y_pred, average=<span class="string">'weighted'</span>)  </span><br><span class="line">Out[<span class="number">136</span>]: <span class="number">0.37037037037037035</span></span><br></pre></td></tr></table></figure>
+<h3 id="F2"><a href="#F2" class="headerlink" title="F2"></a>F2</h3><p>根据公式计算<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> precision_score, recall_score</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calc_f2</span><span class="params">(label, predict)</span>:</span></span><br><span class="line">    p = precision_score(label, predict)</span><br><span class="line">    r = recall_score(label, predict)</span><br><span class="line">    f2_score = <span class="number">5</span>*p*r / (<span class="number">4</span>*p + r)</span><br><span class="line">    <span class="keyword">return</span> f2_score</span><br></pre></td></tr></table></figure></p>
+<h3 id="混淆矩阵"><a href="#混淆矩阵" class="headerlink" title="混淆矩阵"></a>混淆矩阵</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> confusion_matrix</span><br><span class="line">confusion_matrix(y_true, y_pred)</span><br><span class="line"></span><br><span class="line">Out[<span class="number">137</span>]: </span><br><span class="line">array([[<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, ..., <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">       [<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, ..., <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">       [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, ..., <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>],</span><br><span class="line">       ..., </span><br><span class="line">       [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, ..., <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>],</span><br><span class="line">       [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, ..., <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">       [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, ..., <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>]])</span><br></pre></td></tr></table></figure>
+<h3 id="分类报告"><a href="#分类报告" class="headerlink" title="分类报告"></a>分类报告</h3><p>包含：precision/recall/fi-score/均值/分类个数<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 分类报告：precision/recall/fi-score/均值/分类个数</span></span><br><span class="line"> <span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> classification_report</span><br><span class="line"> y_true = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>]</span><br><span class="line"> y_pred = [<span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>]</span><br><span class="line"> target_names = [<span class="string">'class 0'</span>, <span class="string">'class 1'</span>, <span class="string">'class 2'</span>]</span><br><span class="line"> print(classification_report(y_true, y_pred, target_names=target_names))</span><br></pre></td></tr></table></figure></p>
+<p> 输出<br> <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">              precision    recall  f1-score   support</span><br><span class="line"></span><br><span class="line">    class 0       0.67      1.00      0.80         2</span><br><span class="line">    class 1       0.00      0.00      0.00         1</span><br><span class="line">    class 2       1.00      1.00      1.00         2</span><br><span class="line"></span><br><span class="line">avg / total       0.67      0.80      0.72         5</span><br></pre></td></tr></table></figure></p>
+<h3 id="kappa-score"><a href="#kappa-score" class="headerlink" title="kappa score"></a>kappa score</h3><ul>
+<li><p>kappa score是一个介于(-1, 1)之间的数. score&gt;0.8意味着好的分类；0或更低意味着不好（实际是随机标签）</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> cohen_kappa_score</span><br><span class="line">y_true = [<span class="number">2</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>]</span><br><span class="line">y_pred = [<span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">2</span>]</span><br><span class="line">cohen_kappa_score(y_true, y_pred)</span><br></pre></td></tr></table></figure>
+<h3 id="ROC"><a href="#ROC" class="headerlink" title="ROC"></a>ROC</h3><h4 id="1-计算ROC值"><a href="#1-计算ROC值" class="headerlink" title="1.计算ROC值"></a>1.计算ROC值</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> roc_auc_score</span><br><span class="line">y_true = np.array([<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>])</span><br><span class="line">y_scores = np.array([<span class="number">0.1</span>, <span class="number">0.4</span>, <span class="number">0.35</span>, <span class="number">0.8</span>])</span><br><span class="line">roc_auc_score(y_true, y_scores)</span><br></pre></td></tr></table></figure>
+<h4 id="2-ROC曲线"><a href="#2-ROC曲线" class="headerlink" title="2.ROC曲线"></a>2.ROC曲线</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">y = np.array([<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>])</span><br><span class="line">scores = np.array([<span class="number">0.1</span>, <span class="number">0.4</span>, <span class="number">0.35</span>, <span class="number">0.8</span>])</span><br><span class="line">fpr, tpr, thresholds = roc_curve(y, scores, pos_label=<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="海明距离"><a href="#海明距离" class="headerlink" title="海明距离"></a>海明距离</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> hamming_loss</span><br><span class="line">y_pred = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]</span><br><span class="line">y_true = [<span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]</span><br><span class="line">hamming_loss(y_true, y_pred)</span><br><span class="line"><span class="number">0.25</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="Jaccard距离"><a href="#Jaccard距离" class="headerlink" title="Jaccard距离"></a>Jaccard距离</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> jaccard_similarity_score</span><br><span class="line">y_pred = [<span class="number">0</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">3</span>,<span class="number">4</span>]</span><br><span class="line">y_true = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>,<span class="number">4</span>]</span><br><span class="line">jaccard_similarity_score(y_true, y_pred)</span><br><span class="line"><span class="number">0.5</span></span><br><span class="line">jaccard_similarity_score(y_true, y_pred, normalize=<span class="keyword">False</span>)</span><br><span class="line"><span class="number">2</span></span><br></pre></td></tr></table></figure>
+<h3 id="可释方差值（Explained-variance-score）"><a href="#可释方差值（Explained-variance-score）" class="headerlink" title="可释方差值（Explained variance score）"></a>可释方差值（Explained variance score）</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> explained_variance_score</span><br><span class="line">y_true = [<span class="number">3</span>, <span class="number">-0.5</span>, <span class="number">2</span>, <span class="number">7</span>]</span><br><span class="line">y_pred = [<span class="number">2.5</span>, <span class="number">0.0</span>, <span class="number">2</span>, <span class="number">8</span>]</span><br><span class="line">explained_variance_score(y_true, y_pred)</span><br></pre></td></tr></table></figure>
+<h3 id="平均绝对误差（Mean-absolute-error）"><a href="#平均绝对误差（Mean-absolute-error）" class="headerlink" title="平均绝对误差（Mean absolute error）"></a>平均绝对误差（Mean absolute error）</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> mean_absolute_error</span><br><span class="line">y_true = [<span class="number">3</span>, <span class="number">-0.5</span>, <span class="number">2</span>, <span class="number">7</span>]</span><br><span class="line">y_pred = [<span class="number">2.5</span>, <span class="number">0.0</span>, <span class="number">2</span>, <span class="number">8</span>]</span><br><span class="line">mean_absolute_error(y_true, y_pred)</span><br></pre></td></tr></table></figure>
+<h3 id="均方误差（Mean-squared-error）"><a href="#均方误差（Mean-squared-error）" class="headerlink" title="均方误差（Mean squared error）"></a>均方误差（Mean squared error）</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> mean_squared_error</span><br><span class="line">y_true = [<span class="number">3</span>, <span class="number">-0.5</span>, <span class="number">2</span>, <span class="number">7</span>]</span><br><span class="line">y_pred = [<span class="number">2.5</span>, <span class="number">0.0</span>, <span class="number">2</span>, <span class="number">8</span>]</span><br><span class="line">mean_squared_error(y_true, y_pred)</span><br></pre></td></tr></table></figure>
+<h3 id="中值绝对误差（Median-absolute-error）"><a href="#中值绝对误差（Median-absolute-error）" class="headerlink" title="中值绝对误差（Median absolute error）"></a>中值绝对误差（Median absolute error）</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> median_absolute_error</span><br><span class="line">y_true = [<span class="number">3</span>, <span class="number">-0.5</span>, <span class="number">2</span>, <span class="number">7</span>]</span><br><span class="line">y_pred = [<span class="number">2.5</span>, <span class="number">0.0</span>, <span class="number">2</span>, <span class="number">8</span>]</span><br><span class="line">median_absolute_error(y_true, y_pred)</span><br></pre></td></tr></table></figure>
+<h3 id="R方值，确定系数"><a href="#R方值，确定系数" class="headerlink" title="R方值，确定系数"></a>R方值，确定系数</h3> <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> r2_score</span><br><span class="line">y_true = [<span class="number">3</span>, <span class="number">-0.5</span>, <span class="number">2</span>, <span class="number">7</span>]</span><br><span class="line">y_pred = [<span class="number">2.5</span>, <span class="number">0.0</span>, <span class="number">2</span>, <span class="number">8</span>]</span><br><span class="line">r2_score(y_true, y_pred)</span><br></pre></td></tr></table></figure>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
+<li><a href="https://blog.csdn.net/sinat_26917383/article/details/75199996">python + sklearn ︱分类效果评估——acc、recall、F1、ROC、回归、距离</a></li>
+<li><a href="http://d0evi1.com/sklearn/model_evaluation/">sklearn中的模型评估</a></li>
+</ul>
+
+        </div>
+        <div class="post-tool">
+            <a class="btn-thumbs-up" href="javascript:void(0);" data-cid="52" title="95">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i> 打赏
+            </a>
+        </div>
+        
+        <div class="post-tags">标签：
+            
+            <a href="/tags/DataMining/">DataMining</a>
+            
+            <a href="/tags/MachineLearning/">MachineLearning</a>
+            
+            <a href="/tags/Kaggle/">Kaggle</a>
+            
+            <a href="/tags/SKlearn/">SKlearn</a>
+            
+        </div>
+        
+    </article>
+    
+    <p>新手上路，若有不恰当之处，望不吝赐教！</p>
+    
+    
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    var disqus_config = function () {
+        this.page.url = 'http://heolis.info/machinelearning/SKlearn的模型评估方法.html';
+        this.page.identifier = 'machinelearning/SKlearn的模型评估方法.html';
+    };
+    (function () { // DON'T EDIT BELOW THIS LINE
+        var d = document, disqus_shortname = 'HeoLis', s = d.createElement('script');
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by
+        Disqus.</a></noscript>
+
+</div>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        </div><!-- end #main-->
+    </div><!-- end #body -->
+    <footer class="footer">
+    <div class="footer-inner">
+        <p>
+            <a href="/links" title="友情链接">友情链接</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            本站已建立<a id="siteBuildingTime"></a>天&nbsp<em>·</em>&nbsp;
+        <span id="busuanzi_container_site_uv">
+            总访客数为
+            <span id="busuanzi_value_site_uv"></span>人次
+        </span>
+        </p>
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    </div>
+</footer>
+
+<!-- Tencent Analytics
+<script type="text/javascript" src="//tajs.qq.com/stats?sId=66072444" charset="UTF-8"></script> -->
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?1762d61c140d8360105c1f427350ad71";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="/js/InsightSearch.js"></script>
+<script src="/js/SimpleCore.js"></script>
+
+</div>
+<div class="fixed-btn">
+    <a class="btn-gotop" href="javascript:"> <i class="fa fa-angle-up"></i></a>
+</div>
+<script>
+    $(function () {
+        SimpleCore.init({
+            buildingTime: '11/26/2017',
+            current: $('.post-tags').length > 0 ? 'post' : 'archive',
+            snsQRCode: '/images/sns-qrcode.png',
+            donateImg: '/images/donate-qr.png',
+        });
+    });
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("MathJax config");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

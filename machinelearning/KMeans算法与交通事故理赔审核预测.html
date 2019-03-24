@@ -1,0 +1,307 @@
+<!DOCTYPE HTML>
+<html class="no-js" lang="zh-CN">
+
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lte IE 9]>
+<meta http-equiv="refresh" content="0;url=http://heolis.info/warn.html">
+<![endif]-->
+<meta charset="utf-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+<meta http-equiv="mobile-agent" content="format=html5; url=http://heolis.info">
+<meta name="author" content="HeoLis(http://heolis.info/)">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/SimpleStyle.min.css">
+
+<link rel="shortcut icon" href="/images/favicon.jpg">
+
+
+<title>kmeans算法与交通事故理赔审核预测 - Gain</title>
+
+<meta name="keywords" content="机器瞎学/数据掩埋/模式混淆/人工智障/深度遗忘/神经掉线/计算机幻觉">
+
+<meta name="description " content="这里将记录我的学习历程。个人公众号(机器视觉于算法建模）"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="nav">
+    <nav class="nav-menu">
+        <a class="site-name current" href="/" title="Epoch">Epoch</a>
+        <a class="site-index current" href="/"><i class="fa fa-home"></i><span>首页</span></a>
+        <a href="/archives" title="归档"><i class="fa fa-archives"></i><span>归档</span></a>
+        <a href="/tags" title="标签"><i class="fa fa-tags"></i><span>标签</span></a>
+        <!-- custom single page of menus -->
+        
+    </nav>
+</div>
+
+<div class="nav-user">
+    <a class="btn-search" href="#"><i class="fa fa-search"></i></a>
+    <a class="btn-read-mode" href="#"><i class="fa fa-sun-o"></i></a>
+    <a class="btn-sns-qr" href="javascript:"><i class="fa fa-telegram"></i></a>
+</div>
+
+<div id="wrapper" class="clearfix">
+    <div id="body">
+        <div class="main" id="main">
+            <div id="cover">
+    <div class="cover-img"></div>
+    <div class="cover-info">
+        
+        <h1 class="cover-siteName">MachineEpoch</h1>
+        <h3 class="cover-siteTitle">学习、记录、分享、获得</h3>
+        <p class="cover-siteDesc">一个技术新人的博客</p>
+        <div class="cover-sns">
+            
+            <div class="btn btn-github">
+                <a href="https://github.com/wmpscc" target="_blank" title="github" ref="friend">
+                    <i class="fa fa-github"></i>
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</div>
+            <div class="page-title">
+    <ul>
+        <li><a href="/">最新</a></li>
+        
+            
+                <li class="active">
+                    <a href="/categories/machinelearning" data-name="人工智障">人工智障</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/CV" data-name="计算机幻觉">计算机幻觉</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/language" data-name="编程语言">编程语言</a>
+                </li>
+            
+        
+        <li class="page-search">
+    <form id="search" class="search-form">
+        <label for="s" class="sr-only">请输入关键字</label>
+        <input class="search-field" type="text" name="s" class="text" placeholder="请输入关键字" />
+        <button type="submit" class="search-form-submit" title="搜索"><i class="fa fa-search"></i></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..."/>
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+</li>
+
+    </ul>
+</div>
+<div class="main-inner">
+    <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <div class="post-header">
+            <div class="post-author clearfix">
+                <a class="avatar fleft" href="https://github.com/wmpscc" target="_blank">
+                    <img width="48" src="/images/favicon.png" alt="avatar"/>
+                </a>
+                <p><span class="label">作者</span>
+                    <a href="https://github.com/wmpscc" target="_blank">wmpscc</a>
+                    <span title="最后编辑于2018-05-21">2018-05-21</span>
+                </p>
+                <p>Why become a pirate if you can join the Navy?</p>
+            </div>
+            <h2 class="post-title">KMeans算法与交通事故理赔审核预测</h2>
+            <div class="post-meta">
+                本文总共3199个字 | 您是第<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
+            </div>
+        </div>
+        <div class="post-content markdown-body">
+            <blockquote>
+<p>上一篇文章讲解了<a href="https://mp.weixin.qq.com/s?__biz=MzUzOTczMTQyOA==&amp;mid=2247483674&amp;idx=1&amp;sn=97a4e277bd69caf303aa8c10a594bed1&amp;chksm=fac2b591cdb53c87cc213c7083068bf72ed40b6ca32e92a0a9fae22520f8174bff137c6c4a76#rd">数据挖掘环境的配置</a>，那这次就从一个小的实战开始吧。这次要学习的是KMeans算法，要挑战的是sofasofa上的一个竞赛（交通事故理赔审核预测）。现在开始吧</p>
+</blockquote>
+<h1 id="K-means"><a href="#K-means" class="headerlink" title="K-means"></a>K-means</h1><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>K-Means是基于划分的聚类方法，他是数据挖掘十大算法之一。基于划分的方法是将样本集组成的矢量空间划分为多个区域，每个区域都存在一个样本中心，通过建立映射关系，可以将所有样本分类到其相应的中心。<br><img src="http://ox5bam95j.bkt.clouddn.com/74656887.jpg" alt="kmeans"><br>假设有样本集合D={Xj}，KMeans算法的目标是将数据划分为K类：S={S1,S2,…Sk}，并且使划分后的K个子集合满足类内误差平方和最小。<br>目标函数：<img src="http://ox5bam95j.bkt.clouddn.com/TIM%E5%9B%BE%E7%89%8720180521195832.jpg" alt="目标函数"><br>其中 <img src="http://ox5bam95j.bkt.clouddn.com/TIM%E5%9B%BE%E7%89%8720180521195823.jpg" alt=""><br>Ci即划分后的子集合的中心。</p>
+<h3 id="求解步骤"><a href="#求解步骤" class="headerlink" title="求解步骤"></a>求解步骤</h3><p>求解目标函数是一个NP-hard问题，无法保证得到的就是全局最优解。在经典K-Means聚类算法中采取迭代优化策略，一般包含以下四个步骤</p>
+<ul>
+<li>1.初始化聚类中心</li>
+<li>2.分配个样本xj到相近的聚类集合，依据是（p!=j）<img src="http://ox5bam95j.bkt.clouddn.com/TIM%E5%9B%BE%E7%89%8720180521195836.jpg" alt=""></li>
+<li>3.根据步骤二结果，更新聚类中心。<img src="http://ox5bam95j.bkt.clouddn.com/TIM%E5%9B%BE%E7%89%8720180521195839.jpg" alt=""></li>
+<li>4.若达到最大迭代步数或两次迭代差小于设定的阈值则算法结束，否则重复步骤2。</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/K-means_convergence.gif" alt="迭代过程"></p>
+<h3 id="算法改进"><a href="#算法改进" class="headerlink" title="算法改进"></a>算法改进</h3><p>经典的K-means算法在初始化聚类中心时采用的是随机采样的方式，不能保证得到期望的聚类结果，可以选择重复训练多个模型，选取其中表现最好的。但有没有更好的方法呢？David Arthur提出的K-means++算法能够有效的产生初始化的聚类中心。<br><br>首先随机初始化一个聚类中心C1，然后通过迭代计算最大概率值X*，将其加入到中心点中，重复该过程，直到选择k个中心。<img src="http://ox5bam95j.bkt.clouddn.com/TIM%E5%9B%BE%E7%89%8720180521201847.jpg" alt=""></p>
+<h1 id="交通事故理赔审核预测"><a href="#交通事故理赔审核预测" class="headerlink" title="交通事故理赔审核预测"></a>交通事故理赔审核预测</h1><blockquote>
+<p>SofaSofa是专门为数据挖掘新人准备练手比赛的地方，这的比赛都会提供几个标杆模型的代码给你参考，新手想要快速入门可以多去这个网站上看看。</p>
+</blockquote>
+<h3 id="赛题"><a href="#赛题" class="headerlink" title="赛题"></a>赛题</h3><p>这个比赛的链接：<a href="http://sofasofa.io/competition.php?id=2">http://sofasofa.io/competition.php?id=2</a></p>
+<ul>
+<li>任务类型：二元分类</li>
+<li>背景介绍：在交通摩擦（事故）发生后，理赔员会前往现场勘察、采集信息，这些信息往往影响着车主是否能够得到保险公司的理赔。训练集数据包括理赔人员在现场对该事故方采集的36条信息，信息已经被编码，以及该事故方最终是否获得理赔。我们的任务是根据这36条信息预测该事故方没有被理赔的概率。 </li>
+<li><p>数据介绍：<br><img src="http://ox5bam95j.bkt.clouddn.com/TIM%E6%88%AA%E5%9B%BE20180521202537.jpg" alt=""></p>
+</li>
+<li><p>评价方法：Precision-Recall AUC</p>
+</li>
+</ul>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><p>在官方下载好数据集，在本地解压。打开jupyter notebook开始动手。<br>首先导入必要的包<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">%matplotlib inline</span><br></pre></td></tr></table></figure></p>
+<p>读入数据集<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">homePath = <span class="string">"data"</span></span><br><span class="line">trainPath = os.path.join(homePath, <span class="string">"train.csv"</span>)</span><br><span class="line">testPath = os.path.join(homePath, <span class="string">"test.csv"</span>)</span><br><span class="line">submitPath = os.path.join(homePath, <span class="string">"sample_submit.csv"</span>)</span><br><span class="line">trainData = pd.read_csv(trainPath)</span><br><span class="line">testData = pd.read_csv(testPath)</span><br><span class="line">submitData = pd.read_csv(submitPath)</span><br></pre></td></tr></table></figure></p>
+<p>参照数据说明，CaseID这列是没有意义的编号，因此这里将他丢弃。</p>
+<ul>
+<li>~drop()函数：<code>axis</code>指沿着哪个轴，0为行，1为列；<code>inplace</code>指是否在原数据上直接操作<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 去掉没有意义的一列</span></span><br><span class="line">trainData.drop(<span class="string">"CaseId"</span>, axis=<span class="number">1</span>, inplace=<span class="keyword">True</span>)</span><br><span class="line">testData.drop(<span class="string">"CaseId"</span>, axis=<span class="number">1</span>, inplace=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>快速了解数据</p>
+<ul>
+<li>~head()：默认显示前5行数据，可指定显示多行，例如.head(50)显示前50行<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">trainData.head()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/TIM%E6%88%AA%E5%9B%BE20180521204059.jpg" alt=""><br>显示数据简略信息，可以每列有多少非空的值，以及每列数据对应的数据类型。<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">trainData.info()</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/TIM%E6%88%AA%E5%9B%BE20180521204325.jpg" alt=""><br>以图的形式，快速了解数据</p>
+<ul>
+<li>~hist():绘制直方图，参数<code>figsize</code>可指定输出图片的尺寸。</li>
+<li>关于绘图可参考我之前的一篇文章，<a href="https://mp.weixin.qq.com/s?__biz=MzUzOTczMTQyOA==&amp;mid=2247483654&amp;idx=1&amp;sn=39c1b07182e8dec43a3512626213a5e2&amp;chksm=fac2b58dcdb53c9b6e6f392b4c493ba5eb98e0cf25bd8fe0b1aa9bbbc2c37644c9674a2e9d98#rd">一文教会你使用Matplotlib绘图</a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">trainData.hist(figsize=(<span class="number">20</span>, <span class="number">20</span>))</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/shujutu.png" alt=""><br>想要了解特征之间的相关性，可计算相关系数矩阵。然后可对某个特征来排序。<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">corr_matrix = trainData.corr()</span><br><span class="line">corr_matrix[<span class="string">"Evaluation"</span>].sort_values(ascending=<span class="keyword">False</span>) <span class="comment"># ascending=False 降序排列</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="http://ox5bam95j.bkt.clouddn.com/TIM%E6%88%AA%E5%9B%BE20180521205257.jpg" alt=""><br>从训练集中分离标签<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">y = trainData[<span class="string">'Evaluation'</span>]</span><br><span class="line">trainData.drop(<span class="string">"Evaluation"</span>, axis=<span class="number">1</span>, inplace=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure></p>
+<p>使用K-Means训练模型</p>
+<ul>
+<li>KMeans()：<code>n_clusters</code>指要预测的有几个类；<code>init</code>指初始化中心的方法，默认使用的是<code>k-means++</code>方法，而非经典的K-means方法的随机采样初始化，当然你可以设置为<code>random</code>使用随机初始化；<code>n_jobs</code>指定使用CPU核心数，-1为使用全部CPU。<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.cluster <span class="keyword">import</span> KMeans</span><br><span class="line">est = KMeans(n_clusters=<span class="number">2</span>, init=<span class="string">"k-means++"</span>, n_jobs=<span class="number">-1</span>)</span><br><span class="line">est.fit(trainData, y)</span><br><span class="line">y_pred = est.predict(testData)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>保存预测的结果<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">submitData[<span class="string">'Evaluation'</span>] = y_pred</span><br><span class="line">submitData.to_csv(<span class="string">"submit_data.csv"</span>, index=<span class="keyword">False</span>)</span><br></pre></td></tr></table></figure></p>
+<p>现在你可以在运行目录找到这个文件，在比赛网站上可提交查看实际分数。</p>
+<h1 id="标杆模型：随机森林"><a href="#标杆模型：随机森林" class="headerlink" title="标杆模型：随机森林"></a>标杆模型：随机森林</h1><p>使用K-means可能得到的结果没那么理想。在官网上，举办方给出了两个标杆模型，效果最好的是随机森林。以下是代码，读者可以自己测试。<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestClassifier</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取数据</span></span><br><span class="line">train = pd.read_csv(<span class="string">"data/train.csv"</span>)</span><br><span class="line">test = pd.read_csv(<span class="string">"data/test.csv"</span>)</span><br><span class="line">submit = pd.read_csv(<span class="string">"data/sample_submit.csv"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除id</span></span><br><span class="line">train.drop(<span class="string">'CaseId'</span>, axis=<span class="number">1</span>, inplace=<span class="keyword">True</span>)</span><br><span class="line">test.drop(<span class="string">'CaseId'</span>, axis=<span class="number">1</span>, inplace=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 取出训练集的y</span></span><br><span class="line">y_train = train.pop(<span class="string">'Evaluation'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 建立随机森林模型</span></span><br><span class="line">clf = RandomForestClassifier(n_estimators=<span class="number">100</span>, random_state=<span class="number">0</span>)</span><br><span class="line">clf.fit(train, y_train)</span><br><span class="line">y_pred = clf.predict_proba(test)[:, <span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出预测结果至my_RF_prediction.csv</span></span><br><span class="line">submit[<span class="string">'Evaluation'</span>] = y_pred</span><br><span class="line">submit.to_csv(<span class="string">'my_RF_prediction.csv'</span>, index=<span class="keyword">False</span>)</span><br></pre></td></tr></table></figure></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>K-means算法是数据挖掘的十大经典算法之一，但实际中如果想要得到满意的效果，还是非常难的，以后会讲到集成学习，使弱学习器进阶为强学习器。</p>
+
+        </div>
+        <div class="post-tool">
+            <a class="btn-thumbs-up" href="javascript:void(0);" data-cid="52" title="95">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i> 打赏
+            </a>
+        </div>
+        
+        <div class="post-tags">标签：
+            
+            <a href="/tags/DataMining/">DataMining</a>
+            
+            <a href="/tags/MachineLearning/">MachineLearning</a>
+            
+            <a href="/tags/Kaggle/">Kaggle</a>
+            
+        </div>
+        
+    </article>
+    
+    <p>新手上路，若有不恰当之处，望不吝赐教！</p>
+    
+    
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    var disqus_config = function () {
+        this.page.url = 'http://heolis.info/machinelearning/KMeans算法与交通事故理赔审核预测.html';
+        this.page.identifier = 'machinelearning/KMeans算法与交通事故理赔审核预测.html';
+    };
+    (function () { // DON'T EDIT BELOW THIS LINE
+        var d = document, disqus_shortname = 'HeoLis', s = d.createElement('script');
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by
+        Disqus.</a></noscript>
+
+</div>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        </div><!-- end #main-->
+    </div><!-- end #body -->
+    <footer class="footer">
+    <div class="footer-inner">
+        <p>
+            <a href="/links" title="友情链接">友情链接</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            本站已建立<a id="siteBuildingTime"></a>天&nbsp<em>·</em>&nbsp;
+        <span id="busuanzi_container_site_uv">
+            总访客数为
+            <span id="busuanzi_value_site_uv"></span>人次
+        </span>
+        </p>
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    </div>
+</footer>
+
+<!-- Tencent Analytics
+<script type="text/javascript" src="//tajs.qq.com/stats?sId=66072444" charset="UTF-8"></script> -->
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?1762d61c140d8360105c1f427350ad71";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="/js/InsightSearch.js"></script>
+<script src="/js/SimpleCore.js"></script>
+
+</div>
+<div class="fixed-btn">
+    <a class="btn-gotop" href="javascript:"> <i class="fa fa-angle-up"></i></a>
+</div>
+<script>
+    $(function () {
+        SimpleCore.init({
+            buildingTime: '11/26/2017',
+            current: $('.post-tags').length > 0 ? 'post' : 'archive',
+            snsQRCode: '/images/sns-qrcode.png',
+            donateImg: '/images/donate-qr.png',
+        });
+    });
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("MathJax config");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

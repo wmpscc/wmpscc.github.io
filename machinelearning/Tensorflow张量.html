@@ -1,0 +1,261 @@
+<!DOCTYPE HTML>
+<html class="no-js" lang="zh-CN">
+
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lte IE 9]>
+<meta http-equiv="refresh" content="0;url=http://heolis.info/warn.html">
+<![endif]-->
+<meta charset="utf-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+<meta http-equiv="mobile-agent" content="format=html5; url=http://heolis.info">
+<meta name="author" content="HeoLis(http://heolis.info/)">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/SimpleStyle.min.css">
+
+<link rel="shortcut icon" href="/images/favicon.jpg">
+
+
+<title>tensorflow张量 - Gain</title>
+
+<meta name="keywords" content="机器瞎学/数据掩埋/模式混淆/人工智障/深度遗忘/神经掉线/计算机幻觉">
+
+<meta name="description " content="这里将记录我的学习历程。个人公众号(机器视觉于算法建模）"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="nav">
+    <nav class="nav-menu">
+        <a class="site-name current" href="/" title="Epoch">Epoch</a>
+        <a class="site-index current" href="/"><i class="fa fa-home"></i><span>首页</span></a>
+        <a href="/archives" title="归档"><i class="fa fa-archives"></i><span>归档</span></a>
+        <a href="/tags" title="标签"><i class="fa fa-tags"></i><span>标签</span></a>
+        <!-- custom single page of menus -->
+        
+    </nav>
+</div>
+
+<div class="nav-user">
+    <a class="btn-search" href="#"><i class="fa fa-search"></i></a>
+    <a class="btn-read-mode" href="#"><i class="fa fa-sun-o"></i></a>
+    <a class="btn-sns-qr" href="javascript:"><i class="fa fa-telegram"></i></a>
+</div>
+
+<div id="wrapper" class="clearfix">
+    <div id="body">
+        <div class="main" id="main">
+            <div id="cover">
+    <div class="cover-img"></div>
+    <div class="cover-info">
+        
+        <h1 class="cover-siteName">MachineEpoch</h1>
+        <h3 class="cover-siteTitle">学习、记录、分享、获得</h3>
+        <p class="cover-siteDesc">一个技术新人的博客</p>
+        <div class="cover-sns">
+            
+            <div class="btn btn-github">
+                <a href="https://github.com/wmpscc" target="_blank" title="github" ref="friend">
+                    <i class="fa fa-github"></i>
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</div>
+            <div class="page-title">
+    <ul>
+        <li><a href="/">最新</a></li>
+        
+            
+                <li class="active">
+                    <a href="/categories/machinelearning" data-name="人工智障">人工智障</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/CV" data-name="计算机幻觉">计算机幻觉</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/language" data-name="编程语言">编程语言</a>
+                </li>
+            
+        
+        <li class="page-search">
+    <form id="search" class="search-form">
+        <label for="s" class="sr-only">请输入关键字</label>
+        <input class="search-field" type="text" name="s" class="text" placeholder="请输入关键字" />
+        <button type="submit" class="search-form-submit" title="搜索"><i class="fa fa-search"></i></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..."/>
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+</li>
+
+    </ul>
+</div>
+<div class="main-inner">
+    <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <div class="post-header">
+            <div class="post-author clearfix">
+                <a class="avatar fleft" href="https://github.com/wmpscc" target="_blank">
+                    <img width="48" src="/images/favicon.png" alt="avatar"/>
+                </a>
+                <p><span class="label">作者</span>
+                    <a href="https://github.com/wmpscc" target="_blank">wmpscc</a>
+                    <span title="最后编辑于2017-12-02">2017-12-02</span>
+                </p>
+                <p>Why become a pirate if you can join the Navy?</p>
+            </div>
+            <h2 class="post-title">Tensorflow张量</h2>
+            <div class="post-meta">
+                本文总共1314个字 | 您是第<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
+            </div>
+        </div>
+        <div class="post-content markdown-body">
+            <h3 id="计算模型"><a href="#计算模型" class="headerlink" title="计算模型"></a>计算模型</h3><p>例子：<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line"><span class="comment"># tf.constant是一个计算，这个计算的结果为一个张量，保存在变量a中。</span></span><br><span class="line">a = tf.constant([<span class="number">1.0</span>,<span class="number">2.0</span>], name=<span class="string">"a"</span>)</span><br><span class="line">b = tf.constant([<span class="number">2.0</span>,<span class="number">3.0</span>], name=<span class="string">"b"</span>)</span><br><span class="line">result = tf.add(a,b,name=<span class="string">"add"</span>)</span><br><span class="line">print(result)</span><br></pre></td></tr></table></figure></p>
+<p>输出结果：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Tensor(&quot;add:0&quot;, shape=(2,), dtype=float32)</span><br></pre></td></tr></table></figure></p>
+<p>从结果可以看出，一个张量中主要保存的了三个属性：名字(name)、维度(shape)和类型(type)</p>
+<h4 id="name"><a href="#name" class="headerlink" title="name"></a>name</h4><p>张量的命名形式：node:src_output<br>其中node为节点的名称，src_output表示当前张量来自节点的第几个输出。比如上面打印出来的“add:0”就说明result这个张量是计算节点”add“输出的第一个结果</p>
+<h4 id="shape"><a href="#shape" class="headerlink" title="shape"></a>shape</h4><p>该属性描述了一个张量的维度信息，比如上面样例中shape=(2,)说明张量result是一个长度为2的一维数组。</p>
+<h4 id="type"><a href="#type" class="headerlink" title="type"></a>type</h4><p>每一个张量会有一个唯一的类型，运行时Tensorflow会对参与运算的所有张量进行类型的检查，当发现类型不匹配时会报错，比如下面这段程序：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line">a = tf.constant([<span class="number">1</span>, <span class="number">2</span>], name=<span class="string">"a"</span>)</span><br><span class="line">b = tf.constant([<span class="number">2.0</span>, <span class="number">3.0</span>], name=<span class="string">"b"</span>)</span><br><span class="line">result = tf.add(a, b, name=<span class="string">"add"</span>)</span><br></pre></td></tr></table></figure>
+<p>报错：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ValueError: Tensor conversion requested dtype int32 for Tensor with dtype float32: &apos;Tensor(&quot;b:0&quot;, shape=(2,), dtype=float32)&apos;</span><br></pre></td></tr></table></figure></p>
+<p>如果将一个加数指定成实数类型就不会出错了<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = tf.constant([<span class="number">1</span>, <span class="number">2</span>], name=<span class="string">"a"</span>, dtype=tf.float32)</span><br><span class="line">b = tf.constant([<span class="number">2.0</span>, <span class="number">3.0</span>], name=<span class="string">"b"</span>)</span><br><span class="line">result = tf.add(a, b, name=<span class="string">"add"</span>)</span><br></pre></td></tr></table></figure></p>
+<p>为了避免导致类型不匹配的问题，建议通过dtype来明确指定变量或常量的类型</p>
+<h3 id="数据模型"><a href="#数据模型" class="headerlink" title="数据模型"></a>数据模型</h3><p>张量使用主要可以归结为两大类</p>
+<h4 id="对中间结果的引用"><a href="#对中间结果的引用" class="headerlink" title="对中间结果的引用"></a>对中间结果的引用</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 使用张量记录中间的结果</span></span><br><span class="line">a = tf.constant([<span class="number">1.0</span>, <span class="number">2.0</span>], name=<span class="string">"a"</span>)</span><br><span class="line">b = tf.constant([<span class="number">2.0</span>, <span class="number">3.0</span>], name=<span class="string">"b"</span>)</span><br><span class="line">result = a + b</span><br><span class="line"></span><br><span class="line"><span class="comment"># 直接计算向量的和，这样可读性性会变差</span></span><br><span class="line">result = tf.constant([<span class="number">1.0</span>, <span class="number">2.0</span>], name=<span class="string">"a"</span>) + tf.constant([<span class="number">2.0</span>, <span class="number">3.0</span>], name=<span class="string">"b"</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="获取计算图的结果"><a href="#获取计算图的结果" class="headerlink" title="获取计算图的结果"></a>获取计算图的结果</h4><p>当计算图构造完成之后，张量可以用来获的计算结果，可以通过会话（Session）得到真实数字，代码如下<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tf.Session().run(result)</span><br></pre></td></tr></table></figure></p>
+
+        </div>
+        <div class="post-tool">
+            <a class="btn-thumbs-up" href="javascript:void(0);" data-cid="52" title="95">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i> 打赏
+            </a>
+        </div>
+        
+        <div class="post-tags">标签：
+            
+            <a href="/tags/Tensorflow/">Tensorflow</a>
+            
+        </div>
+        
+    </article>
+    
+    <p>新手上路，若有不恰当之处，望不吝赐教！</p>
+    
+    
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    var disqus_config = function () {
+        this.page.url = 'http://heolis.info/machinelearning/Tensorflow张量.html';
+        this.page.identifier = 'machinelearning/Tensorflow张量.html';
+    };
+    (function () { // DON'T EDIT BELOW THIS LINE
+        var d = document, disqus_shortname = 'HeoLis', s = d.createElement('script');
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by
+        Disqus.</a></noscript>
+
+</div>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        </div><!-- end #main-->
+    </div><!-- end #body -->
+    <footer class="footer">
+    <div class="footer-inner">
+        <p>
+            <a href="/links" title="友情链接">友情链接</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            本站已建立<a id="siteBuildingTime"></a>天&nbsp<em>·</em>&nbsp;
+        <span id="busuanzi_container_site_uv">
+            总访客数为
+            <span id="busuanzi_value_site_uv"></span>人次
+        </span>
+        </p>
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    </div>
+</footer>
+
+<!-- Tencent Analytics
+<script type="text/javascript" src="//tajs.qq.com/stats?sId=66072444" charset="UTF-8"></script> -->
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?1762d61c140d8360105c1f427350ad71";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="/js/InsightSearch.js"></script>
+<script src="/js/SimpleCore.js"></script>
+
+</div>
+<div class="fixed-btn">
+    <a class="btn-gotop" href="javascript:"> <i class="fa fa-angle-up"></i></a>
+</div>
+<script>
+    $(function () {
+        SimpleCore.init({
+            buildingTime: '11/26/2017',
+            current: $('.post-tags').length > 0 ? 'post' : 'archive',
+            snsQRCode: '/images/sns-qrcode.png',
+            donateImg: '/images/donate-qr.png',
+        });
+    });
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("MathJax config");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>

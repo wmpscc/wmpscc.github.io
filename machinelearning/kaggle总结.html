@@ -1,0 +1,264 @@
+<!DOCTYPE HTML>
+<html class="no-js" lang="zh-CN">
+
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--[if lte IE 9]>
+<meta http-equiv="refresh" content="0;url=http://heolis.info/warn.html">
+<![endif]-->
+<meta charset="utf-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+<meta http-equiv="mobile-agent" content="format=html5; url=http://heolis.info">
+<meta name="author" content="HeoLis(http://heolis.info/)">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/SimpleStyle.min.css">
+
+<link rel="shortcut icon" href="/images/favicon.jpg">
+
+
+<title>kaggle总结 - Gain</title>
+
+<meta name="keywords" content="机器瞎学/数据掩埋/模式混淆/人工智障/深度遗忘/神经掉线/计算机幻觉">
+
+<meta name="description " content="这里将记录我的学习历程。个人公众号(机器视觉于算法建模）"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="nav">
+    <nav class="nav-menu">
+        <a class="site-name current" href="/" title="Epoch">Epoch</a>
+        <a class="site-index current" href="/"><i class="fa fa-home"></i><span>首页</span></a>
+        <a href="/archives" title="归档"><i class="fa fa-archives"></i><span>归档</span></a>
+        <a href="/tags" title="标签"><i class="fa fa-tags"></i><span>标签</span></a>
+        <!-- custom single page of menus -->
+        
+    </nav>
+</div>
+
+<div class="nav-user">
+    <a class="btn-search" href="#"><i class="fa fa-search"></i></a>
+    <a class="btn-read-mode" href="#"><i class="fa fa-sun-o"></i></a>
+    <a class="btn-sns-qr" href="javascript:"><i class="fa fa-telegram"></i></a>
+</div>
+
+<div id="wrapper" class="clearfix">
+    <div id="body">
+        <div class="main" id="main">
+            <div id="cover">
+    <div class="cover-img"></div>
+    <div class="cover-info">
+        
+        <h1 class="cover-siteName">MachineEpoch</h1>
+        <h3 class="cover-siteTitle">学习、记录、分享、获得</h3>
+        <p class="cover-siteDesc">一个技术新人的博客</p>
+        <div class="cover-sns">
+            
+            <div class="btn btn-github">
+                <a href="https://github.com/wmpscc" target="_blank" title="github" ref="friend">
+                    <i class="fa fa-github"></i>
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</div>
+            <div class="page-title">
+    <ul>
+        <li><a href="/">最新</a></li>
+        
+            
+                <li class="active">
+                    <a href="/categories/machinelearning" data-name="人工智障">人工智障</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/CV" data-name="计算机幻觉">计算机幻觉</a>
+                </li>
+            
+                <li class="">
+                    <a href="/categories/language" data-name="编程语言">编程语言</a>
+                </li>
+            
+        
+        <li class="page-search">
+    <form id="search" class="search-form">
+        <label for="s" class="sr-only">请输入关键字</label>
+        <input class="search-field" type="text" name="s" class="text" placeholder="请输入关键字" />
+        <button type="submit" class="search-form-submit" title="搜索"><i class="fa fa-search"></i></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="请输入关键词..."/>
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(无标题)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+</li>
+
+    </ul>
+</div>
+<div class="main-inner">
+    <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <div class="post-header">
+            <div class="post-author clearfix">
+                <a class="avatar fleft" href="https://github.com/wmpscc" target="_blank">
+                    <img width="48" src="/images/favicon.png" alt="avatar"/>
+                </a>
+                <p><span class="label">作者</span>
+                    <a href="https://github.com/wmpscc" target="_blank">wmpscc</a>
+                    <span title="最后编辑于2018-03-11">2018-03-11</span>
+                </p>
+                <p>Why become a pirate if you can join the Navy?</p>
+            </div>
+            <h2 class="post-title">Kaggle总结</h2>
+            <div class="post-meta">
+                本文总共1796个字 | 您是第<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
+            </div>
+        </div>
+        <div class="post-content markdown-body">
+            <h3 id="处理日期"><a href="#处理日期" class="headerlink" title="处理日期"></a>处理日期</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">birth = trainData[<span class="string">'birth_date'</span>]</span><br><span class="line">birthDate = pd.to_datetime(birth)</span><br><span class="line">end = pd.datetime(<span class="number">2018</span>, <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line"><span class="comment"># 计算天数</span></span><br><span class="line">birthDay = end - birthDate</span><br><span class="line">birthDay.astype(<span class="string">'timedelta64[D]'</span>)</span><br><span class="line"><span class="comment"># timedelta64 转到 int64</span></span><br><span class="line">trainData[<span class="string">'birth_date'</span>] = birthDay.dt.days</span><br></pre></td></tr></table></figure>
+<h3 id="计算多列数的平均值等"><a href="#计算多列数的平均值等" class="headerlink" title="计算多列数的平均值等"></a>计算多列数的平均值等</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">trainData[<span class="string">'operate_able'</span>] = trainData.iloc[ : , <span class="number">20</span>:<span class="number">53</span>].mean(axis=<span class="number">1</span>)</span><br><span class="line">trainData[<span class="string">'local_able'</span>] = trainData.iloc[ : , <span class="number">53</span>:<span class="number">64</span>].mean(axis=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="计算特征之间的相关性并排序显示"><a href="#计算特征之间的相关性并排序显示" class="headerlink" title="计算特征之间的相关性并排序显示"></a>计算特征之间的相关性并排序显示</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">corr_matrix = trainData.corr()</span><br><span class="line">corr_matrix[<span class="string">"y"</span>].sort_values(ascending=<span class="keyword">False</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="填充空值"><a href="#填充空值" class="headerlink" title="填充空值"></a>填充空值</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">testData[<span class="string">'gk'</span>].fillna(testData[<span class="string">'gk'</span>].median(), inplace=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="数据分列（对列进行one-hot）"><a href="#数据分列（对列进行one-hot）" class="headerlink" title="数据分列（对列进行one-hot）"></a>数据分列（对列进行one-hot）</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">train_test = pd.get_dummies(train_test,columns=[<span class="string">"Embarked"</span>])</span><br><span class="line">train_test = pd.get_dummies(train_test,columns = [<span class="string">'SibSp'</span>,<span class="string">'Parch'</span>,<span class="string">'SibSp_Parch'</span>])</span><br></pre></td></tr></table></figure>
+<h3 id="正则提取指定内容"><a href="#正则提取指定内容" class="headerlink" title="正则提取指定内容"></a>正则提取指定内容</h3><p>df[‘Name].str.extract()是提取函数,配合正则一起使用<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">train_test[<span class="string">'Name1'</span>] = train_test[<span class="string">'Name'</span>].str.extract(<span class="string">'.+,(.+)'</span>).str.extract( <span class="string">'^(.+?)\.'</span>).str.strip()</span><br></pre></td></tr></table></figure></p>
+<h3 id="对数据进行分类替换"><a href="#对数据进行分类替换" class="headerlink" title="对数据进行分类替换"></a>对数据进行分类替换</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">train_test[<span class="string">'Name1'</span>].replace([<span class="string">'Capt'</span>, <span class="string">'Col'</span>, <span class="string">'Major'</span>, <span class="string">'Dr'</span>, <span class="string">'Rev'</span>], <span class="string">'Officer'</span> , inplace = <span class="keyword">True</span>)</span><br><span class="line">train_test[<span class="string">'Name1'</span>].replace([<span class="string">'Jonkheer'</span>, <span class="string">'Don'</span>, <span class="string">'Sir'</span>, <span class="string">'the Countess'</span>, <span class="string">'Dona'</span>, <span class="string">'Lady'</span>], <span class="string">'Royalty'</span> , inplace = <span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="删除一列"><a href="#删除一列" class="headerlink" title="删除一列"></a>删除一列</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">del</span> train_test[<span class="string">'Name'</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="对齐合并数据"><a href="#对齐合并数据" class="headerlink" title="对齐合并数据"></a>对齐合并数据</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">testData[<span class="string">'Survived'</span>] = <span class="number">0</span></span><br><span class="line">train_test = trainData.append(testData)</span><br></pre></td></tr></table></figure>
+<h3 id="根据数据是否缺失进行处理"><a href="#根据数据是否缺失进行处理" class="headerlink" title="根据数据是否缺失进行处理"></a>根据数据是否缺失进行处理</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">train_test.loc[train_test[<span class="string">"Age"</span>].isnull() ,<span class="string">"age_nan"</span>] = <span class="number">1</span></span><br><span class="line">train_test.loc[train_test[<span class="string">"Age"</span>].notnull() ,<span class="string">"age_nan"</span>] = <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<h3 id="利用loc将预测值填入数据集"><a href="#利用loc将预测值填入数据集" class="headerlink" title="利用loc将预测值填入数据集"></a>利用loc将预测值填入数据集</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">train_test.loc[(train_test[<span class="string">'Age'</span>].isnull()), <span class="string">'Age'</span>] = lin.predict(missing_age_X_test)</span><br></pre></td></tr></table></figure>
+<h3 id="按区间分割-pd-cut"><a href="#按区间分割-pd-cut" class="headerlink" title="按区间分割(pd.cut)"></a>按区间分割(pd.cut)</h3><p>返回x所属区间的索引值，半开区间<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#将年龄划分四个阶段10以下,10-18,18-30,30-50,50以上</span></span><br><span class="line">train_test[<span class="string">'Age'</span>] = pd.cut(train_test[<span class="string">'Age'</span>], bins=[<span class="number">0</span>,<span class="number">10</span>,<span class="number">18</span>,<span class="number">30</span>,<span class="number">50</span>,<span class="number">100</span>],labels=[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>])</span><br></pre></td></tr></table></figure></p>
+<h2 id="标准化"><a href="#标准化" class="headerlink" title="标准化"></a>标准化</h2><blockquote>
+<p>线性模型需要用标准化的数据建模,而树类模型不需要标准化的数据<br>处理标准化的时候,注意将测试集的数据transform到test集上</p>
+</blockquote>
+<h3 id="StandardScaler"><a href="#StandardScaler" class="headerlink" title="StandardScaler"></a>StandardScaler</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler</span><br><span class="line">ss2 = StandardScaler()</span><br><span class="line">ss2.fit(train_data_X)</span><br><span class="line">train_data_X_sd = ss2.transform(train_data_X)</span><br><span class="line">test_data_X_sd = ss2.transform(test_data_X)</span><br></pre></td></tr></table></figure>
+
+        </div>
+        <div class="post-tool">
+            <a class="btn-thumbs-up" href="javascript:void(0);" data-cid="52" title="95">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i> 打赏
+            </a>
+        </div>
+        
+        <div class="post-tags">标签：
+            
+            <a href="/tags/Kaggle/">Kaggle</a>
+            
+        </div>
+        
+    </article>
+    
+    <p>新手上路，若有不恰当之处，望不吝赐教！</p>
+    
+    
+<div id="disqus_thread"></div>
+<script>
+    /**
+     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+     */
+    var disqus_config = function () {
+        this.page.url = 'http://heolis.info/machinelearning/kaggle总结.html';
+        this.page.identifier = 'machinelearning/kaggle总结.html';
+    };
+    (function () { // DON'T EDIT BELOW THIS LINE
+        var d = document, disqus_shortname = 'HeoLis', s = d.createElement('script');
+        s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by
+        Disqus.</a></noscript>
+
+</div>
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        </div><!-- end #main-->
+    </div><!-- end #body -->
+    <footer class="footer">
+    <div class="footer-inner">
+        <p>
+            <a href="/links" title="友情链接">友情链接</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            本站已建立<a id="siteBuildingTime"></a>天&nbsp<em>·</em>&nbsp;
+        <span id="busuanzi_container_site_uv">
+            总访客数为
+            <span id="busuanzi_value_site_uv"></span>人次
+        </span>
+        </p>
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    </div>
+</footer>
+
+<!-- Tencent Analytics
+<script type="text/javascript" src="//tajs.qq.com/stats?sId=66072444" charset="UTF-8"></script> -->
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?1762d61c140d8360105c1f427350ad71";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="/js/InsightSearch.js"></script>
+<script src="/js/SimpleCore.js"></script>
+
+</div>
+<div class="fixed-btn">
+    <a class="btn-gotop" href="javascript:"> <i class="fa fa-angle-up"></i></a>
+</div>
+<script>
+    $(function () {
+        SimpleCore.init({
+            buildingTime: '11/26/2017',
+            current: $('.post-tags').length > 0 ? 'post' : 'archive',
+            snsQRCode: '/images/sns-qrcode.png',
+            donateImg: '/images/donate-qr.png',
+        });
+    });
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("MathJax config");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>
