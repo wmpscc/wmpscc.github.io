@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>Knowledge Distillation知识蒸馏简单实现 | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="深度学习,Demo,KD,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>Knowledge Distillation知识蒸馏简单实现</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-01-25
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">
+            深度学习
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="Knowledge Distillation知识蒸馏简单实现.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <p>使用 PyTorch 简单实现知识蒸馏网络。<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579947928591-a7560844-8d22-4d1f-ae81-63f7af4792e2.png#align=left&display=inline&height=331&originHeight=331&originWidth=673&size=0&status=done&style=none&width=673" alt=""></p>
+<p>首先训练 Teacher 网络，再训练整体网络。在训练整体网络时，导入训练好的 Teacher 网络模型。</p>
+<h3 id="网络结构"><a href="#网络结构" class="headerlink" title="网络结构"></a>网络结构</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">from</span> torch <span class="keyword">import</span> nn</span><br><span class="line"><span class="keyword">from</span> torchex <span class="keyword">import</span> nn <span class="keyword">as</span> exnn</span><br><span class="line"></span><br><span class="line">device = torch.device(<span class="string">'cuda'</span> <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> <span class="string">'cpu'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TeacherNet</span><span class="params">(nn.Module)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, classes)</span>:</span></span><br><span class="line">        super(TeacherNet, self).__init__()</span><br><span class="line">        self.classes = classes</span><br><span class="line">        self.conv = nn.Sequential(</span><br><span class="line">            nn.Conv2d(in_channels=<span class="number">3</span>, out_channels=<span class="number">96</span>, kernel_size=<span class="number">3</span>, stride=<span class="number">1</span>, padding=<span class="number">1</span>),</span><br><span class="line">            nn.BatchNorm2d(<span class="number">96</span>),</span><br><span class="line">            nn.ReLU(),</span><br><span class="line">            nn.MaxPool2d(kernel_size=<span class="number">3</span>, stride=<span class="number">2</span>),</span><br><span class="line">            nn.Conv2d(in_channels=<span class="number">96</span>, out_channels=<span class="number">256</span>, kernel_size=<span class="number">3</span>, stride=<span class="number">1</span>, padding=<span class="number">1</span>),</span><br><span class="line">            nn.BatchNorm2d(<span class="number">256</span>),</span><br><span class="line">            nn.ReLU(),</span><br><span class="line">            nn.MaxPool2d(kernel_size=<span class="number">3</span>, stride=<span class="number">2</span>),</span><br><span class="line">            nn.Conv2d(in_channels=<span class="number">256</span>, out_channels=<span class="number">384</span>, kernel_size=<span class="number">3</span>, stride=<span class="number">1</span>, padding=<span class="number">1</span>),</span><br><span class="line">            nn.BatchNorm2d(<span class="number">384</span>),</span><br><span class="line">            nn.ReLU(),</span><br><span class="line">            nn.Conv2d(in_channels=<span class="number">384</span>, out_channels=<span class="number">384</span>, kernel_size=<span class="number">3</span>, stride=<span class="number">1</span>, padding=<span class="number">1</span>),</span><br><span class="line">            nn.BatchNorm2d(<span class="number">384</span>),</span><br><span class="line">            nn.ReLU(),</span><br><span class="line">            nn.MaxPool2d(<span class="number">3</span>, <span class="number">2</span>),</span><br><span class="line">            nn.Conv2d(in_channels=<span class="number">384</span>, out_channels=<span class="number">256</span>, kernel_size=<span class="number">3</span>, stride=<span class="number">1</span>, padding=<span class="number">1</span>),</span><br><span class="line">            nn.BatchNorm2d(<span class="number">256</span>),</span><br><span class="line">            nn.ReLU(),</span><br><span class="line">            nn.MaxPool2d(<span class="number">3</span>, <span class="number">2</span>)</span><br><span class="line">        )</span><br><span class="line">        self.fc = nn.Sequential(</span><br><span class="line">            exnn.GlobalAvgPool2d(),</span><br><span class="line">            exnn.Flatten(),</span><br><span class="line">            nn.Linear(<span class="number">256</span>, self.classes)</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, X)</span>:</span></span><br><span class="line">        tmp = self.conv(X)</span><br><span class="line">        <span class="keyword">return</span> self.fc(tmp)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">StudentNet</span><span class="params">(nn.Module)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, classes)</span>:</span></span><br><span class="line">        super(StudentNet, self).__init__()</span><br><span class="line">        self.classes = classes</span><br><span class="line">        self.conv = nn.Sequential(</span><br><span class="line">            nn.Conv2d(in_channels=<span class="number">3</span>, out_channels=<span class="number">96</span>, kernel_size=<span class="number">3</span>, stride=<span class="number">2</span>, padding=<span class="number">1</span>),</span><br><span class="line">            nn.BatchNorm2d(<span class="number">96</span>),</span><br><span class="line">            nn.ReLU(),</span><br><span class="line">            nn.MaxPool2d(kernel_size=<span class="number">3</span>, stride=<span class="number">2</span>),</span><br><span class="line">            nn.Conv2d(in_channels=<span class="number">96</span>, out_channels=<span class="number">256</span>, kernel_size=<span class="number">3</span>, stride=<span class="number">2</span>, padding=<span class="number">1</span>),</span><br><span class="line">            nn.BatchNorm2d(<span class="number">256</span>),</span><br><span class="line">            nn.ReLU(),</span><br><span class="line">            nn.Conv2d(in_channels=<span class="number">256</span>, out_channels=<span class="number">256</span>, kernel_size=<span class="number">3</span>, stride=<span class="number">1</span>, padding=<span class="number">1</span>),</span><br><span class="line">            nn.BatchNorm2d(<span class="number">256</span>),</span><br><span class="line">            nn.ReLU()</span><br><span class="line">        )</span><br><span class="line">        self.fc = nn.Sequential(</span><br><span class="line">            exnn.GlobalAvgPool2d(),</span><br><span class="line">            exnn.Flatten(),</span><br><span class="line">            nn.Linear(<span class="number">256</span>, self.classes)</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, X)</span>:</span></span><br><span class="line">        tmp = self.conv(X)</span><br><span class="line">        <span class="keyword">return</span> self.fc(tmp)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student2Net</span><span class="params">(nn.Module)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, classes)</span>:</span></span><br><span class="line">        super(Student2Net, self).__init__()</span><br><span class="line">        self.classes = classes</span><br><span class="line">        self.conv = nn.Sequential(</span><br><span class="line">            nn.MaxPool2d(kernel_size=<span class="number">3</span>, stride=<span class="number">2</span>),</span><br><span class="line">            nn.MaxPool2d(kernel_size=<span class="number">3</span>, stride=<span class="number">2</span>),</span><br><span class="line">            nn.Conv2d(in_channels=<span class="number">3</span>, out_channels=<span class="number">96</span>, kernel_size=<span class="number">3</span>, stride=<span class="number">1</span>, padding=<span class="number">1</span>),</span><br><span class="line">            nn.BatchNorm2d(<span class="number">96</span>),</span><br><span class="line">            nn.ReLU(),</span><br><span class="line">            nn.MaxPool2d(kernel_size=<span class="number">3</span>, stride=<span class="number">2</span>),</span><br><span class="line">            nn.Conv2d(in_channels=<span class="number">96</span>, out_channels=<span class="number">256</span>, kernel_size=<span class="number">3</span>, stride=<span class="number">2</span>, padding=<span class="number">1</span>),</span><br><span class="line">            nn.BatchNorm2d(<span class="number">256</span>),</span><br><span class="line">            nn.ReLU()</span><br><span class="line">        )</span><br><span class="line">        self.fc = nn.Sequential(</span><br><span class="line">            exnn.GlobalAvgPool2d(),</span><br><span class="line">            exnn.Flatten(),</span><br><span class="line">            nn.Linear(<span class="number">256</span>, self.classes)</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, X)</span>:</span></span><br><span class="line">        tmp = self.conv(X)</span><br><span class="line">        <span class="keyword">return</span> self.fc(tmp)</span><br></pre></td></tr></table></figure>
+
+<p>Student 和 Student2 都是学生，只是模型复杂度不一样，得分不一样而已，方便观察效果。</p>
+<h3 id="训练-Teacher-网络"><a href="#训练-Teacher-网络" class="headerlink" title="训练 Teacher 网络"></a>训练 Teacher 网络</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">from</span> torch <span class="keyword">import</span> nn, optim</span><br><span class="line"><span class="keyword">from</span> torch.nn <span class="keyword">import</span> functional <span class="keyword">as</span> F</span><br><span class="line"><span class="keyword">from</span> utils.load_data_Fnt10 <span class="keyword">import</span> load_data_Fnt10</span><br><span class="line"><span class="keyword">from</span> utils <span class="keyword">import</span> evaluate_accuracy</span><br><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm</span><br><span class="line"><span class="keyword">from</span> KD.Net <span class="keyword">import</span> TeacherNet, StudentNet</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    INPUT_SIZE = <span class="number">112</span></span><br><span class="line">    BATCH_SIZE = <span class="number">32</span></span><br><span class="line">    device = torch.device(<span class="string">'cuda'</span> <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> <span class="string">'cpu'</span>)</span><br><span class="line"></span><br><span class="line">    teacherNet = TeacherNet(classes=<span class="number">10</span>)</span><br><span class="line">    teacherNet = teacherNet.to(device)</span><br><span class="line">    optimizer = optim.Adam(teacherNet.parameters(), lr=<span class="number">1e-3</span>)</span><br><span class="line">    lossFN = nn.CrossEntropyLoss()</span><br><span class="line"></span><br><span class="line">    trainDL, valDL = load_data_Fnt10(INPUT_SIZE, BATCH_SIZE)</span><br><span class="line"></span><br><span class="line">    num_epochs = <span class="number">30</span></span><br><span class="line">    <span class="keyword">for</span> epoch <span class="keyword">in</span> range(num_epochs):</span><br><span class="line">        sum_loss = <span class="number">0</span></span><br><span class="line">        sum_acc = <span class="number">0</span></span><br><span class="line">        batch_count = <span class="number">0</span></span><br><span class="line">        n = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> X, y <span class="keyword">in</span> tqdm(trainDL):</span><br><span class="line">            X = X.to(device)</span><br><span class="line">            y = y.to(device)</span><br><span class="line">            y_pred = teacherNet(X)</span><br><span class="line"></span><br><span class="line">            loss = lossFN(y_pred, y)</span><br><span class="line"></span><br><span class="line">            optimizer.zero_grad()</span><br><span class="line">            loss.backward()</span><br><span class="line">            optimizer.step()</span><br><span class="line"></span><br><span class="line">            sum_loss += loss.cpu().item()</span><br><span class="line">            sum_acc += (y_pred.argmax(dim=<span class="number">1</span>) == y).sum().cpu().item()</span><br><span class="line">            n += y.shape[<span class="number">0</span>]</span><br><span class="line">            batch_count += <span class="number">1</span></span><br><span class="line">        test_acc = evaluate_accuracy(valDL, teacherNet)</span><br><span class="line">        print(<span class="string">"epoch %d: loss=%.4f \t acc=%.4f \t test acc=%.4f"</span> % (epoch + <span class="number">1</span>, sum_loss / n, sum_acc / n, test_acc))</span><br><span class="line">    torch.save(teacherNet.state_dict(), <span class="string">'./teacherNet.pth'</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="训练学生网络"><a href="#训练学生网络" class="headerlink" title="训练学生网络"></a>训练学生网络</h3><p>为了对比使用知识蒸馏和不使用的去吧，可以单独训练 Student 网络。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">from</span> torch <span class="keyword">import</span> nn, optim</span><br><span class="line"><span class="keyword">from</span> torch.nn <span class="keyword">import</span> functional <span class="keyword">as</span> F</span><br><span class="line"><span class="keyword">from</span> utils.load_data_Fnt10 <span class="keyword">import</span> load_data_Fnt10</span><br><span class="line"><span class="keyword">from</span> utils <span class="keyword">import</span> evaluate_accuracy</span><br><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm</span><br><span class="line"><span class="keyword">from</span> KD.Net <span class="keyword">import</span> TeacherNet, StudentNet, Student2Net</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    INPUT_SIZE = <span class="number">112</span></span><br><span class="line">    BATCH_SIZE = <span class="number">32</span></span><br><span class="line">    device = torch.device(<span class="string">'cuda'</span> <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> <span class="string">'cpu'</span>)</span><br><span class="line"></span><br><span class="line">    studentNet = Student2Net(classes=<span class="number">10</span>)</span><br><span class="line">    studentNet = studentNet.to(device)</span><br><span class="line">    optimizer = optim.Adam(studentNet.parameters(), lr=<span class="number">1e-3</span>)</span><br><span class="line">    lossFN = nn.CrossEntropyLoss()</span><br><span class="line"></span><br><span class="line">    trainDL, valDL = load_data_Fnt10(INPUT_SIZE, BATCH_SIZE)</span><br><span class="line"></span><br><span class="line">    num_epochs = <span class="number">90</span></span><br><span class="line">    <span class="keyword">for</span> epoch <span class="keyword">in</span> range(num_epochs):</span><br><span class="line">        sum_loss = <span class="number">0</span></span><br><span class="line">        sum_acc = <span class="number">0</span></span><br><span class="line">        batch_count = <span class="number">0</span></span><br><span class="line">        n = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> X, y <span class="keyword">in</span> tqdm(trainDL):</span><br><span class="line">            X = X.to(device)</span><br><span class="line">            y = y.to(device)</span><br><span class="line">            y_pred = studentNet(X)</span><br><span class="line"></span><br><span class="line">            loss = lossFN(y_pred, y)</span><br><span class="line"></span><br><span class="line">            optimizer.zero_grad()</span><br><span class="line">            loss.backward()</span><br><span class="line">            optimizer.step()</span><br><span class="line"></span><br><span class="line">            sum_loss += loss.cpu().item()</span><br><span class="line">            sum_acc += (y_pred.argmax(dim=<span class="number">1</span>) == y).sum().cpu().item()</span><br><span class="line">            n += y.shape[<span class="number">0</span>]</span><br><span class="line">            batch_count += <span class="number">1</span></span><br><span class="line">        test_acc = evaluate_accuracy(valDL, studentNet)</span><br><span class="line">        print(<span class="string">"epoch %d: loss=%.4f \t acc=%.4f \t test acc=%.4f"</span> % (epoch + <span class="number">1</span>, sum_loss / n, sum_acc / n, test_acc))</span><br><span class="line">    torch.save(studentNet.state_dict(), <span class="string">'./studentNet.pth'</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="训练整体网络"><a href="#训练整体网络" class="headerlink" title="训练整体网络"></a>训练整体网络</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">from</span> torch <span class="keyword">import</span> nn, optim</span><br><span class="line"><span class="keyword">from</span> torch.nn <span class="keyword">import</span> functional <span class="keyword">as</span> F</span><br><span class="line"><span class="keyword">from</span> utils.load_data_Fnt10 <span class="keyword">import</span> load_data_Fnt10</span><br><span class="line"><span class="keyword">from</span> utils <span class="keyword">import</span> evaluate_accuracy</span><br><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm</span><br><span class="line"><span class="keyword">from</span> KD.Net <span class="keyword">import</span> TeacherNet, StudentNet, Student2Net</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    INPUT_SIZE = <span class="number">112</span></span><br><span class="line">    BATCH_SIZE = <span class="number">32</span></span><br><span class="line">    device = torch.device(<span class="string">'cuda'</span> <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> <span class="string">'cpu'</span>)</span><br><span class="line">    teacherNet = TeacherNet(<span class="number">10</span>)</span><br><span class="line">    teacherNet.load_state_dict(torch.load(<span class="string">"./teacherNet.pth"</span>))</span><br><span class="line">    teacherNet.eval()</span><br><span class="line">    teacherNet.train(mode=<span class="keyword">False</span>)</span><br><span class="line">    teacherNet = teacherNet.to(device)</span><br><span class="line"></span><br><span class="line">    studentNet = Student2Net(classes=<span class="number">10</span>)</span><br><span class="line">    studentNet.load_state_dict(torch.load(<span class="string">"./studentNet-ST.pth"</span>))</span><br><span class="line">    studentNet = studentNet.to(device)</span><br><span class="line">    optimizer = optim.Adam(studentNet.parameters(), lr=<span class="number">1e-3</span>)</span><br><span class="line">    lossCE = nn.CrossEntropyLoss()</span><br><span class="line">    lossKD = nn.KLDivLoss()</span><br><span class="line"></span><br><span class="line">    trainDL, valDL = load_data_Fnt10(INPUT_SIZE, BATCH_SIZE)</span><br><span class="line"></span><br><span class="line">    num_epochs = <span class="number">30</span></span><br><span class="line">    T, lambda_stu = <span class="number">5.0</span>, <span class="number">0.05</span></span><br><span class="line">    <span class="keyword">for</span> epoch <span class="keyword">in</span> range(num_epochs):</span><br><span class="line">        sum_loss = <span class="number">0</span></span><br><span class="line">        sum_acc = <span class="number">0</span></span><br><span class="line">        batch_count = <span class="number">0</span></span><br><span class="line">        n = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> X, y <span class="keyword">in</span> tqdm(trainDL):</span><br><span class="line">            X = X.to(device)</span><br><span class="line">            y = y.to(device)</span><br><span class="line">            y_student = studentNet(X)</span><br><span class="line"></span><br><span class="line">            loss_student = lossCE(y_student, y)</span><br><span class="line">            y_teacher = teacherNet(X)</span><br><span class="line">            loss_teacher = lossKD(F.log_softmax(y_student / T, dim=<span class="number">1</span>),</span><br><span class="line">                                  F.softmax(y_teacher / T, dim=<span class="number">1</span>))</span><br><span class="line">            loss = lambda_stu * loss_student + (<span class="number">1</span> - lambda_stu) * T * T * loss_teacher</span><br><span class="line">            optimizer.zero_grad()</span><br><span class="line">            loss.backward()</span><br><span class="line">            optimizer.step()</span><br><span class="line"></span><br><span class="line">            sum_loss += loss.cpu().item()</span><br><span class="line">            sum_acc += (y_student.argmax(dim=<span class="number">1</span>) == y).sum().cpu().item()</span><br><span class="line">            n += y.shape[<span class="number">0</span>]</span><br><span class="line">            batch_count += <span class="number">1</span></span><br><span class="line">        test_acc = evaluate_accuracy(valDL, studentNet)</span><br><span class="line">        print(<span class="string">"epoch %d: loss=%.4f \t acc=%.4f \t test acc=%.4f"</span> % (epoch + <span class="number">1</span>, sum_loss / n, sum_acc / n, test_acc))</span><br><span class="line">    torch.save(studentNet.state_dict(), <span class="string">'./studentNet-ST.pth'</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="完整项目地址"><a href="#完整项目地址" class="headerlink" title="完整项目地址"></a>完整项目地址</h3><ul>
+<li><a href="https://github.com/wmpscc/CNN-Series-Getting-Started-and-PyTorch-Implementation" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/wmpscc/CNN-Series-Getting-Started-and-PyTorch-Implementation</a></li>
+</ul>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/Knowledge%20Distillation%E7%9F%A5%E8%AF%86%E8%92%B8%E9%A6%8F%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/Demo/">
+              #Demo
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/KD/">
+              #KD
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/PyTorch%20%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%E8%AE%B0%E5%BD%95.html" target="_self">PyTorch 常用操作记录</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/PyTorch%E5%AE%9E%E7%8E%B0%E7%BB%8F%E5%85%B8%E5%88%86%E7%B1%BB%E7%BD%91%E7%BB%9C.html" target="_self">PyTorch实现经典分类网络</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

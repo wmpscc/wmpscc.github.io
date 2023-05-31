@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>《机器学习》线性模型公式推导与算法实现 | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="机器学习,Demo,线性模型,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>《机器学习》线性模型公式推导与算法实现</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-01-22
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">
+            机器学习
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="《机器学习》线性模型公式推导与算法实现.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <h1 id="线性回归"><a href="#线性回归" class="headerlink" title="线性回归"></a>线性回归</h1><blockquote>
+<p>参考西瓜书《机器学习》线性回归</p>
+</blockquote>
+<p>给定训练集$D={(\boldsymbol x_1, y_1), (\boldsymbol x_2, y_2), ..., (\boldsymbol x_i, y_i), ( \boldsymbol x_n, y_n)}$，其中$\boldsymbol {x_i} = (x_{i1};x_{i2}; ...; x_{im})$，$y_i\in \mathbb{R}$.线性回归（linear regression）试图学得一个线性模型以尽可能准确地预测实值输出<code>标记</code>。</p>
+<h4 id="以一元线性回归为例，来详细讲解和的最小二乘法估计。"><a href="#以一元线性回归为例，来详细讲解和的最小二乘法估计。" class="headerlink" title="以一元线性回归为例，来详细讲解和的最小二乘法估计。"></a>以一元线性回归为例，来详细讲解$w$和$b$的最小二乘法估计。</h4><p>线性回归试图学得：$$f(x_i)=wx_i+b，使得f(x_i)\simeq y_i$$</p>
+<ul>
+<li>最小二乘法是基于预测值和真实值的均方差最小化的方法来估计参数$w$和$b$，即：</li>
+</ul>
+$$
+\eqalign{
+
+(w*) &  = \mathop {\arg \min }\limits_{(w,b)} \sum\limits_{i = 1}^n {{{(f({x_i}) - {y_i})}^2}}  \cr
+
+&  = \mathop {\arg \min }\limits_{(w,b)} \sum\limits_{i = 1}^n {{{({y_i} - w{x_i} - b)}^2}}  \cr}
+$$
+
+<ul>
+<li>求解$w$和$b$使${E_{(w,b)}} = \sum\limits_{i = 1}^n {{{({y_i} - w{x_i} - b)}^2}}$最小化的过程，称为线性回归模型的最小二乘“参数估计”（parameter estimation）。</li>
+<li>我们可将$E_{(w,b)}$分别对$w$和$b$求导，得到</li>
+</ul>
+$$
+\eqalign{
+
+& {{\partial E(w,b)} \over {\partial w}} = 2\left( {w\sum\limits_{i = 1}^n {x_i^2 - \sum\limits_{i = 1}^n {({y_i} - b){x_i}} } } \right)  \cr
+
+& {{\partial E(w,b)} \over {\partial b}} = 2\left( {nb - \sum\limits_{i = 1}^n {({y_i} - w{x_i})} } \right) \cr}
+$$
+
+<ul>
+<li>令上两式为零可得到$w$和$b$最优解的闭式（closed-form）解：</li>
+</ul>
+$$
+\eqalign{
+
+w &  = {{\sum\limits_{i = 1}^n {{y_i}({x_i} - \bar x)} } \over {\sum\limits_{i = 1}^n {x_i^2 - {\textstyle{1 \over n}}{{\left( {\sum\limits_{i = 1}^n {{x_i}} } \right)}^2}} }} \cr
+
+b &  = {\textstyle{1 \over n}}\sum\limits_{i = 1}^n {({y_i} - w{x_i})}  \cr}
+$$
+
+<p>其中，$$\bar x = {\textstyle{1 \over n}}\sum\limits_{i = 1}^n {{x_i}} $$为$x$的均值。</p>
+<h4 id="更一般的情况"><a href="#更一般的情况" class="headerlink" title="更一般的情况"></a>更一般的情况</h4><p>给定数据集 D，样本由 d 个属性描述，此时我们试图学得</p>
+$f(\boldsymbol {x_i}) = \boldsymbol {w^T}\boldsymbol {x_i} + b$, 使得$f({x_i}) \simeq {y_i}$
+
+<p>这称为“多元线性回归”（multivariate linear regression).</p>
+<p>类似的，可利用最小二乘法来对$w$和$b$进行估计。为便于讨论，我们把$w$和$b$吸收入向量形式$\widehat w = (w;b)$。</p>
+<p>相应的，把数据集 D 表示为一个 mx(d+1)大小的矩阵${\bf{X}}$，其中每行对应于一个示例，该行前 d 个元素对应于前 d 个属性值，最后一个元素恒置为 1，即</p>
+$$
+{\bf{X}} = \left( {\matrix{
+{{x_{11}}} &  \cdots  & {{x_{1d}}} & 1  \cr
+{{x_{21}}} &  \cdots  & {{x_{2d}}} & 1  \cr
+\vdots  &  \ddots  &  \vdots  & 1  \cr
+{{x_{m1}}} &  \cdots  & {{x_{md}}} & 1  \cr  } } \right) = \left( {\matrix{
+{x_1^T}  \cr
+{x_2^T}  \cr
+\vdots   \cr
+{x_m^T}  \cr  } \matrix{
+1  \cr
+1  \cr
+\vdots   \cr
+1  \cr  } } \right)
+$$
+
+<p>再把<code>标记</code>也写成向量形式$\boldsymbol{y}=(y_1;y_2;...;y_m)$，有</p>
+$$ \hat {\boldsymbol {w}^\*} = \mathop {\arg \min }\limits\_{\hat w} \boldsymbol{(y - X\hat w)^T}\boldsymbol {(y - X\hat w)}$$
+
+<p>令${E_{\hat w}} = {(\boldsymbol y - {\bf{X}}\boldsymbol {\hat w})^T}(\boldsymbol y - {\bf{X}}\boldsymbol {\hat w})$，对$\hat w$求导得到：</p>
+$${{\partial {E_{\hat w}}} \over {\partial \hat {\boldsymbol w}}} = 2{{\bf{X}}^T}({\bf{X}}\hat w - \boldsymbol y)$$
+
+<p>令上式为零可得$\hat {w}$最优解的闭式解。</p>
+<p>当${{\bf{X}}^T}{\bf{X}}$为满秩矩阵或正定矩阵时，令上式为零可得：</p>
+$$\boldsymbol {\hat w^*} = {({{\bf{X}}{ - 1}}{{\bf{X}}^T}\boldsymbol {y}$$
+<p>令$\boldsymbol {\hat x_i} = (\boldsymbol{x_i};1)$，则最终学得的多元线性回归模型为</p>
+$$f({\boldsymbol{\hat x_i}}) = \boldsymbol {\hat x_i}{({{\bf{X}}{ - 1}}{{\bf{X}}^T}\boldsymbol y$$
+
+<h1 id="广义线性模型"><a href="#广义线性模型" class="headerlink" title="广义线性模型"></a>广义线性模型</h1><p>线性回归假定输入空间到输出空间的函数映射成线性关系，但现实应用中，很多问题都是非线性的。为了拓展其应用场景，我们可以将线性回归的预测值做一个非线性的函数变化去逼近真实值，这样得到的模型统称为广义线性模型(generalized linear model)：</p>
+$$y = {g^{ - 1}}(\boldsymbol{w^T}\boldsymbol x + b)$$
+<p>其中函数$g(\cdot)$称为“联系函数”（link function），它<code>连续且充分光滑</code>。</p>
+<p>当联系函数为$g(\cdot)=ln(\cdot)$时，称为对数线性回归。即</p>
+$$
+\ln y= \boldsymbol{w^T}\boldsymbol x + b \
+y = eT}\boldsymbol x + b}
+$$
+
+<h1 id="逻辑斯蒂回归"><a href="#逻辑斯蒂回归" class="headerlink" title="逻辑斯蒂回归"></a>逻辑斯蒂回归</h1><p>前面介绍的都是完成回归任务，如果要做的是分类任务该怎么办呢？</p>
+<p>按照上面介绍的广义线性模型，要完成分类任务，也就是去寻找一个合适的$g(\cdot)$函数。为了简化问题，我们先考虑二分类任务，其输出标记$y \in { 0,1}$。线性模型产生的预测值$z=\boldsymbol{w^T}\boldsymbol {x} + b$是实值，因此，我们需要将实值 z 转换为 0/1 值。最理想的是“单位阶跃函数”。</p>
+$$
+y=\begin{cases}
+0,&z<0 \="" 0.5,="" &z="0" 1,&z="">0
+\end{cases}
+$$
+
+<p>即若预测值 z 大于零就判为正例，小于零则判为反例，预测值为临界值零则可任意判定，如图所示<br><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695891764-fbcd8ff2-f49d-4a65-90b9-723c62a1935b.jpeg#align=left&display=inline&height=313&originHeight=313&originWidth=489&size=0&status=done&style=none&width=489" alt=""></p>
+<p>从图中可以发现，单位阶跃函数不连续，因此不能直接用作联系函数$g(\cdot)$。于是我们希望找到能在一定程度上近似单位阶跃函数的替代函数，并希望它在临界点连续且单调可微。</p>
+<p>对数几率函数（logistic function）正是这样一个常用的替代函数。</p>
+$$y = \frac{1}{{1 + {e^{ - (\boldsymbol{w^T}\boldsymbol x + b)}}}}$$
+<p>从图中可以看出，它的图像形式 S，对这类图像形式 S 的函数称为”Sigmoid 函数”，对数几率函数是它最重要的代表。</p>
+<p>这种利用对数几率函数去逼近真实标记的对数几率的模型称为“对数几率回归”，又常叫做“逻辑斯蒂回归”，虽然它的名字是“回归”，但实际上是一种分类学习方法。</p>
+<p><strong>对数逻辑回归有很多优点：</strong></p>
+<ul>
+<li>1.可以直接对分类可能性进行预测，将 y 视为样本 x 作为正例的概率；</li>
+<li>2.无需事先假设数据分布，这样避免了假设分布不准确带来的问题；</li>
+<li>3.它是任意阶可导的凸函数，可直接应用现有的数值优化算法求取最优解。</li>
+</ul>
+<h3 id="参数和的确定"><a href="#参数和的确定" class="headerlink" title="参数和的确定"></a>参数$\boldsymbol w$和$b$的确定</h3><p>将 y 视为样本$\boldsymbol x$作为正例的可能性。显然有：</p>
+$$p(y=1|\boldsymbol  x) = \frac{{{e^{\boldsymbol {w^T}\boldsymbol x + b}}}}{{1 + {e^{\boldsymbol {w^T}\boldsymbol x + b}}}}$$
+$$p(y=0|\boldsymbol  x) = \frac{1}{{1 + {e^{\boldsymbol {w^T}\boldsymbol x + b}}}}$$
+
+<p>于是，可通过“极大似然法”来估计参数$\boldsymbol w$和$b$。给定数据集${ (\boldsymbol {x_i},{y_i})} _{i = 1}^m$，其“对数似然”为：</p>
+$$l(\boldsymbol w,b) = \sum\limits_{i = 1}^n {\ln p({y_i}|\boldsymbol {x_i};\boldsymbol w,b)} $$
+<p>令</p>
+$$
+\eqalign{
+& \boldsymbol \beta  = (\boldsymbol w;b),\hat {\boldsymbol x} = (\boldsymbol x;1)  \cr
+& {\boldsymbol \beta ^T}\hat {\boldsymbol x} = \boldsymbol{w^T}\boldsymbol x + b  \cr
+& {p_1}(\boldsymbol {\hat x};\boldsymbol \beta ) = p(y = 1|\boldsymbol {\hat x};\boldsymbol \beta )  \cr
+& {p_0}(\boldsymbol {\hat x};\boldsymbol \beta ) = p(y = 0|\boldsymbol {\hat x};\boldsymbol \beta ) \cr}
+$$
+
+<p>则似然项可重写为：</p>
+$$p({y_i}|\boldsymbol {x_i};\boldsymbol w,b) = {y_i}{p_1}({\boldsymbol {\hat x_i}};\boldsymbol \beta ) + (1 - {y_i}){p_0}(\boldsymbol {\hat x};\boldsymbol \beta )$$
+<p>将上式带入似然函数：</p>
+$$
+\eqalign{
+l(\beta ) &  = \sum\limits_{i = 1}^n {\ln ({y_i}{p_1}(\hat x;\beta ) + (1 - {y_i}){p_0}(\hat x;\beta )}  \cr
+&  = \sum\limits_{i = 1}^n {\ln \left( {{y_i}\frac{{{e^{{\beta ^T}\hat x}}}}{{1 + {e^{{\beta ^T}\hat x}}}} + (1 - {y_i})\frac{1}{{1 + {e^{{\beta ^T}\hat x}}}}} \right)}  \cr
+&  = \sum\limits_{i = 1}^n {\ln \left( {\frac{{{y_i}{e^{{\beta ^T}\hat x}} + (1 - {y_i})}}{{1 + {e^{{\beta ^T}\hat x}}}}} \right)}  \cr
+&  = \sum\limits_{i = 1}^n {\ln \left( {\frac{{{y_i}({e^{{\beta ^T}\hat x}} - 1) + 1}}{{1 + {e^{{\beta ^T}\hat x}}}}} \right)}  \cr
+&  = \sum\limits_{i = 1}^n {\left( {\ln ({y_i}({e^{{\beta ^T}\hat x}} - 1) + 1) - \ln (1 + {e^{{\beta ^T}\hat x}})} \right)}  \cr
+&  =\begin{cases}
+{\sum\limits_{i = 1}^n { - \ln (1 + {e^{{\beta ^T}\hat x}})} },&y_i=0 \ {\sum\limits_{i = 1}^n {({\beta ^T}\hat x - \ln (1 + {e^{{\beta ^T}\hat x}}))} },&y_i=1 \cr
+\end{cases}}
+$$
+
+<p>考虑到$y_i \in {0, 1}$，即最大化$l(\boldsymbol w,b)$等价于最小化</p>
+$$l(\boldsymbol \beta ) = \sum\limits_{i = 1}^n {(-y_i\boldsymbol{\beta ^T}\boldsymbol {\hat x_i} + \ln (1 + {e^{{\beta ^T}\hat x_i}}))} $$
+
+<p>接下来可以利用数值优化算法对其求解，即</p>
+$$\beta ^* {\text{ = }}\mathop {\arg \min }\limits_\beta  l(\beta )$$
+
+<h1 id="对数逻辑回归代码实现"><a href="#对数逻辑回归代码实现" class="headerlink" title="对数逻辑回归代码实现"></a>对数逻辑回归代码实现</h1><p>回归模型</p>
+$$y = \frac{1}{{1 + {e^{ - z}}}}$$
+<p>损失函数（最小化）：</p>
+$$l(\boldsymbol \beta ) = \sum\limits_{i = 1}^n {(-y_i\boldsymbol{\beta ^T}\boldsymbol {\hat x_i} + \ln (1 + {e^{{\beta ^T}\hat x_i}}))} $$
+
+<p>即</p>
+$$\beta ^* {\text{ = }}\mathop {\arg \min }\limits_\beta  l(\beta )$$
+<p><strong>以牛顿法求解为例</strong>:其第$t+1$轮迭代解的更新公式为</p>
+$$\boldsymbol \beta ^{t+1}=\boldsymbol \beta ^t-\left ( \frac{\partial ^2l(\boldsymbol \beta))}{\partial {\boldsymbol \beta}\partial {\boldsymbol \beta} ^T} \right )^{-1}\frac{\partial l(\boldsymbol \beta)}{\partial \boldsymbol \beta}$$
+<p>其中关于$\boldsymbol \beta$的一阶、二阶导数分别为</p>
+$$\frac{\partial l(\beta)}{\partial \beta} = -\sum ^m_{i=1}\hat x_i(y_i-p_1(\hat x_i;\beta))$$
+$$\frac{\partial ^2l(\beta)}{\partial \beta\partial \beta ^T}=\sum ^m_{i=1}\hat x_i\hat x_i^Tp_1(\hat x_i;\beta)(1-p_1(\hat x_i; \beta))$$
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">data = pd.read_csv(<span class="string">"../data/irisdata.txt"</span>)</span><br><span class="line"><span class="comment"># 只保留两种标签，进行二分类任务</span></span><br><span class="line">data = data[data[<span class="string">'name'</span>] != <span class="string">'Iris-setosa'</span>]</span><br><span class="line">data[<span class="string">'name'</span>].value_counts()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Iris-versicolor    50</span><br><span class="line">Iris-virginica     50</span><br><span class="line">Name: name, dtype: int64</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 分离标签，并将标签映射到数值</span></span><br><span class="line">y = data[<span class="string">'name'</span>]</span><br><span class="line">y[y == <span class="string">'Iris-versicolor'</span>] = <span class="number">1</span></span><br><span class="line">y[y == <span class="string">'Iris-virginica'</span>] = <span class="number">0</span></span><br><span class="line">X = data.drop(<span class="string">'name'</span>, axis=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 划分训练集和验证集</span></span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=<span class="number">0.5</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LogisticReressionClassifier</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, max_iter)</span>:</span></span><br><span class="line">        self.max_iter = max_iter</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sigmod</span><span class="params">(self, z)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span> / (<span class="number">1</span> + np.exp(-z))</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fit</span><span class="params">(self, X, y)</span>:</span></span><br><span class="line">        self.beta = np.random.normal(size=(X.shape[<span class="number">0</span>], X.shape[<span class="number">1</span>] + <span class="number">1</span>))  <span class="comment"># 初始化参数</span></span><br><span class="line">        self.X_hat = np.c_[X, np.ones(X.shape[<span class="number">0</span>])]  <span class="comment"># 为数据集加入一列1</span></span><br><span class="line">        self.loss_function(X, y)  <span class="comment"># 打印训练前loss</span></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(self.max_iter): <span class="comment"># 迭代优化</span></span><br><span class="line">            pd1 = <span class="number">0</span>  <span class="comment"># 一阶偏导</span></span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span>  range(len(y)):</span><br><span class="line">                pd1 -= self.X_hat[i]*(y[i] - self.sigmod(np.dot(self.beta[i].T, self.X_hat[i])))</span><br><span class="line">            pd2 = <span class="number">0</span>  <span class="comment"># 二阶偏导</span></span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> range(len(y)):</span><br><span class="line">                pd2 += self.X_hat[i].dot(self.X_hat[i].T.dot(self.sigmod(self.beta[i].T.dot(self.X_hat[i]))*(<span class="number">1</span> - self.sigmod(self.beta[i].T.dot(self.X_hat[i])))))</span><br><span class="line">            self.beta = self.beta - (<span class="number">1</span> / pd2)*pd1  <span class="comment"># 更新参数beta</span></span><br><span class="line">        self.loss_function(X, y)  <span class="comment"># 打印训练后的loss</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">loss_function</span><span class="params">(self, X, y)</span>:</span></span><br><span class="line">        loss = <span class="number">0</span></span><br><span class="line">        <span class="comment"># 根据损失函数公式计算当前loss</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(y)):</span><br><span class="line">            loss += -y[i]*np.dot(self.beta[i].T, self.X_hat[i]) + np.log(<span class="number">1</span> + np.exp(np.dot(self.beta[i].T, self.X_hat[i])))</span><br><span class="line">        print(loss)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">predict</span><span class="params">(self, X)</span>:</span></span><br><span class="line">        y = [] <span class="comment"># 存储预测结果</span></span><br><span class="line">        X = np.c_[X, np.ones(X.shape[<span class="number">0</span>])]  <span class="comment"># 为训练集加入一列1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(X.shape[<span class="number">0</span>]):</span><br><span class="line">            <span class="comment"># 计算样本作为正例的相对可能性（几率）</span></span><br><span class="line">            odds = self.sigmod(np.mean(self.beta, axis=<span class="number">0</span>).T.dot(X[i]))</span><br><span class="line">            <span class="keyword">if</span> (odds &gt;= <span class="number">0.5</span>):</span><br><span class="line">                y.append(<span class="number">1</span>)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                y.append(<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> y</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clf = LogisticReressionClassifier(<span class="number">10000</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clf.fit(X_train.values, y_train.values)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">187.27577618364464</span><br><span class="line">38.2785420108109</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">y_pred = clf.predict(X_test.values)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 正确率</span></span><br><span class="line">sum(y_pred == y_test)/len(y_test)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0.96</span><br></pre></td></tr></table></figure>
+
+<h2 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h2><ul>
+<li><p>本系列文章持续更新，github 地址：<a href="https://github.com/wmpscc/ML-DL" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/wmpscc/ML-DL</a></p>
+</li>
+<li><p>欢迎关注我的公众号，一起学习！</p>
+</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695891759-4200b010-22a6-43bc-b09a-e3c8550b9449.jpeg#align=left&display=inline&height=640&originHeight=640&originWidth=1080&size=0&status=done&style=none&width=1080" alt=""></p>
+</0>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%85%AC%E5%BC%8F%E6%8E%A8%E5%AF%BC%E4%B8%8E%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/Demo/">
+              #Demo
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/">
+              #线性模型
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/%E5%A4%A7%E6%95%B0%E5%8A%A0%E6%B3%95.html" target="_self">大数加法</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B.html" target="_self">科学计算环境配置教程</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>Kaggle杂记 | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="数据科学,特征工程,kaggle,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>Kaggle杂记</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-01-23
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6/">
+            数据科学
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="Kaggle杂记.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <h1 id="特征处理和生成"><a href="#特征处理和生成" class="headerlink" title="特征处理和生成"></a>特征处理和生成</h1><h2 id="数值特征-1"><a href="#数值特征-1" class="headerlink" title="数值特征"></a>数值特征</h2><h3 id="scaling-1"><a href="#scaling-1" class="headerlink" title="scaling"></a>scaling</h3><ul>
+<li><p>基于树的模型不依赖 scaling，非基于树的模型恰恰相反</p>
+</li>
+<li><p>当两个属性数量级的差距很大时，原来微小的距离，将变的很大，这对 KNN、linear models 有很大影响。</p>
+</li>
+<li><p>梯度下降法在没有适当放缩的情况下会变的很糟糕，由于这个原因，神经网络在特征预处理上与线性模型相似。</p>
+</li>
+<li><p>标准化不影响分布</p>
+</li>
+<li><p>在 MinMaxScaling 或 StandardScaling 转换之后，特性对非树模型的影响大致相同。</p>
+</li>
+<li><p>outliers 离群点</p>
+</li>
+<li><p>离群点既可以出现在特征值 X 里，也可以在目标值 y 中，这会对模型产生影响</p>
+</li>
+<li><p>我们可以将特征值控制在两个设定的下界和上界之间，例如第一百分位数和 99 百分位数之间。</p>
+</li>
+</ul>
+<h3 id="rank"><a href="#rank" class="headerlink" title="rank"></a>rank</h3><p>例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rank([-100, 0, 1e5])  &#x3D;&gt;  [0,1,2]</span><br><span class="line">rank([1000, 1, 10])   &#x3D;&gt;  [2,0,1]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>这个转换可能比 MinMaxScaler 更好，因为秩转换将使异常值更接近其他对象</li>
+<li>如果我们没有时间手动处理异常值，线性模型、KNN 和神经网络可以从这种转换中获益</li>
+<li>需要注意的是，它也需要被应用在测试集上，你可以合并后一起处理。</li>
+<li>可以在 scipy.stats.rankdata 中找到</li>
+</ul>
+<h3 id="转换"><a href="#转换" class="headerlink" title="转换"></a>转换</h3><ul>
+<li>Log transform:</li>
+</ul>
+<p><code>np.log(1 + x)</code></p>
+<ul>
+<li>Raising to the power &lt; 1:</li>
+</ul>
+<p><code>np.sqrt(x + 2/3)</code></p>
+<ul>
+<li>这两种转换都是有用的，因为它会使大的值更接近特征的平均值，使接近零的值更容易区分。</li>
+<li>有时候，在不同预处理产生的连接数据帧上训练模型，或者在混合模型上训练不同的预处理数据是有益的。</li>
+<li>它能帮助非基于树的模型，例如线性模型、KNN 特别是神经网络。</li>
+</ul>
+<h3 id="Feature-generation"><a href="#Feature-generation" class="headerlink" title="Feature generation"></a>Feature generation</h3><p>他是用关于特征的知识和任务来生成新特征，它让模型更简单有效。简单来说就是用先验知识、逻辑推理、直觉来创建新的特征。</p>
+<ul>
+<li>房价上，知道面积和房价之后，可以创建’每平米’的价钱</li>
+<li>在 Forest Cover Type Prediction dataset 上，可以对当前点到水源地建立不同的距离特征</li>
+<li>还可以提取价格的小数部分，这可以区分消费概念。甚至可以借着这个区分是否为机器生成的异常数据，例如小数部分是 0.212895..很长一串</li>
+</ul>
+<h2 id="Categorical-and-ordinal-features（标签和顺序特征）"><a href="#Categorical-and-ordinal-features（标签和顺序特征）" class="headerlink" title="Categorical and ordinal features（标签和顺序特征）"></a>Categorical and ordinal features（标签和顺序特征）</h2><ul>
+<li>区别</li>
+</ul>
+<p>标签：无顺序上区别的，例如男、女</p>
+<p>顺序特征：在顺序上有特别意义，例如小学、初中、大学，这是有递增关系的</p>
+<ul>
+<li>将标签映射为数字<ul>
+<li>Alphabetical(sorted):[S,C,Q] -&gt; [2,1,3]</li>
+</ul>
+</li>
+</ul>
+<p><code>sklearn.preprocessing.LabelEncoder</code></p>
+<ul>
+<li>Order od appearance:[S,C,Q] -&gt; [1,2,3]</li>
+</ul>
+<p><code>Pandas.factorize</code></p>
+<ul>
+<li>将标签替换为其频率，这代表了值的分布信息，可用于树模型和线性模型</li>
+</ul>
+<p>[S,C,Q] -&gt; [0.5,0.3,0.2]</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">encoding &#x3D; titanic.groupby(&#39;Embarked&#39;).size()</span><br><span class="line">encoding &#x3D; encoding &#x2F; len(titanic)</span><br><span class="line">titanic[&#39;enc&#39;] &#x3D; titanic.Embarked.map(encoding)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Label and Frequency 编码常用于树模型</li>
+<li>One-hot 编码常用于非树模型</li>
+<li>标签的相互联结可以帮助线性模型和 KNN<table>
+<thead>
+<tr>
+<th align="center">pclass</th>
+<th align="center">sex</th>
+<th align="center">pclass_sex</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">3</td>
+<td align="center">male</td>
+<td align="center">3male</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">femal</td>
+<td align="center">1femal</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">femal</td>
+<td align="center">3fmeal</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">femal</td>
+<td align="center">1femal</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<h2 id="Datetime-and-coordinates"><a href="#Datetime-and-coordinates" class="headerlink" title="Datetime and coordinates"></a>Datetime and coordinates</h2><h3 id="Datetime"><a href="#Datetime" class="headerlink" title="Datetime"></a>Datetime</h3><ul>
+<li>Periodicity 周期性</li>
+</ul>
+<p>在周、月、季节、年中的天数；秒、分、小时</p>
+<ul>
+<li><p>Time since row-independent/dependent event</p>
+<ul>
+<li>行无关时刻：since 00:00:00 UTC,1 January 1970</li>
+<li>行相关重要时刻：离下一个假期天数、上一个假期过去天数<table>
+<thead>
+<tr>
+<th align="center">Data</th>
+<th align="center">week day</th>
+<th align="center">daynumber_since_year_2014</th>
+<th align="center">is_holiday</th>
+<th align="center">days_till_holidays</th>
+<th align="center"><strong>sales</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">01.01.14</td>
+<td align="center">5</td>
+<td align="center">0</td>
+<td align="center">True</td>
+<td align="center">0</td>
+<td align="center">1213</td>
+</tr>
+<tr>
+<td align="center">02.01.14</td>
+<td align="center">6</td>
+<td align="center">1</td>
+<td align="center">False</td>
+<td align="center">3</td>
+<td align="center">938</td>
+</tr>
+<tr>
+<td align="center">03.01.14</td>
+<td align="center">0</td>
+<td align="center">2</td>
+<td align="center">False</td>
+<td align="center">2</td>
+<td align="center">2448</td>
+</tr>
+<tr>
+<td align="center">04.01.14</td>
+<td align="center">1</td>
+<td align="center">3</td>
+<td align="center">False</td>
+<td align="center">1</td>
+<td align="center">1744</td>
+</tr>
+<tr>
+<td align="center">05.01.14</td>
+<td align="center">2</td>
+<td align="center">4</td>
+<td align="center">True</td>
+<td align="center">0</td>
+<td align="center">1732</td>
+</tr>
+<tr>
+<td align="center">06.01.14</td>
+<td align="center">3</td>
+<td align="center">5</td>
+<td align="center">False</td>
+<td align="center">9</td>
+<td align="center">1022</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+</li>
+<li><p>Difference between dates</p>
+</li>
+</ul>
+<p>datetime_feature_1 - datetime_feature_2<br>| user_id | registration_date | <strong>last_purchase_date</strong> | <strong>last_call_date</strong> | date_diff | churn |<br>| :—: | :—: | :—: | :—: | :—: | :—: |<br>| 14 | 10.02.2016 | 21.04.2016 | 26.04.2016 | 5 | 0 |<br>| 15 | 10.02.2016 | 03.06.2016 | 01.06.2016 | -2 | 1 |<br>| 16 | 11.02.2016 | 11.01.2017 | 11.01.2017 | 1 | 1 |<br>| 20 | 12.02.2016 | 06.11.2016 | 08.02.2017 | 94 | 0 |</p>
+<h3 id="Coordinates"><a href="#Coordinates" class="headerlink" title="Coordinates"></a>Coordinates</h3><ul>
+<li>Interesting places from train/test data or additional data</li>
+</ul>
+<p>使用各种距离构造特征</p>
+<ul>
+<li>Centers of clusters</li>
+</ul>
+<p>利用到聚类中心的距离</p>
+<ul>
+<li>Aggregated statistic</li>
+</ul>
+<p>计算周边对象的汇总统计信息</p>
+<ul>
+<li>trick</li>
+</ul>
+<p>利用决策树根据经纬度信息，将地区分为两个部分</p>
+<h2 id="处理缺失值"><a href="#处理缺失值" class="headerlink" title="处理缺失值"></a>处理缺失值</h2><ul>
+<li>根据具体情况决定填充缺失值</li>
+<li>通常用<code>-999</code>、<code>-1</code>、mean、median 替换缺失值</li>
+<li>Missing values already can be replaced with something by organizers.</li>
+<li>二值特征”isnull”也是有用的</li>
+<li>通常来说，在 feature generation 之前应该避免去填充 nan</li>
+<li>Xgboost 可以处理 NaN</li>
+</ul>
+<h1 id="从文本和图像中提取特征"><a href="#从文本和图像中提取特征" class="headerlink" title="从文本和图像中提取特征"></a>从文本和图像中提取特征</h1><h3 id="Bag-of-words"><a href="#Bag-of-words" class="headerlink" title="Bag of words"></a>Bag of words</h3><p>为了统一尺度，我们使用正则化后的”Bag of words”</p>
+<ul>
+<li>Term frequency</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tf &#x3D; 1&#x2F;x.sum(axis&#x3D;1)[:, None]</span><br><span class="line">x &#x3D; x*tf</span><br></pre></td></tr></table></figure>
+
+<p>为了提取重点，降低常出现词的频率，有了这个：</p>
+<ul>
+<li>Inverse Document Frequency</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">idf &#x3D; np.log(x.shape[0] &#x2F; (x &gt; 0).sum(0))</span><br><span class="line">x &#x3D; x*idf</span><br></pre></td></tr></table></figure>
+
+<p>这可以在<code>sklearn.feature_extraction.text.TfidfVectorizer</code>找到。</p>
+<h3 id="N-grams"><a href="#N-grams" class="headerlink" title="N-grams"></a>N-grams</h3><p>可以利用于句子上。</p>
+<blockquote>
+<p>sklearn.feature_exraction.text.CountVectorizer:<br>Ngram_range, analyzer</p>
+</blockquote>
+<h2 id="Pipeline-of-applying-BOW-Conclusion"><a href="#Pipeline-of-applying-BOW-Conclusion" class="headerlink" title="Pipeline of applying BOW(Conclusion)"></a>Pipeline of applying BOW(Conclusion)</h2><h3 id="1-Preprocessing"><a href="#1-Preprocessing" class="headerlink" title="1.Preprocessing:"></a>1.Preprocessing:</h3><p><strong>Lowercase</strong>: Very 和 very 的区别</p>
+<p><strong>stemming</strong>：democracy, democratic, and democratization -&gt; democr</p>
+<p><strong>lemmatization</strong>:democracy, democratic, and democratization -&gt; democracy</p>
+<p><strong>stopwords</strong>:一般在网上可以搜到这样的表</p>
+<blockquote>
+<p>sklearn.feature_extraction.text.CountVectorizer:<br>max_df</p>
+</blockquote>
+<h3 id="2-Ngrams-can-help-to-use-local-context"><a href="#2-Ngrams-can-help-to-use-local-context" class="headerlink" title="2.Ngrams can help to use local context"></a>2.Ngrams can help to use local context</h3><h3 id="3-Postprocessing-TFiDF"><a href="#3-Postprocessing-TFiDF" class="headerlink" title="3.Postprocessing:TFiDF"></a>3.Postprocessing:TFiDF</h3><h2 id="BOW-and-w2v-comparison"><a href="#BOW-and-w2v-comparison" class="headerlink" title="BOW and w2v comparison"></a>BOW and w2v comparison</h2><ul>
+<li>1.Bag of words<ul>
+<li>a. Very large vectors</li>
+<li>b. Meaning of each value in vector is known</li>
+</ul>
+</li>
+<li>Word2vec<ul>
+<li>a. Relatively small vectors</li>
+<li>b. Values in vevtor can be interpreted only in some cases</li>
+<li>c. The words with similar meaning often have similar embedding</li>
+</ul>
+</li>
+</ul>
+<h2 id="Feature-extraction-from-text-and-images"><a href="#Feature-extraction-from-text-and-images" class="headerlink" title="Feature extraction from text and images"></a>Feature extraction from text and images</h2><ul>
+<li>1.</li>
+</ul>
+<p>Texts</p>
+<ul>
+<li>a.Preprocessing</li>
+</ul>
+<p>Lowercase, stemming, lemmarization, stopwords</p>
+<ul>
+<li>b.Bag of words</li>
+</ul>
+<p>1.Huge vectors</p>
+<p>2.Ngrams can help to use local context</p>
+<p>3.TFiDF can be of use as postprocessing</p>
+<ul>
+<li>c.Word2vec</li>
+</ul>
+<p>1.Relatively small vectors</p>
+<p>2.Pretrained models</p>
+<ul>
+<li>1.</li>
+</ul>
+<p>Image</p>
+<ul>
+<li>a.Features can be extracted from different layers</li>
+<li>b.Careful choosing of pretrained network can help</li>
+<li>c.Finetuing allows to refine pretrained models</li>
+<li>d.Data augmentation can improve the model.</li>
+</ul>
+<h1 id="探索数据分析"><a href="#探索数据分析" class="headerlink" title="探索数据分析"></a>探索数据分析</h1><h2 id="Building-intuition-about-the-data"><a href="#Building-intuition-about-the-data" class="headerlink" title="Building intuition about the data"></a>Building intuition about the data</h2><ul>
+<li>Get domain knowledge<ul>
+<li>It helps to deeper understand the problem</li>
+</ul>
+</li>
+<li>Check if the data is intuitive<ul>
+<li>And agrees with domain knowledge</li>
+</ul>
+</li>
+<li>Understand how the data was generated<ul>
+<li>As it is crucial to set up a proper validation(很可能训练集数据分布与测试集不同，导致验证集错误)</li>
+</ul>
+</li>
+</ul>
+<h2 id="Exploring-anonymized-data"><a href="#Exploring-anonymized-data" class="headerlink" title="Exploring anonymized data"></a>Exploring anonymized data</h2><ul>
+<li>Try to decode the features<ul>
+<li>Guess the true meaning of the feature</li>
+</ul>
+</li>
+<li>Guess the feature types<ul>
+<li>Each type needs its own preprocessing</li>
+</ul>
+</li>
+</ul>
+<h1 id="Mean-encodings"><a href="#Mean-encodings" class="headerlink" title="Mean encodings"></a>Mean encodings</h1><h2 id="Using-target-to-generate-features"><a href="#Using-target-to-generate-features" class="headerlink" title="Using target to generate features"></a>Using target to generate features</h2><ul>
+<li><p><strong>example</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center">feature</th>
+<th align="center">feature_label</th>
+<th align="center">feature_mean</th>
+<th align="center">target</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">0</td>
+<td align="center">Moscow</td>
+<td align="center">1</td>
+<td align="center">0.4</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">Moscow</td>
+<td align="center">1</td>
+<td align="center">0.4</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">Moscow</td>
+<td align="center">1</td>
+<td align="center">0.4</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">Moscow</td>
+<td align="center">1</td>
+<td align="center">0.4</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">Moscow</td>
+<td align="center">1</td>
+<td align="center">0.4</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td align="center">Tver</td>
+<td align="center">2</td>
+<td align="center">0.8</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td align="center">Tver</td>
+<td align="center">2</td>
+<td align="center">0.8</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">7</td>
+<td align="center">Tver</td>
+<td align="center">2</td>
+<td align="center">0.8</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">8</td>
+<td align="center">Tver</td>
+<td align="center">2</td>
+<td align="center">0.8</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">9</td>
+<td align="center">Klin</td>
+<td align="center">0</td>
+<td align="center">0.0</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">10</td>
+<td align="center">klin</td>
+<td align="center">0</td>
+<td align="center">0.0</td>
+<td align="center">0</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>feature_mean=mean(target)</p>
+</li>
+</ul>
+<blockquote>
+<p>这个操作可以让本来无序的类别标签变得有序。</p>
+</blockquote>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/Kaggle%E6%9D%82%E8%AE%B0.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/">
+              #特征工程
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/kaggle/">
+              #kaggle
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/SKlearn%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E6%96%B9%E6%B3%95.html" target="_self">SKlearn模型评估方法</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/magenta%20GPU%20%E7%89%88%E5%AE%89%E8%A3%85.html" target="_self">magenta GPU 版安装</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>SuperFront从低分辨率人脸进行正面化 | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="GAN,face,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>SuperFront从低分辨率人脸进行正面化</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2021-02-07
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/GAN/">
+            GAN
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="SuperFront从低分辨率人脸进行正面化.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>随着深度学习话题的推进，面部旋转和其他基于面部的生成任务变得更加频繁。及时在合成人脸方面达到了令人印象深刻的里程碑，但在实践中保持身份的重要性仍然是必须的，不应被忽视。同样，对于人脸模糊，姿势较大，质量较低的数据，不应该更困难。现有的方法倾向于集中在姿势变化的样本上，但用的假设数据质量很高。我们提出了一种基于 GAN 的模型，以从一个或多个具有低姿态的低分辨率（LR）面孔生成高质量的、保留身份信息的正面面孔。具体来说，我们提出 SuperFront GAN（SF-GAN）从具有 多种姿势和身份保留的 one-to-many LR faces 合成高分辨率（HR）的正面人脸。我们将超分辨率（SR）侧视图模块集成到 SF-GAN 中，以保留身份信息，并在 HR 空间中精细化侧视图的细节，这有助于建模重建面部的高频信息（例如：眼周、鼻子和嘴巴区域）。此外，SF-GAN 接受多个 LR 面部作为输入，并改进了每个被添加的样本。我们通过在生成器中使用正交约束来挤压性能的额外增益，以惩罚多余的潜在表示，从而使学习的特征空间多样化。</p>
+<ul>
+<li><strong>关键字：SR 模块、多输入、低分辨率侧视图人脸</strong></li>
+</ul>
+<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>先前的方法倾向于假设大姿态人脸图像有很高的质量。在学习将低分辨率（LR）侧视图空间映射到高分辨率（HR）正面视图的高度非线性转换时，先前的尝试会丢失身份信息。<br>视图之间的低质量输入和大姿态差异都使得正面化问题具有挑战性。现代模型通常旨在解决任一个挑战（即，脸部超分辨率（SR）或大姿势人脸正面化），脸部同时处于低质量和大姿势时分解两个任务。为了克服这些障碍，我们同时提出了 SuperFront GAN（SF-GAN）。因此，SF-GAN 以任意姿势从 LR 脸部合成 HR 和保留身份的正面脸部。为此，将 SR 模块集成到 SF-GAN 中，以保留低质量图像的身份。此后，通过学习从 LR 侧视图到 HR 额叶的精确非线性转换，引入了补丁损失来解决较大的姿态差异。此外，我们认为极端姿势下单个 LR 图像中的信息是有限的（即在极端情况下不足以合成准确的正面）。因此，我们将模型设计为接受一对多输入，每个添加的样本可进一步改善结果。<br>作者认为之前 encoder-decoder 模型，例如 U-Net 结构网络在面对 LR 输入时。会丢失精确的低频信息，在这种情况下，U-Net 结构会导推理不准确（例如，结构模型和身份丢失）。为了适当地保留 LR 脸部的细节和主体身份，我们并行使用超分辨率（SR）模块以更好地提供精确的低频信息和高频细节。<br>为了适当地保留 LR 脸部的细节和主体身份，我们并行使用超分辨率（SR）模块以更好地提供精确的低频信息和高频细节。<br>正面人脸合成的另一个挑战是由于姿势差异大而导致从侧面到正面的高度非线性转换，从而导致推断时不精确的面部结构。先前的作品通常使用像素级（例如 L1 或 L2），身份和对抗性损失来学习视图之间的映射。然而使用这样的 loss 训练的模型通常对区分结构信息的信心较低。为了捕获对象的详细面部结构以及身份信息，我们将补丁级别的损失合并到常用的损失集中（i.e. pixel loss, identity loss, and adversarial loss），从而，加强模型可以更加关注图像结构（即面部组件的边缘和形状）（i.e. Structural Similarity Index (SSIM)）。与现有作品不同，我们以 patch-level 提供的补充信息的形式添加了结构级别的知识，从而显着提高了最终结果。<br>而且，由于 LR 脸部的极端姿势，通常难以从单个图像合成 HR 和保留身份的正面视图。在许多现实生活中（例如监视系统），每个对象都有多个图像可以互补使用，以进一步改善合成效果[34]。但是，大多数现有的面部正面算法每次只能处理一张图像。为了进一步提高面部质量，我们扩展了模型以接受多个面部作为输入（图 1）。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1612683868576-6fa0ae6f-17eb-4a98-91dc-29e925dd4625.png#align=left&display=inline&height=275&margin=%5Bobject%20Object%5D&name=image.png&originHeight=494&originWidth=734&size=221272&status=done&style=none&width=409" alt="image.png"><br>由于所提出模型中的所有生成器共享相同的权重，因此输入图像可以具有任意姿势。与其采用简单的融合方法（例如图像级或特征级串联[28]或特征级求和[34]），我们建议在基于生成对抗网络（GAN）的模型中使用正交正则化以获得最佳训练和学习更广泛的特征[2]。</p>
+<p>所做贡献如下：</p>
+<ul>
+<li>据我们所知，我们是第一个通过提出一种多任务模型来共同解决正面人脸识别和人脸超分辨率问题的多方面任务模型，从而解决了人脸识别问题。</li>
+<li>我们引入基于补丁的损失来捕获面部结构，并学习在 LR 侧视图和 HR 正面视图之间进行精确的非线性转换。</li>
+<li>我们扩展了一对多的输入：更多的 LR 输入可以更好地保持身份并使用早期或晚期融合来提高合成质量。此外，我们添加了约束以使功能多样化（即正交正则化）以进一步改进</li>
+</ul>
+<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><p><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1613284797722-2ff92238-6a3f-48b1-9359-0ba191385951.png#align=left&display=inline&height=530&margin=%5Bobject%20Object%5D&name=image.png&originHeight=752&originWidth=1058&size=304934&status=done&style=none&width=746" alt="image.png"></p>
+<h3 id="网络结构"><a href="#网络结构" class="headerlink" title="网络结构"></a>网络结构</h3><p>所提出框架如上图所示。</p>
+<h4 id="Deep-encoder"><a href="#Deep-encoder" class="headerlink" title="Deep encoder"></a>Deep encoder</h4><p>作者认为，以前常用的类似 U-Net 的模型，太浅了不能捕捉从 LR 空间恢复高质量 HR 人脸所需要的高频信息。它采用了更深的编码器。这个编码器由 16 个 sixteen residual dense blocks 组成(来自 Residual dense network for image super-resolution.)。此外 SR module 也提供了重建的 HR 空间，可以提供更多细节信息。</p>
+<h4 id="SR-integrated-decoder"><a href="#SR-integrated-decoder" class="headerlink" title="SR-integrated decoder"></a>SR-integrated decoder</h4><p>从编码器输出开始，两个分支分开处理。SR module 超分辨率重建图像，最终合并到主分支去重建正面人脸。side-view SR 采用 pixel shuffle 去完成上采样，factor 设置为 4.</p>
+<h3 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h3><h4 id="Pixel-level-loss"><a href="#Pixel-level-loss" class="headerlink" title="Pixel-level loss"></a>Pixel-level loss</h4><p>使用 L1 loss 计算像素等级的损失，因为它在监督图像生成任务比 L2 损失更容易收敛。L1 损失同时用于 SR 分支和 Main 分支的计算。公式如下：</p>
+$$
+\mathcal{L}_{p i x}=\frac{1}{W \times H} \sum_{w, h=1}^{W, H}\left|I_{w, h}^{H P}-I_{w, h}^{S P}\right|+\left|I_{w, h}^{H F}-I_{w, h}^{S F}\right|
+$$
+
+<p>其中$I^{HP}$和$I^{HF}$分别表示 HR side-view and HR frontal faces。</p>
+<h4 id="Patch-level-loss"><a href="#Patch-level-loss" class="headerlink" title="Patch-level loss"></a>Patch-level loss</h4><p>补丁级别损失更关注图像结构，例如人脸组件的边缘和形状。这里采用 SSIM 作为 patch-level loss（参考 Image quality assessment: from error visibility to structural similarity）。输入图像被分为 K*K 个区域，$\mathbf{x}=\left\{x_{1}, \ldots, x_{K^{2}}\right\}$ and $\mathbf{y}=\left\{y_{1}, \ldots, y_{K^{2}}\right\}$<br>SSIM X 和 Y 计算如下：</p>
+$$
+S S I M(\mathbf{x}, \mathbf{y})=1-\frac{\left(2 \mu_{x} \mu_{y}+C_{1}\right)\left(2 \sigma_{x y}+C_{2}\right)}{\left(\mu_{x}^{2} \mu_{y}^{2}+C_{1}\right)\left(\sigma_{x}^{2}+\sigma_{y}^{2}+C_{2}\right)}
+$$
+
+<p>上式常数$C_1=0.01^2$ $C_2 = 0.03^2$损失定义如下：</p>
+$$
+\mathcal{L}_{\text {patch }}=\frac{1}{P} \sum_{p=1}^{P} S S I M\left(\mathbf{x}^{p}, \mathbf{y}^{p}\right)
+$$
+
+<h4 id="Global-level-loss"><a href="#Global-level-loss" class="headerlink" title="Global-level loss"></a>Global-level loss</h4><p>全局损失引入了两种，对抗损失和身份保持损失<br><strong>Adversarial loss</strong>更关注用于区分整个人脸的所有细节，以合成逼真的正面人脸。受到《A multi-yaw multi-pitch high-quality database and benchmark for facial pose analysis》启发，这里使用预训练的人脸解析模型，将人脸各个区域进行划分。分别计算 loss，目的在于捕捉低频信息，例如皮肤区域。划分的区域如下：</p>
+$$
+\begin{array}{l}
+\text { real } I^{p}=\left\{I^{f} \odot M_{s}, I^{f} \odot M_{k}, I^{f} \odot M_{h}\right\} \\
+\text { fake } \hat{I}^{p}=\left\{\hat{I}^{f} \odot M_{s}, \hat{I}^{f} \odot M_{k}, \hat{I}^{f} \odot M_{h}\right\}
+\end{array}
+$$
+
+$M_s$,$M_k$,$M_h$,分别表示皮肤，关键点和头发区域的 mask。最后对抗损失表示如下：
+
+$$
+\begin{aligned}
+\mathcal{L}_{a d v}=\sum_{j \in\{f, p\}} &\left(\mathbb{E}_{I^{j}}\left[\log D_{j}\left(I^{j}\right)\right]\right.\\
+&\left.+\mathbb{E}_{\hat{I}^{j}}\left[\log \left(1-D_{j}\left(\hat{I}^{j}\right)\right)\right]\right)
+\end{aligned}
+$$
+
+<h4 id="Identity-preserving-loss"><a href="#Identity-preserving-loss" class="headerlink" title="Identity preserving loss"></a>Identity preserving loss</h4><p>这里使用 pre-trained 29-layer <a href="https://github.com/AlfredXiangWu/LightCNN" target="_blank" rel="external nofollow noopener noreferrer">Light CNN</a>作为身份特征的提取器，它的参数在训练时是固定的，使用人脸识别模型提取特征计算 loss，有利于增加生成器的人脸特征保持能力。<br>对于合成图像$I^{SF}$和 ground-truth$I^HF$：</p>
+$$
+\mathcal{L}_{I D}=\sum_{i=1}^{2}\left\|p_{i}\left(I^{S F}\right)-p_{i}\left(I^{H F}\right)\right\|_{2}^{2}
+$$
+
+$p_{i}(i \in 1,2)$表示 LightCNN 的两个全连接层的输出。
+
+<h4 id="Overall-loss"><a href="#Overall-loss" class="headerlink" title="Overall loss"></a>Overall loss</h4><p>所有损失加权计算损失：</p>
+$$
+\mathcal{L}_{G}=\lambda_{1} \mathcal{L}_{p i x}+\lambda_{2} \mathcal{L}_{\text {patch }}+\lambda_{3} \mathcal{L}_{a d v}++\lambda_{4} \mathcal{L}_{I D}+\lambda_{5} \mathcal{L}_{t v}
+$$
+
+<p>其中 L_tv 损失参考《Perceptual losses for real-time style transfer and super-resolution》</p>
+<h2 id="Multi-image-SF-GAN"><a href="#Multi-image-SF-GAN" class="headerlink" title="Multi-image SF-GAN"></a>Multi-image SF-GAN</h2><p>它与 Single image SF-GAN 的区别主要在于有多张图像输入，多张图像输入有助于让编码器提取更多有用的信息。<br>它使用的 decoder 与 SI SF-GAN 相同，使用共享参数的 encoder 提取不同输入图像。不通点在于 MI SF-GAN 对于 encoder 提取的特征引入了 orthogonal regularization 约束。正交约束使特征更加多样化，因此可以尽可能地相互补充。约束 loss 如下：</p>
+$$
+\mathcal{L}_{\text {orth }}=\frac{1}{N} \sum_{n=1}^{N}\left\|G\left(I_{n}^{L P}\right)^{\top} G\left(I_{n}^{L P}\right)\right\|_{F}^{2}
+$$
+
+<p>总 loss 可表示为：</p>
+$$
+\mathcal{L}_{M I}=\mathcal{L}_{G}+\mathcal{L}_{\text {orth }}
+$$
+
+<h2 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h2><p><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1613289477632-15a48795-2a20-46b1-9d06-f017edbfdc55.png#align=left&display=inline&height=423&margin=%5Bobject%20Object%5D&name=image.png&originHeight=845&originWidth=1271&size=1110392&status=done&style=none&width=635.5" alt="image.png"><br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1613289507339-130b050a-024a-4bb6-973f-2992629f5ce6.png#align=left&display=inline&height=362&margin=%5Bobject%20Object%5D&name=image.png&originHeight=724&originWidth=621&size=111730&status=done&style=none&width=310.5" alt="image.png"><br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1613289522026-f2b8feaa-724b-406f-b3b6-388157e00b27.png#align=left&display=inline&height=157&margin=%5Bobject%20Object%5D&name=image.png&originHeight=314&originWidth=639&size=48513&status=done&style=none&width=319.5" alt="image.png"></p>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/SuperFront%E4%BB%8E%E4%BD%8E%E5%88%86%E8%BE%A8%E7%8E%87%E4%BA%BA%E8%84%B8%E8%BF%9B%E8%A1%8C%E6%AD%A3%E9%9D%A2%E5%8C%96.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/face/">
+              #face
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/Stacked%20Progressive%20Auto-Encoders(SPAE)%20for%20Face%20Recognition%20Across%20Poses.html" target="_self">Stacked Progressive Auto-Encoders(SPAE) for Face Recognition Across Poses</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/%E8%87%B4%E5%8A%9B%E4%BA%8E%E6%9B%B4%E5%BF%AB%E6%9B%B4%E7%A8%B3%E5%AE%9A%E7%9A%84GAN%E8%AE%AD%E7%BB%83%20%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E7%B2%BE%E7%A1%AE%E5%BA%A6%E7%9A%84%E5%B0%91%E6%A0%B7%E6%9C%AC%E5%9B%BE%E5%83%8F%E5%90%88%E6%88%90.html" target="_self">致力于更快更稳定的GAN训练 以实现高精确度的少样本图像合成</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

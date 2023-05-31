@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>TensorFlow 2.0高效开发指南 | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="机器学习,tensorflow2.0,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>TensorFlow 2.0高效开发指南</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-01-22
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">
+            机器学习
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="TensorFlow 2.0高效开发指南.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <h1 id="Effective-TensorFlow-2-0"><a href="#Effective-TensorFlow-2-0" class="headerlink" title="Effective TensorFlow 2.0"></a>Effective TensorFlow 2.0</h1><p>为使 TensorFLow 用户更高效，TensorFlow 2.0 中进行了多出更改。TensorFlow 2.0 删除了篇<a href="https://github.com/tensorflow/community/blob/master/rfcs/20180827-api-names.md" target="_blank" rel="external nofollow noopener noreferrer">冗余 API</a>，使 API 更加一致（<a href="https://github.com/tensorflow/community/blob/master/rfcs/20180920-unify-rnn-interface.md" target="_blank" rel="external nofollow noopener noreferrer">统一 RNNs</a>, <a href="https://github.com/tensorflow/community/blob/master/rfcs/20181016-optimizer-unification.md" target="_blank" rel="external nofollow noopener noreferrer">统一优化器</a>），并通过<a href="https://tensorflow.google.cn/guide/eager" target="_blank" rel="external nofollow noopener noreferrer">Eager execution</a>更好地与 Python 集成。</p>
+<p>许多 RFCs 已经解释了 TensorFlow 2.0 带来的变化。本指南介绍了 TensorFlow 2.0 应该怎么进行开发。这假设您已对 TensorFlow 1.x 有一定了解。</p>
+<h2 id="A-brief-summary-of-major-changes"><a href="#A-brief-summary-of-major-changes" class="headerlink" title="A brief summary of major changes"></a><a href="https://tensorflow.google.cn/alpha/guide/effective_tf2#a_brief_summary_of_major_changes" target="_blank" rel="external nofollow noopener noreferrer">A brief summary of major changes</a></h2><h3 id="API-Cleanup"><a href="#API-Cleanup" class="headerlink" title="API Cleanup"></a><a href="https://tensorflow.google.cn/alpha/guide/effective_tf2#api_cleanup" target="_blank" rel="external nofollow noopener noreferrer">API Cleanup</a></h3><p>许多 API 在 TF 2.0 中进行了<a href="https://github.com/tensorflow/community/blob/master/rfcs/20180827-api-names.md" target="_blank" rel="external nofollow noopener noreferrer">移动或删除</a>。一些主要的变化包括删除<code>tf.app</code>，<code>tf.flags</code>，使<code>tf.logging</code>支持现在开源的 absl-py，重新生成项目的<code>tf.contribe</code>，通过清理<code>tf.*</code>中那些较少使用的命名空间，例如<code>tf.math</code>。一些 API 已替换为自己的 2.0 版本-<code>tf.summary</code>,<code>tf.keras.metrics</code>, 和<code>tf.keras.optimizers</code>。最快升级应用这些重命名带来的变化可使用<a href="https://tensorflow.google.cn/alpha/guide/upgrade" target="_blank" rel="external nofollow noopener noreferrer">v2 升级脚本</a>。</p>
+<h3 id="Eager-execution"><a href="#Eager-execution" class="headerlink" title="Eager execution"></a><a href="https://tensorflow.google.cn/alpha/guide/effective_tf2#eager_execution" target="_blank" rel="external nofollow noopener noreferrer">Eager execution</a></h3><p>TensorFlow 1.x 要求用户通过<code>tf.*</code>API 手动的将<a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree" target="_blank" rel="external nofollow noopener noreferrer">抽象语法树</a>（图）拼接在一起。然后它要求用户通过一组输入、输出张量传递给<code>session.run()</code>从而手动编译调用这个图。TensorFlow 2.0 Eager execution 可以像 Python 那样执行，在 2.0 中，graph 和 session 会像实现细节一样。</p>
+<p>值得注意的是<code>tf.control_dependencies()</code>不再需要了，因为所有代码都是行顺序执行的（用<code>tf.function</code>声明）。</p>
+<h3 id="No-more-globals"><a href="#No-more-globals" class="headerlink" title="No more globals"></a><a href="https://tensorflow.google.cn/alpha/guide/effective_tf2#no_more_globals" target="_blank" rel="external nofollow noopener noreferrer">No more globals</a></h3><p>TensorFlow 1.x 严重依赖隐式全局命名空间。当你调用<code>tf.Variable()</code>，它会被放入默认图中，即使你忘了指向它的 Python 变量，它也会被保留在那里。然后你可以恢复它，但前提是你得知道它创建时的名称。如果你无法控制变量的创建，这很难做到。其结果是，各种各样的机制，试图帮助用户再次找到他们的变量，以及为框架找到用户创建的变量：Variable scopes, global collections。例如<code>tf.get_global_step()</code>，<code>tf.global_variables_initializer()</code>，还有优化器隐式计算所有可训练变量的梯度等等。<br>TensorFlow 2.0 消除了这些机制（<a href="https://github.com/tensorflow/community/pull/11" target="_blank" rel="external nofollow noopener noreferrer">Variable 2.0 RFC</a>）默认支持的机制：跟踪你的变量！如果你忘记了一个<code>tf.Variable</code>，它就会当作垃圾被回收。</p>
+<h3 id="Functions-not-sessions"><a href="#Functions-not-sessions" class="headerlink" title="Functions, not sessions"></a><a href="https://tensorflow.google.cn/alpha/guide/effective_tf2#functions_not_sessions" target="_blank" rel="external nofollow noopener noreferrer">Functions, not sessions</a></h3><p><code>session.run()</code>几乎可以像函数一样调用：指定输入和被调用的函数，你可以得到一组输出。在 TensorFlow 2.0 中，您可以使用 Python 函数<code>tf.function()</code>来标记它以进行 JIT 编译，以便 TensorFlow 将其作为单个图运行(<a href="https://github.com/tensorflow/community/pull/20" target="_blank" rel="external nofollow noopener noreferrer">Function 2.0 RFC</a>)。这种机制允许 TensorFlow 2.0 获得图模型所有的好处：</p>
+<ul>
+<li>性能：函数可以被优化（node pruning, kernel fusion, etc.）</li>
+<li>可移植性：该功能可以被导出/重新导入（<a href="https://github.com/tensorflow/community/pull/34" target="_blank" rel="external nofollow noopener noreferrer">SavedModel 2.0 RFC</a>），允许用户重用和共享模块化 TensorFlow 功能。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># TensorFlow 1.X</span></span><br><span class="line">outputs = session.run(f(placeholder), feed_dict=&#123;placeholder: input&#125;)</span><br><span class="line"><span class="comment"># TensorFlow 2.0</span></span><br><span class="line">outputs = f(input)</span><br></pre></td></tr></table></figure>
+
+<p>凭借穿插 Python 和 TensorFlow 代码的能力，我们希望用户能够充分利用 Python 的表现力。除了在没有 Python 解释器的情况下执行 TensorFlow，如 mobile, C++, 和 JS。为了帮助用户避免在添加时重写代码<code>@tf.function</code>， <a href="https://tensorflow.google.cn/alpha/guide/autograph" target="_blank" rel="external nofollow noopener noreferrer">AutoGraph</a>会将 Python 构造的一个子集转换为他们的 TensorFlow 等价物：</p>
+<ul>
+<li><code>for</code>/<code>while</code> -&gt; <code>tf.while_loop</code> (支持 break 和 continue)</li>
+<li><code>if</code>-&gt;<code>tf.cond</code></li>
+<li><code>for _ in dataset</code> -&gt; <code>dataset.reduce</code></li>
+</ul>
+<p>AutoGraph 支持控制流的任意嵌套，这使得可以有较好性能并且简洁地实现许多复杂的 ML 程序，如序列模型，强化学习，自定义训练循环等。</p>
+<h2 id="Recommendations-for-idiomatic-TensorFlow-2-0"><a href="#Recommendations-for-idiomatic-TensorFlow-2-0" class="headerlink" title="Recommendations for idiomatic TensorFlow 2.0"></a><a href="https://tensorflow.google.cn/alpha/guide/effective_tf2#recommendations_for_idiomatic_tensorflow_20" target="_blank" rel="external nofollow noopener noreferrer">Recommendations for idiomatic TensorFlow 2.0</a></h2><h3 id="Refactor-your-code-into-smaller-functions"><a href="#Refactor-your-code-into-smaller-functions" class="headerlink" title="Refactor your code into smaller functions"></a><a href="https://tensorflow.google.cn/alpha/guide/effective_tf2#refactor_your_code_into_smaller_functions" target="_blank" rel="external nofollow noopener noreferrer">Refactor your code into smaller functions</a></h3><p>TensorFlow 1.x 中常见使用模式是“kitchen sink”策略，其中所有可能的计算的联合被预先布置，然后选择被评估的张量，通过<code>session.run()</code>运行。在 TensorFlow 2.0 中，用户应该将代码重构为较小的函数，这些函数根据需要被调用。通常，没有必要用<code>tf.function</code>去装饰那些比较小的函数；仅用<code>tf.function</code>去装饰高等级的计算，例如，训练的一个步骤，或模型的前向传递。</p>
+<h3 id="Use-Keras-layers-and-models-to-manage-variables"><a href="#Use-Keras-layers-and-models-to-manage-variables" class="headerlink" title="Use Keras layers and models to manage variables"></a><a href="https://tensorflow.google.cn/alpha/guide/effective_tf2#use_keras_layers_and_models_to_manage_variables" target="_blank" rel="external nofollow noopener noreferrer">Use Keras layers and models to manage variables</a></h3><p>Keras 模型和图层提供了方便 variables 和 trainable_variables 属性，它以递归方式收集所有因变量。这使得在本地管理变量非常容易。</p>
+<p>对比：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dense</span><span class="params">(x, W, b)</span>:</span></span><br><span class="line">  <span class="keyword">return</span> tf.nn.sigmoid(tf.matmul(x, W) + b)</span><br><span class="line"></span><br><span class="line"><span class="meta">@tf.function</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">multilayer_perceptron</span><span class="params">(x, w0, b0, w1, b1, w2, b2 ...)</span>:</span></span><br><span class="line">  x = dense(x, w0, b0)</span><br><span class="line">  x = dense(x, w1, b1)</span><br><span class="line">  x = dense(x, w2, b2)</span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line"><span class="comment"># 你仍然需要管理w_i和b_i，它们的形状远离代码定义。</span></span><br></pre></td></tr></table></figure>
+
+<p>Keras 版本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 可以调用每个图层，其签名等效于 linear(x)</span></span><br><span class="line">layers = [tf.keras.layers.Dense(hidden_size, activation=tf.nn.sigmoid) <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)]</span><br><span class="line">perceptron = tf.keras.Sequential(layers)</span><br><span class="line"></span><br><span class="line"><span class="comment"># layers[3].trainable_variables =&gt; returns [w3, b3]</span></span><br><span class="line"><span class="comment"># perceptron.trainable_variables =&gt; returns [w0, b0, ...]</span></span><br></pre></td></tr></table></figure>
+
+<p>Keras layers/models 继承自<code>tf.train.Checkpointable</code>并集成了<code>@tf.function</code>，这使得直接从 Keras 对象导出 SavedModels 或 checkpoint 成为可能。您不一定要使用 Keras 的<code>.fit</code>API 来利用这些集成。</p>
+<p>这是一个迁移学习的例子，演示了 Keras 如何轻松收集相关变量的子集。假设你正在训练一个带有共享主干的多头模型：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">trunk = tf.keras.Sequential([...])</span><br><span class="line">head1 = tf.keras.Sequential([...])</span><br><span class="line">head2 = tf.keras.Sequential([...])</span><br><span class="line"></span><br><span class="line">path1 = tf.keras.Sequential([trunk, head1])</span><br><span class="line">path2 = tf.keras.Sequential([trunk, head2])</span><br><span class="line"></span><br><span class="line"><span class="comment"># Train on primary dataset</span></span><br><span class="line"><span class="keyword">for</span> x, y <span class="keyword">in</span> main_dataset:</span><br><span class="line">  <span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:</span><br><span class="line">    prediction = path1(x)</span><br><span class="line">    loss = loss_fn_head1(prediction, y)</span><br><span class="line">  <span class="comment"># Simultaneously optimize trunk and head1 weights.</span></span><br><span class="line">  gradients = tape.gradients(loss, path1.trainable_variables)</span><br><span class="line">  optimizer.apply_gradients(gradients, path1.trainable_variables)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Fine-tune second head, reusing the trunk</span></span><br><span class="line"><span class="keyword">for</span> x, y <span class="keyword">in</span> small_dataset:</span><br><span class="line">  <span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:</span><br><span class="line">    prediction = path2(x)</span><br><span class="line">    loss = loss_fn_head2(prediction, y)</span><br><span class="line">  <span class="comment"># Only optimize head2 weights, not trunk weights</span></span><br><span class="line">  gradients = tape.gradients(loss, head2.trainable_variables)</span><br><span class="line">  optimizer.apply_gradients(gradients, head2.trainable_variables)</span><br><span class="line"></span><br><span class="line"><span class="comment"># You can publish just the trunk computation for other people to reuse.</span></span><br><span class="line">tf.saved_model.save(trunk, output_path)</span><br></pre></td></tr></table></figure>
+
+<h3 id="Combine-tf-data-Datasets-and-tf-function"><a href="#Combine-tf-data-Datasets-and-tf-function" class="headerlink" title="Combine tf.data.Datasets and @tf.function"></a><a href="https://tensorflow.google.cn/alpha/guide/effective_tf2#combine_tfdatadatasets_and_tffunction" target="_blank" rel="external nofollow noopener noreferrer">Combine tf.data.Datasets and @tf.function</a></h3><p>在内存中迭代拟合训练数据时，可以随意使用常规的 Python 迭代。或者，<code>tf.data.Dataset</code>是从硬盘读取训练数据流的最好方法。Datasets 是<a href="https://docs.python.org/3/glossary.html#term-iterable" target="_blank" rel="external nofollow noopener noreferrer">可迭代的（不是迭代器）</a>，它可以像在 Eager 模式下的其他 Python 迭代一样工作。您可以通过用<code>tf.function()</code>包装代码来充分利用数据集异步预取/流功能，这将使用 AutoGraph 等效的图操作替换 Python 的迭代。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@tf.function</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train</span><span class="params">(model, dataset, optimizer)</span>:</span></span><br><span class="line">  <span class="keyword">for</span> x, y <span class="keyword">in</span> dataset:</span><br><span class="line">    <span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:</span><br><span class="line">      prediction = model(x)</span><br><span class="line">      loss = loss_fn(prediction, y)</span><br><span class="line">    gradients = tape.gradients(loss, model.trainable_variables)</span><br><span class="line">    optimizer.apply_gradients(gradients, model.trainable_variables)</span><br></pre></td></tr></table></figure>
+
+<p>如果您使用 Keras<code>.fit()</code>API，则无需担心数据集迭代。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">model.compile(optimizer=optimizer, loss=loss_fn)</span><br><span class="line">model.fit(dataset)</span><br></pre></td></tr></table></figure>
+
+<h3 id="Take-advantage-of-AutoGraph-with-Python-control-flow"><a href="#Take-advantage-of-AutoGraph-with-Python-control-flow" class="headerlink" title="Take advantage of AutoGraph with Python control flow"></a><a href="https://tensorflow.google.cn/alpha/guide/effective_tf2#take_advantage_of_autograph_with_python_control_flow" target="_blank" rel="external nofollow noopener noreferrer">Take advantage of AutoGraph with Python control flow</a></h3><p>AutoGraph 提供了一种将依赖于数据的控制流转换为等效图形模式的方法，如<code>tf.cond</code>和<code>tf.while_loop</code>。</p>
+<p>数据相关控制流出现的一个常见位置是序列模型。<code>tf.keras.layers.RNN</code>包装了一个 RNN cell，允许您既可以静态也可以动态的循环展开。为了演示，您可以重新实现动态展开，如下所示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DynamicRNN</span><span class="params">(tf.keras.Model)</span>:</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, rnn_cell)</span>:</span></span><br><span class="line">    super(DynamicRNN, self).__init__(self)</span><br><span class="line">    self.cell = rnn_cell</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">call</span><span class="params">(self, input_data)</span>:</span></span><br><span class="line">    <span class="comment"># [batch, time, features] -&gt; [time, batch, features]</span></span><br><span class="line">    input_data = tf.transpose(input_data, [<span class="number">1</span>, <span class="number">0</span>, <span class="number">2</span>])</span><br><span class="line">    outputs = tf.TensorArray(tf.float32, input_data.shape[<span class="number">0</span>])</span><br><span class="line">    state = self.cell.zero_state(input_data.shape[<span class="number">1</span>], dtype=tf.float32)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> tf.range(input_data.shape[<span class="number">0</span>]):</span><br><span class="line">      output, state = self.cell(input_data[i], state)</span><br><span class="line">      outputs = outputs.write(i, output)</span><br><span class="line">    <span class="keyword">return</span> tf.transpose(outputs.stack(), [<span class="number">1</span>, <span class="number">0</span>, <span class="number">2</span>]), state</span><br></pre></td></tr></table></figure>
+
+<p>有关 AutoGraph 功能的更详细概述，请参阅<a href="https://tensorflow.google.cn/alpha/guide/autograph" target="_blank" rel="external nofollow noopener noreferrer">指南</a></p>
+<h3 id="Use-tf-metrics-to-aggregate-data-and-tf-summary-to-log-it"><a href="#Use-tf-metrics-to-aggregate-data-and-tf-summary-to-log-it" class="headerlink" title="Use tf.metrics to aggregate data and tf.summary to log it"></a><a href="https://tensorflow.google.cn/alpha/guide/effective_tf2#use_tfmetrics_to_aggregate_data_and_tfsummary_to_log_it" target="_blank" rel="external nofollow noopener noreferrer">Use tf.metrics to aggregate data and tf.summary to log it</a></h3><p>要记录摘要，请使用<code>tf.summary.(scalar|histogram|...)</code>上下文管理器将其重定向到编写器。（如果省略上下文管理器，则不会发生任何事情。）与 TF 1.x 不同，摘要直接发送给编写器; 没有单独的“合并”操作，也没有单独的 add_summary()调用，这意味着 step 必须在调用点提供该值。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">summary_writer = tf.summary.create_file_writer(<span class="string">'/tmp/summaries'</span>)</span><br><span class="line"><span class="keyword">with</span> summary_writer.as_default():</span><br><span class="line">  tf.summary.scalar(<span class="string">'loss'</span>, <span class="number">0.1</span>, step=<span class="number">42</span>)</span><br></pre></td></tr></table></figure>
+
+<p>要在将数据记录为摘要之前聚合数据，请使用<code>tf.metrics</code>。Metrics 是有状态的；它们积累值并在您调用<code>.result()</code>时返回结果。清除积累值，请使用<code>.reset_states()</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train</span><span class="params">(model, optimizer, dataset, log_freq=<span class="number">10</span>)</span>:</span></span><br><span class="line">  avg_loss = tf.keras.metrics.Mean(name=<span class="string">'loss'</span>, dtype=tf.float32)</span><br><span class="line">  <span class="keyword">for</span> images, labels <span class="keyword">in</span> dataset:</span><br><span class="line">    loss = train_step(model, optimizer, images, labels)</span><br><span class="line">    avg_loss.update_state(loss)</span><br><span class="line">    <span class="keyword">if</span> tf.equal(optimizer.iterations % log_freq, <span class="number">0</span>):</span><br><span class="line">      tf.summary.scalar(<span class="string">'loss'</span>, avg_loss.result(), step=optimizer.iterations)</span><br><span class="line">      avg_loss.reset_states()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test</span><span class="params">(model, test_x, test_y, step_num)</span>:</span></span><br><span class="line">  loss = loss_fn(model(test_x), test_y)</span><br><span class="line">  tf.summary.scalar(<span class="string">'loss'</span>, loss, step=step_num)</span><br><span class="line"></span><br><span class="line">train_summary_writer = tf.summary.create_file_writer(<span class="string">'/tmp/summaries/train'</span>)</span><br><span class="line">test_summary_writer = tf.summary.create_file_writer(<span class="string">'/tmp/summaries/test'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> train_summary_writer.as_default():</span><br><span class="line">  train(model, optimizer, dataset)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> test_summary_writer.as_default():</span><br><span class="line">  test(model, test_x, test_y, optimizer.iterations)</span><br></pre></td></tr></table></figure>
+
+<p>通过将 TensorBoard 指向摘要日志目录来可视化生成的摘要：<code>tensorboard --logdir /tmp/summaries</code>。</p>
+<p><a href="http://ishero.net/Effective-TensorFlow-2-0.html">阅读原文</a></p>
+<ul>
+<li>欢迎关注我的公众号，一起学习！</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695672656-6040c5b0-af2e-4ac8-90ff-d6ae98378b79.jpeg#align=left&display=inline&height=640&originHeight=640&originWidth=1080&size=0&status=done&style=none&width=1080" alt=""></p>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/TensorFlow%202.0%E9%AB%98%E6%95%88%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/tensorflow2-0/">
+              #tensorflow2.0
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/K-%E8%BF%91%E9%82%BB%E7%AE%97%E6%B3%95%E4%BB%8B%E7%BB%8D%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0.html" target="_self">K-近邻算法介绍与代码实现</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/%E4%BD%BF%E7%94%A8TensorFlow%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B.html" target="_self">使用TensorFlow训练模型的基本流程</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

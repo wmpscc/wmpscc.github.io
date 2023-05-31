@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>DNANet Age and Gender Aware Kin Face Synthesizer | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="深度学习,GAN,后代生成,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>DNANet Age and Gender Aware Kin Face Synthesizer</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2021-08-03
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">
+            深度学习
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="DNANet Age and Gender Aware Kin Face Synthesizer.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <p>《What Will Your Child Look Like? DNA-Net: Age and Gender Aware Kin FaceSynthesizer》论文笔记<br>本文同时考虑父母双方的影响，构建年龄和性别可控的 two-stage klin-face 生成模型。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1628144338769-35cb119d-d780-4b08-ab00-1bf80702b5db.png#clientId=u2737448e-5e9d-4&from=paste&height=602&id=u8e31584c&margin=%5Bobject%20Object%5D&name=image.png&originHeight=602&originWidth=1360&originalType=binary%E2%88%B6=1&size=479858&status=done&style=none&taskId=udb7644e9-e703-4c61-9556-a0e7e04c7c8&width=1360" alt="image.png"></p>
+<h1 id="2-方法"><a href="#2-方法" class="headerlink" title="2 方法"></a>2 方法</h1><p>整个模型可分为两个阶段训练，首先训练 CAAE model，该模型在大规模的数据集进行预训练，目的是将编码特征生成高质量图像。然后训练本文提出的 DNA-Net，该网络同样是 encoder-decoder 结构，编码器解码器均为 3 层全连接层，论文中阐述了这种分两阶段训练的方法，主要是为了减少因为数据量过少带来的过拟合风险。最后，CAAE 还能引入年龄和性别条件，控制最终的图像合成。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1628144490033-d86d16dc-950d-492b-842f-4fd7544af456.png#clientId=u2737448e-5e9d-4&from=paste&height=719&id=uf6aa8a05&margin=%5Bobject%20Object%5D&name=image.png&originHeight=719&originWidth=662&originalType=binary%E2%88%B6=1&size=138673&status=done&style=none&taskId=u71a5946c-ecb9-499f-b0ae-df4a20c2734&width=662" alt="image.png"></p>
+<h2 id="2-1-Genetic-Model"><a href="#2-1-Genetic-Model" class="headerlink" title="2.1 Genetic Model"></a>2.1 Genetic Model</h2><p>图 2 描述了 gentic model，本文模型主要包含三个阶段：</p>
+<h3 id="First-stage"><a href="#First-stage" class="headerlink" title="First stage"></a>First stage</h3><p>首先编码将父亲和母亲的图像分别进行编码，得到个人面部特征$h_k$ ：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1628144893001-94d18ec9-bbd9-4c36-89dc-00444495ff4c.png#clientId=u2737448e-5e9d-4&from=paste&height=58&id=u895f2dab&margin=%5Bobject%20Object%5D&name=image.png&originHeight=58&originWidth=498&originalType=binary%E2%88%B6=1&size=7089&status=done&style=none&taskId=uc04cce26-42a4-4526-b392-4eff8da0493&width=498" alt="image.png"><br>编码特征$h_k$可进一步通过 DNA-Net 编码器 $T_{fg}$ 编码器为 gene vector $g_k$ ：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1628144982607-e428b964-0b84-4b39-939b-1bc3dec7f726.png#clientId=u2737448e-5e9d-4&from=paste&height=52&id=u72eb9285&margin=%5Bobject%20Object%5D&name=image.png&originHeight=52&originWidth=615&originalType=binary%E2%88%B6=1&size=9238&status=done&style=none&taskId=uef81266d-0679-4bdf-b4dc-ed1aff2be97&width=615" alt="image.png"></p>
+<h3 id="Second-stage"><a href="#Second-stage" class="headerlink" title="Second stage"></a>Second stage</h3><p>得到父母双方的基因后通过随机挑选的方式，获取孩子的 gence vector $g_c$ ，$r_i$ 是被随机赋予的值：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1628145134424-02cc7813-8820-480b-aab0-210861317a8c.png#clientId=u2737448e-5e9d-4&from=paste&height=213&id=u679adcc4&margin=%5Bobject%20Object%5D&name=image.png&originHeight=213&originWidth=694&originalType=binary%E2%88%B6=1&size=31418&status=done&style=none&taskId=ub287f840-28d3-4a2a-a587-22ee8afcd22&width=694" alt="image.png"></p>
+<h3 id="Third-stage"><a href="#Third-stage" class="headerlink" title="Third stage"></a>Third stage</h3><p>根据上一阶段选择的孩子 gene vector $g_c$，DNA-Net 的解码器将基因信息先解码到 CAAE model 分布的特征向量$h_c=T_{gf}(g_c)$ ，然后 CAAE 解码器生成图像$x_c=G(h_c)$ 。</p>
+<h2 id="2-2-Image-Feature-Mapping-via-CAAE"><a href="#2-2-Image-Feature-Mapping-via-CAAE" class="headerlink" title="2.2 Image-Feature Mapping via CAAE"></a>2.2 Image-Feature Mapping via CAAE</h2><p>CAAE 是《Age Progression/Regression by Conditional Adversarial Autoencoder》在这篇文章中提出的，本文基本保持了原来 CAAE 的思路。训练时，图像统一到$128\times 128$ RGB 的尺度。年龄分离散化到多个阶段，只用 one-hot 向量表示。性别也使用 one-hot 向量表示，且扩展到与年龄的相同的向量长度，缺位补 0。使用 L2 距离作为损失：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1628145730387-b03b34f5-c807-42a5-828d-ac015329cf44.png#clientId=u2737448e-5e9d-4&from=paste&height=117&id=u4451c0de&margin=%5Bobject%20Object%5D&name=image.png&originHeight=117&originWidth=660&originalType=binary%E2%88%B6=1&size=17785&status=done&style=none&taskId=u9bcef8c3-1d03-4e49-b787-2792a46498b&width=660" alt="image.png"><br>这里给编码器特征添加了鉴别器$D_z$使其符合均匀分布，让年龄转换更平滑。（这些都是 CAAE 原文的做法）<br>整体损失函数如下：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1628145917629-c74ac031-e818-42ba-ad26-3685cf8e4563.png#clientId=u2737448e-5e9d-4&from=paste&height=224&id=u7b71f88e&margin=%5Bobject%20Object%5D&name=image.png&originHeight=224&originWidth=648&originalType=binary%E2%88%B6=1&size=43844&status=done&style=none&taskId=u91901b96-2307-48fe-8369-8407f30ef50&width=648" alt="image.png"></p>
+<h2 id="2-3-Genetic-Mappings-via-DNA-Net"><a href="#2-3-Genetic-Mappings-via-DNA-Net" class="headerlink" title="2.3 Genetic Mappings via DNA-Net"></a>2.3 Genetic Mappings via DNA-Net</h2><p>该模块训练时是预先准备好父亲、母亲和孩子的编码器特征，单独训练的。训练时，使用固定规则挑选父母双方的基因，文中使用的是 max 操作，选取双方最大的分量，组合成孩子的基因$g_c$ 。而在测试时，则是选取与 gene vector 等长的掩码，选取双方特征。训练时，通过让预测的孩子特征和真实孩子特征的 L2 距离更近，构建损失：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1628146663679-ff4837ca-e7ad-4d10-82f6-17413f5d6860.png#clientId=u2737448e-5e9d-4&from=paste&height=69&id=u93fe74a9&margin=%5Bobject%20Object%5D&name=image.png&originHeight=69&originWidth=611&originalType=binary%E2%88%B6=1&size=12063&status=done&style=none&taskId=ub8d5f2c4-3f63-4113-825b-2af9f82667d&width=611" alt="image.png"><br>同时所挑选基因生成的特征也要符合均匀分布（与编码器特征要求相同）：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1628146714558-3486436a-925c-43f8-b295-fb2d2440cf72.png#clientId=u2737448e-5e9d-4&from=paste&height=170&id=u64afd369&margin=%5Bobject%20Object%5D&name=image.png&originHeight=170&originWidth=662&originalType=binary%E2%88%B6=1&size=33410&status=done&style=none&taskId=u424f1e91-9186-434e-a2be-251df797210&width=662" alt="image.png"></p>
+<h1 id="3-实验"><a href="#3-实验" class="headerlink" title="3 实验"></a>3 实验</h1><p>CAAE model 使用 UTKFace 数据集训练，包含 20000 张对齐后带年龄和性别标签的数据。<br>FIW 数据集包含 1997 组 father-mother-child face 数据，随机选择 1600 组用于训练，保留 397 组用于测试。</p>
+<h2 id="定量定性测试"><a href="#定量定性测试" class="headerlink" title="定量定性测试"></a>定量定性测试</h2><p>随机选取了 100 对正例和 100 对负例进行亲属人脸验证。召集 30 名志愿者区分亲属关系。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1628146773008-a19bcdea-fa07-463b-b305-19a5da5b5775.png#clientId=u2737448e-5e9d-4&from=paste&height=744&id=ue7c823a2&margin=%5Bobject%20Object%5D&name=image.png&originHeight=744&originWidth=1477&originalType=binary%E2%88%B6=1&size=1120687&status=done&style=none&taskId=ua2fbbfe8-b534-4492-8af1-d559bb8f95d&width=1477" alt="image.png"><br>最后对特征进行了可视化：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1628147195474-5d6d6b92-c9d1-4eff-aaef-2e0c8ffdc501.png#clientId=u2737448e-5e9d-4&from=paste&height=501&id=u5c4a6c4e&margin=%5Bobject%20Object%5D&name=image.png&originHeight=501&originWidth=649&originalType=binary%E2%88%B6=1&size=124529&status=done&style=none&taskId=u21b8b3d7-d503-440f-a860-8605322f0cc&width=649" alt="image.png"><br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1628147211940-cd5b0068-7e1b-483b-b766-74c2face1b64.png#clientId=u2737448e-5e9d-4&from=paste&height=370&id=u8d603d3f&margin=%5Bobject%20Object%5D&name=image.png&originHeight=370&originWidth=686&originalType=binary%E2%88%B6=1&size=244411&status=done&style=none&taskId=ua50f242c-a91f-4e80-b057-59e335ce7e1&width=686" alt="image.png"></p>
+<p>​</p>
+<p>​</p>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/DNANet%20Age%20and%20Gender%20Aware%20Kin%20Face%20Synthesizer.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/GAN/">
+              #GAN
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/%E5%90%8E%E4%BB%A3%E7%94%9F%E6%88%90/">
+              #后代生成
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/CvT%20%20Introducing%20Convolutions%20to%20Vision%20Transformers.html" target="_self">CvT  Introducing Convolutions to Vision Transformers</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/Mask%20Guided%20Discovery%20of%20Semantic%20Manifolds%20in%20Generative%20Models.html" target="_self">Mask Guided Discovery of Semantic Manifolds in Generative Models</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

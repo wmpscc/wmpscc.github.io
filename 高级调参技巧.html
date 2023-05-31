@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>高级调参技巧 | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="数据科学,总结,kaggle,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>高级调参技巧</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-01-22
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6/">
+            数据科学
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="高级调参技巧.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <p>以下是 Coursera 上的<a href="https://www.coursera.org/learn/competitive-data-science/home/week/3" target="_blank" rel="external nofollow noopener noreferrer">How to Win a Data Science Competition: Learn from Top Kagglers</a>课程笔记。</p>
+<h1 id="Hyperparameter-Optimization"><a href="#Hyperparameter-Optimization" class="headerlink" title="Hyperparameter Optimization"></a>Hyperparameter Optimization</h1><ul>
+<li>List most important hyperparameters in major models; describe their impact</li>
+<li>Understand the hyperparameter tuning process in general</li>
+<li>Arrange hyperparameters by their importance</li>
+</ul>
+<h2 id="Hyperparameter-tuning-I"><a href="#Hyperparameter-tuning-I" class="headerlink" title="Hyperparameter tuning I"></a>Hyperparameter tuning I</h2><p><strong>Plan for the lecture</strong></p>
+<ul>
+<li>Hyperparameter tuning in general</li>
+<li>General pipeline</li>
+<li>Manual and automatic tuning</li>
+<li>What should we understand about hyperparameters?</li>
+<li>Models,libraries and hyperparameter optimization</li>
+<li>Tree-based models</li>
+<li>Neural networks</li>
+<li>Linear models</li>
+</ul>
+<p><strong>Plan for the lecture:models</strong></p>
+<ul>
+<li>Tree-based models</li>
+<li>GBDT: XGBoost, LightGBM, CatBoost</li>
+<li>RandomForest/ExtraTrees</li>
+<li>Neural nets</li>
+<li>Pytorch, Tensorflow, Keras…</li>
+<li>Linear models</li>
+<li>SVM, logistic regression</li>
+<li>Vowpal Wabbit, FTRL</li>
+<li><em>Factorization Machines(out of scope)</em></li>
+<li>libFM, libFFM</li>
+</ul>
+<h3 id="How-do-we-tune-hyperparameters"><a href="#How-do-we-tune-hyperparameters" class="headerlink" title="How do we tune hyperparameters"></a>How do we tune hyperparameters</h3><ul>
+<li>1.Select the most influential parameters</li>
+<li>a.There are tons of parameters and we can’ttune all of them</li>
+<li>2.Understand,how exactly they influence the training</li>
+<li>3.Tune them</li>
+<li>a.Manually(change and examine)</li>
+<li>b.Automatically(hyperopt, etc)</li>
+<li>1.无论如何，我们从来没有时间调整所有的参数，所以我们需要提出一个很好的子集来调整。假设我们是 xgboost 新手，不知道哪些参数是需要调的，可以在 Github 或 Kaggle Kernels 搜索到前人通常设置的参数。</li>
+<li>2.理解改变其中一个参数会发生什么。</li>
+<li>3.大多数人手动完成调参工作。也可以使用超参数优化工具，但手动执行通常会更快。</li>
+</ul>
+<h3 id="Hyperparameter-optimization-software-自动调参工具"><a href="#Hyperparameter-optimization-software-自动调参工具" class="headerlink" title="Hyperparameter optimization software 自动调参工具"></a>Hyperparameter optimization software 自动调参工具</h3><p>运行调参工具可能需要很长时间，因此最好的策略是在夜间运行它。</p>
+<ul>
+<li>A lot of libraries to try:</li>
+<li>Hyperopt</li>
+<li>Scikit-optimize</li>
+<li>Spearmint</li>
+<li>GPyOpt</li>
+<li>RoBO</li>
+<li>SMAC3</li>
+</ul>
+<p>从广义上讲，不同的参数会导致三种不同的结果</p>
+<ul>
+<li>1.Underfitting(bad)</li>
+<li>2.Good fit and generalization(good)</li>
+<li>3.Overfitting(bad)</li>
+</ul>
+<p>因此我们需要把想要调整的参数分为两组。第一组是约束模型的参数，第二组与第一组效果相反。</p>
+<ul>
+<li><strong>A parameter in red</strong></li>
+<li>Increasing it impedes fitting</li>
+<li>Increase it to reduce overfitting</li>
+<li>Decrease to allow model fit easier</li>
+<li><strong>A parameter in green</strong></li>
+<li>Increasing it leads to a batter fit(overfit) on train set</li>
+<li>Increase it, if model underfits</li>
+<li>Decrease if overfits</li>
+</ul>
+<p><em>上面提到的颜色只是视频中的标记</em></p>
+<h2 id="Hyperparameter-tuning-II"><a href="#Hyperparameter-tuning-II" class="headerlink" title="Hyperparameter tuning II"></a>Hyperparameter tuning II</h2><p>一些基于树模型的超参数优化</p>
+<ul>
+<li>Tree-based models<table>
+<thead>
+<tr>
+<th align="center">Model</th>
+<th align="center">Where</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">GBDT</td>
+<td align="center">XGBoost-<a href="https://github.com/dmlc/xgboost" target="_blank" rel="external nofollow noopener noreferrer">dmlc/xgboost</a></td>
+</tr>
+<tr>
+<td align="center">LightGBM-<a href="https://github.com/Microsoft/LightGBM" target="_blank" rel="external nofollow noopener noreferrer">Microsoft/LightGBM</a></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">CatBoost-<a href="https://github.com/catboost/catboost" target="_blank" rel="external nofollow noopener noreferrer">catboost/catboost</a></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">RandomForest/ExtraTrees</td>
+<td align="center"><em>scikit-learn</em></td>
+</tr>
+<tr>
+<td align="center">Others</td>
+<td align="center">RGF-<a href="https://github.com/baidu/fast_rgf" target="_blank" rel="external nofollow noopener noreferrer">baidu/fast_rgf</a></td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<h3 id="GBDT"><a href="#GBDT" class="headerlink" title="GBDT"></a>GBDT</h3><table>
+<thead>
+<tr>
+<th align="center">XGBoost</th>
+<th align="center">LightGBM</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">max_depth</td>
+<td align="center">max_depth/num_leaves</td>
+</tr>
+<tr>
+<td align="center">subsample</td>
+<td align="center">bagging_fraction</td>
+</tr>
+</tbody></table>
+<p>| colsample<em>bytree,<br>colsample_bylevel | frature_fraction |<br>| *<code>min_child_weight,</code><br><code>lambda,alpha</code>_ | <em><code>min_data_in_leaf,</code><br><code>lambda_l1,lambda_l2</code>\</em> |<br>| eta<br>num_round | learning_rate<br>num_iterations |<br>| Others:<br>seed | Others:<br>\</em>_seed |</p>
+<ul>
+<li><strong>max_depth</strong>:<br>树越深，越能拟合数据集，但这可以会导致过拟合。根据任务的不同，最大深度可能会有很大差异，有时是 2，有时是 27。建议 max_depth 大约从 7 开始，直到未过拟合的最大深度。需要注意的是深度增加，学习时间就更长。</li>
+<li><strong>num_leaves</strong>:<br>在 LightGBM 中，可以控制叶的数量，而不是最大深度。因为树可以很深，但如果叶子数量少就不会导致过拟合。</li>
+<li><strong>subsample、bagging_fraction</strong>:<br>这个参数可以控制每次喂给模型的数据量，取值在 0,1 之间。每次喂给它一小部分数据，可以让它不那么过拟合，并且可以得到更好的泛化效果，但是模型的训练会更慢。这有点像正则化的作用。</li>
+<li><strong>colsample_bytree、colsample_bylevel</strong>:<br>这个参数可以控制 subsample 中的分裂点。如果模型过拟合，可以尝试降低这些值。</li>
+<li><strong>min_child_weight,lambda,alpha</strong>:<br>正则化参数。</li>
+<li><strong>min_child_weight</strong>:<br>经验中，这是最重要的参数。增加它可以让模型更保守，减少它会让模型有更少约束。根据不同的任务，我发现最佳值为 0,5,15,300，所以不要犹豫，尝试各种值，这取决于数据。</li>
+<li><strong>eta、num_round</strong>:eta 本质上是一种学习权重，就像梯度下降一样。num_round 是我们想要执行的学习步数，换句话说，是我们想要建多少棵树。每次迭代都会构建一个新树，以学习率 eta 添加到模型中。</li>
+<li>当我们找到合适的轮数时，可以做一个通常会提高分数的技巧。我们将 num_round 乘以 α，将 eta 除以 α，模型通常会变得更好。可能应用的参数也需要调整，但通常可以保留原样。</li>
+</ul>
+<p><strong>Other</strong></p>
+<ul>
+<li><strong>seed</strong>:<br>一般情况下随机种子对于模型影响不大。但如果随机种子对你的影响非常大时，建议你可以多次提交，或者根据随机性调整你的验证方案。</li>
+</ul>
+<h3 id="sklearn-RandomForest-ExtraTrees"><a href="#sklearn-RandomForest-ExtraTrees" class="headerlink" title="sklearn.RandomForest/ExtraTrees"></a>sklearn.RandomForest/ExtraTrees</h3><ul>
+<li><strong>n_estimators</strong>:<br>RandomForest 构建每棵树是独立于其他树的，这意味这拥有大量树的模型不会导致过拟合，这于 Gradient Boosting 相反。我们通常首先将 n_estimators 设置为非常小的数字，例如 10，并看看这将花费多少时间，如果不太长，就把它设为一个比较大的值，例如 300。</li>
+<li><strong>max_deep</strong>:<br>控制树的深度，于 XGBoost 不同，它可以被设置为 None,这对应于无限深度。当数据集中的特征具有重复值和重要交互时，它实际上非常有用。在其他情况下，无约束深度的模型将立即过拟合。建议随机森林的深度从 7 左右开始。通常随机深林的最佳深度高于 Gradient Boosting，所有不要犹豫尝试 10,20 或更高的值。</li>
+<li><strong>max_feature</strong>:<br>与 XGBoost 中的参数相同。</li>
+<li><strong>min_samples_leaf</strong>:<br>是一个类似正则化的参数，与 XGBoost 的 min_child_weight 和 LightGBM 的 min_data_leaf 相同。</li>
+</ul>
+<p><strong>Other</strong></p>
+<ul>
+<li><strong>criterion</strong>:<br>根据我的经验，Gini 更常见，但有时 Entropy 更好。</li>
+<li><strong>random_state</strong>:<br>随机种子参数</li>
+<li><strong>n_jobs</strong>:设置拥有多个核心数。默认情况下 sklearn 的 RandomForest 由于某种原因仅使用一个核心。</li>
+</ul>
+<h2 id="Hyperparameter-tuning-III"><a href="#Hyperparameter-tuning-III" class="headerlink" title="Hyperparameter tuning III"></a>Hyperparameter tuning III</h2><ul>
+<li>Neural nets</li>
+<li>Pytorch, Tensorflow, Keras…</li>
+<li>Linear models</li>
+<li>SVM, logistic regression</li>
+<li>Vowpal Wabbit, FTRL</li>
+</ul>
+<h3 id="Neural-Nets"><a href="#Neural-Nets" class="headerlink" title="Neural Nets"></a>Neural Nets</h3><p>这里讨论的是 dense neural nets,即只含有全连接层的网络</p>
+<p>自适应算法已高亮+斜体显示</p>
+<ul>
+<li>Number of neurons per layer</li>
+<li>Number of layers</li>
+<li>Optimizers</li>
+<li><em><code>SGD + momentum</code></em></li>
+<li>Adam/Adadelta/Adagrade/..<ul>
+<li>In pratice lead to more overfitting</li>
+</ul>
+</li>
+<li>Batch size</li>
+<li>Learning rate</li>
+<li>Regularization</li>
+<li>L2/L1 for weights</li>
+<li>Dropout/Dropconnect</li>
+<li>Static Dropconect</li>
+<li>建议从简单的开始，比如 1 层或 2 层，调试代码，确保训练时 loss 下降</li>
+<li>然后尝试找到一个能够过拟合的配置，之后在网络中调整一些东西</li>
+<li>神经网络的关键部分之一是优化方法</li>
+<li>自适应优化方法的确可以让你更快的拟合数据，但根据我的经验，这也会导致严重的过拟合。普通的 SGD 收敛速度较慢，但是训练好的模型通常会有更好的泛化效果。Adaptive methods are useful,but in the settings others in classification and regression.</li>
+<li>Batch Size:事实证明批量过大会导致更多的过拟合。凭经验，batch_size 为 500 就可以认为很大。建议选择 32 或 64 左右的值，如果网络仍然过拟合，请尝试减少 batch_size，反之增加它。batch_size 也不应该太小，否则梯度可能会有太多噪声。在调整 batch_size 后，必要时，应该去调整其他网络数量。</li>
+<li>学习率：学习率不能太高也不能太低。因此，最佳学习率取决于其他参数。通常从一个大的学习率开始，比如 0.1，然后逐步去减小它。有一条经验法则，如果你将 batch_size 增加 alpha 倍，你也可以提高学习率 alpha 倍。</li>
+<li>早期，人们大多使用 L2 和 L1 正则化。如今大多数人都使用 dropout 正则化。对我来说，就是在数层之后立即将 dropout 作为第一层。</li>
+<li>static dropconnect:通常我们有一个密集连接的输入层，比如 128 个单位。我们将改为一个非常巨大的隐藏层，比如 4096 个单位，对于一般的比赛来说，这是一个巨大的网络，它会严重过拟合。现在为了规范它，我们将对这一层随机 dropout 99%，这是非常强的正则化，实践证明这是可以的。</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696277175-b7c53856-0bdd-4291-ba9e-03ef968e115a.png#align=left&display=inline&height=520&originHeight=520&originWidth=623&size=0&status=done&style=none&width=623" alt=""></p>
+<h3 id="Linear-models"><a href="#Linear-models" class="headerlink" title="Linear models"></a>Linear models</h3><ul>
+<li><strong>Scikit-learn</strong></li>
+<li>SVC/SVR<ul>
+<li>Sklearn wraps <code>libLinear</code> and <code>libSVM</code></li>
+<li>Compile yourself for multicore support</li>
+</ul>
+</li>
+<li>LogisticRegression/LinearRegression + <em>regularizers</em></li>
+<li>SGDClassifier/SGDRegressor</li>
+<li><strong>Vowpal Wabbit</strong></li>
+<li>FTRL</li>
+<li>SVM 几乎不需要调参，这是最大的益处</li>
+<li>最新版的<code>libLinear</code>和<code>libSVM</code>支持多核处理，但 Sklearn 中的不支持多核处理。所以我们需要动手变异这些库以使用此选项。</li>
+<li>几乎没有人使用<code>kernel SVC</code>，所以这里只讨论 SVM</li>
+<li>对于不适合在内存中操作的数据，我们可以使用<code>Vowpal Wabbit</code>，它以在线的方式实现线性模型的学习。它只能直接从硬盘驱动器中逐行读取数据，永远不会将整个数据集加载到内存中。因此，允许学习非常庞大的数据集。</li>
+<li>线性模型的在线学习方法（FTRL）在前段时间特别受欢迎，他是<code>Vowpal Wabbit</code>中的实现。</li>
+</ul>
+<h3 id="Linear-models-1"><a href="#Linear-models-1" class="headerlink" title="Linear models"></a>Linear models</h3><ul>
+<li>Regularization parameter(X,alpha,lambda,..)</li>
+<li>Start with very small value and increase it.</li>
+<li>SVC starts to work sklowe as C increase</li>
+<li>Regularization type</li>
+<li>L1/L2/L1+L2 –try each</li>
+<li>L1 can be used for feature selection</li>
+<li>C：对于 SVM，我通常会从一个非常小的值开始，比如$10^{-6}$，每次乘以 10。从小的值开始，是因为参数 C 越大，训练时间越长。</li>
+<li>选择 L1 还是 L2？答案是尝试两者，在我看来，它们非常相识。并且 L1 还有一个好处，可以给我们提供一个稀疏权重，这可以用于特征选择。</li>
+</ul>
+<h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><ul>
+<li><strong>Don’t spend too much time tuning hyperparameters</strong></li>
+<li>Only if you don’t have any more ideas or you have spare computational resources</li>
+<li><strong>Be patient</strong></li>
+<li>It can take thousands of rounds for GBDT or neural nets to fit.</li>
+<li><strong>Average everything</strong></li>
+<li>Over random seed</li>
+<li>Or over small deviations from optimal parameters<ul>
+<li>e.g.average max_depth=4,5,6for an optimal 5</li>
+</ul>
+</li>
+</ul>
+<h2 id="相关链接"><a href="#相关链接" class="headerlink" title="相关链接"></a>相关链接</h2><ul>
+<li><a href="http://scikit-learn.org/stable/modules/grid_search.html" target="_blank" rel="external nofollow noopener noreferrer">调整估计器的超参数（sklearn）</a></li>
+<li><a href="https://www.analyticsvidhya.com/blog/2016/02/complete-guide-parameter-tuning-gradient-boosting-gbm-python/" target="_blank" rel="external nofollow noopener noreferrer">Python 中梯度提升（GBM）中参数调整的完整指南</a></li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579696277194-499a32cd-8b12-4c82-89c9-c7d181e7b854.jpeg#align=left&display=inline&height=640&originHeight=640&originWidth=1080&size=0&status=done&style=none&width=1080" alt=""></p>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/%E9%AB%98%E7%BA%A7%E8%B0%83%E5%8F%82%E6%8A%80%E5%B7%A7.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/%E6%80%BB%E7%BB%93/">
+              #总结
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/kaggle/">
+              #kaggle
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/%E9%AB%98%E7%BA%A7%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8BII.html" target="_self">高级特征工程II</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/%E9%AB%98%E7%BA%A7%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0%E6%8A%80%E5%B7%A7.html" target="_self">高级集成学习技巧</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

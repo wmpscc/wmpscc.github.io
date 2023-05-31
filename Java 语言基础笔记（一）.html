@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>Java 语言基础笔记（一） | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="编程,JAVA,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>Java 语言基础笔记（一）</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-01-22
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E7%BC%96%E7%A8%8B/">
+            编程
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="Java 语言基础笔记（一）.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579684705668-e34dcc98-2b42-4ab9-b29a-d8dc28e1d30a.jpeg#align=left&display=inline&height=433&name=fpic5081.jpg&originHeight=433&originWidth=650&size=47580&status=done&style=none&width=650" alt="fpic5081.jpg"></p>
+<h1 id="Java-常用基础（一）"><a href="#Java-常用基础（一）" class="headerlink" title="Java 常用基础（一）"></a>Java 常用基础（一）</h1><p>原文写于 2017-12-02</p>
+<h3 id="输入输出"><a href="#输入输出" class="headerlink" title="输入输出"></a>输入输出</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//输入</span></span><br><span class="line">Scanner in = <span class="keyword">new</span> Scanner(<span class="keyword">new</span> BufferedInputStream(System.in));</span><br><span class="line">in.hasNext();</span><br><span class="line">in.nextInt();</span><br><span class="line"><span class="comment">//输出</span></span><br><span class="line">PrintWriter out = <span class="keyword">new</span> PrintWriter(<span class="keyword">new</span> BufferedOutputStream(System.out));</span><br><span class="line">out.println(<span class="string">"Hello World"</span>);</span><br><span class="line">out.flush();</span><br></pre></td></tr></table></figure>
+
+<h3 id="随机数"><a href="#随机数" class="headerlink" title="随机数"></a>随机数</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Random rand =  <span class="keyword">new</span> Random(<span class="number">47</span>)</span><br></pre></td></tr></table></figure>
+
+<p>47 为随机数种子，随机数种子一样产生的随机数序列一样，若空则以当前时间为种子，每次产生的随机数不一样<br>产生[0,1)区间的小数 Math.random();</p>
+<h3 id="进制"><a href="#进制" class="headerlink" title="进制"></a>进制</h3><p>十六进制以 0x 开头</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> c = <span class="number">0xffff</span>;     <span class="comment">// max char hex value</span></span><br><span class="line"><span class="keyword">byte</span> b = <span class="number">0x7f</span>;       <span class="comment">// max byte hex value</span></span><br><span class="line"><span class="keyword">short</span> s = <span class="number">0x7fff</span>;    <span class="comment">// max short hex value</span></span><br></pre></td></tr></table></figure>
+
+<p>如果试图将一个变量初始化为超出自身表示范围的值（无论这个值的数值形式如何），编译器都会向我们报告一条错误信息。如果超出范围，编译器会将值自动转换为 int 型，并告诉我们需要对这次赋值进行“窄化转型”</p>
+<h3 id="窄化转型"><a href="#窄化转型" class="headerlink" title="窄化转型"></a>窄化转型</h3><p>将能容纳更多信息的数据类型转换成无法容纳那么多信息的类型，有可能面临信息丢失的危险</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//如浮点型转换为整形</span></span><br><span class="line"><span class="keyword">int</span> i = <span class="number">29.7</span>;</span><br><span class="line">print(i);</span><br><span class="line"><span class="comment">//输出29，而不是30</span></span><br><span class="line">round()</span><br><span class="line">java.lang 中的四舍五入函数</span><br><span class="line"></span><br><span class="line"><span class="keyword">double</span> d = <span class="number">29.7</span>;</span><br><span class="line">print(Math.round(d));</span><br><span class="line"><span class="comment">//将输出30</span></span><br><span class="line">指数记数法</span><br><span class="line"><span class="comment">// 1.3e-43表示的是1.3 x 10`-43f</span></span><br><span class="line"><span class="keyword">float</span> f = <span class="number">1.3e-43f</span></span><br><span class="line"><span class="comment">//编译器通常会将指数作为双精度（double）处理，在尾部加上f是告诉编译器将double 转换成float，否则会出错</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="按位操作符"><a href="#按位操作符" class="headerlink" title="按位操作符"></a>按位操作符</h3><p>|           操作符           |    注释    |<br>| :————————: | :——–: | ———- |<br>|             &amp;              |     与     |<br>|                            |            | 或         |<br>|             ~              |     非     |<br>|            &amp;=、            |   =、^=    | 都是合法的 |<br>| &lt;&lt;、 &gt;&gt;、 &lt;&lt;=、 &gt;&gt;=、 &gt;&gt;&gt;= | 移位操作符 |</p>
+<h3 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h3><p>只要类型比 int 小，（即 char byte short），在运算之前这些值会自动转换成 int。这也一来，最终生成的结果就是 int 型。如果把结果值赋值给较小的类型，就必须使用强制类型转换（既然把结果赋值给了较小的类型，就可能出现信息的丢失）。<br>通常，表达式中出现的最大的数据类型决定了表达式最终结果的数据类型，如果将一个 float 值与一个 double 值相乘，结果就是 double；如果将一个 int 和一个 long 值相加，则结果为 long。</p>
+<h3 id="“-”-与-equals"><a href="#“-”-与-equals" class="headerlink" title="“==” 与 equals()"></a>“==” 与 equals()</h3><p>“==”比较基本数据类型，相同返回 true 不用返回 false<br>比较引用时，如果引用指向内存中的同一对象则返回 true。</p>
+<p><code>equals()</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span>  <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object obj)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>当参数 obj 引用的对象与当前对象为同一个对象时，就返回 true,否则返回 false。<br>equals()方法的本意为确定两个对象的引用是否相同，而 JDK 类中有一些类覆盖了 oject 类的 equals()方法，比较规则为：如果两个对象的类型一致，并且内容一致，则返回 true,这些类有：<strong>java.io.file,java.util.Date,java.lang.string,包装类（Integer,Double 等）</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EqualsTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        String s1=<span class="keyword">new</span> String(<span class="string">"sss"</span>);</span><br><span class="line">        String s2=<span class="keyword">new</span> String(<span class="string">"sss"</span>);</span><br><span class="line"></span><br><span class="line">        System.out.println(s1==s2);</span><br><span class="line">        System.out.println(s1.equals(s2));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//————————运行结果为——————</span></span><br><span class="line"><span class="comment">//false</span></span><br><span class="line"><span class="comment">//true</span></span><br></pre></td></tr></table></figure>
+
+<p>由此知道，在 String 中 equals()方法被进行了覆盖，使其意义变为比较两个对象的内容是否一致</p>
+<h3 id="Foreach"><a href="#Foreach" class="headerlink" title="Foreach"></a>Foreach</h3><p>遍历数组并输出</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">double</span> d[] = <span class="keyword">new</span> <span class="keyword">double</span>[<span class="number">10</span>];</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)</span><br><span class="line">    d[i] = Math.random();</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">double</span> t : d)</span><br><span class="line">    System.out.println(t);</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i : range(<span class="number">100</span>))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(i == <span class="number">74</span>)<span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">else</span> System.out.print(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h3><p>标签是后面根有冒号的标识符：<br>label1:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">label1:</span><br><span class="line">outer-iteration&#123;</span><br><span class="line">    inner-iteration&#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">        <span class="keyword">continue</span>;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">        <span class="keyword">continue</span> label1;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">        <span class="keyword">break</span> label1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>break 中断内部迭代，回到外部迭代。<br>continue 使执行点移回内部迭代的起始处<br>continue label1 中断内部迭代以及外部迭代，直接转到 label1 处，重新开始迭代过程。<br>break label1 也会中断所有迭代，并回到 label1，但并不重新开始迭代</p>
+<h3 id="构造器初始化之初始化顺序"><a href="#构造器初始化之初始化顺序" class="headerlink" title="构造器初始化之初始化顺序"></a>构造器初始化之初始化顺序</h3><p>在类的内部，变量定义的先后顺序决定了初始化的顺序。即使变量定义散布于方法定义之间，它们人就会在任何方法（包括构造器）被调用之前得到初始化。例如</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Window</span></span>&#123;</span><br><span class="line">    Window(<span class="keyword">int</span> marker)&#123; print(<span class="string">"Window("</span> + marker + <span class="string">")"</span>); &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">clase House&#123;</span><br><span class="line">    Window w1 = <span class="keyword">new</span> Window(<span class="number">1</span>);</span><br><span class="line">    House()&#123;</span><br><span class="line">        print(<span class="string">"House()"</span>);</span><br><span class="line">        w3 = <span class="keyword">new</span> Window(<span class="number">33</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    Window w2 = <span class="keyword">new</span> Window(<span class="number">2</span>);</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">()</span></span>&#123; print(<span class="string">"f()"</span>) &#125;;</span><br><span class="line">    Window w3 = <span class="keyword">new</span> Window(<span class="number">3</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderOfInitialization</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        House h = <span class="keyword">new</span> House();</span><br><span class="line">        h.f();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Output:</span></span><br><span class="line"><span class="comment">Window(1)</span></span><br><span class="line"><span class="comment">Window(2)</span></span><br><span class="line"><span class="comment">Window(3)</span></span><br><span class="line"><span class="comment">House()</span></span><br><span class="line"><span class="comment">Window(33)</span></span><br><span class="line"><span class="comment">f()</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<p>显然定义的变量最先初始化，并且先定义的变量先初始化</p>
+<h3 id="instanceof"><a href="#instanceof" class="headerlink" title="instanceof"></a>instanceof</h3><p>fun1 extends fun<br>fun1 instanceof fun //返回 true</p>
+<h3 id="super"><a href="#super" class="headerlink" title="super"></a>super</h3><p>super 指向父类的方法<br>例如重写了父类的方法，又想用父类原来的方法</p>
+<h3 id="this"><a href="#this" class="headerlink" title="this"></a>this</h3><p>this 指向本类的方法</p>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/Java%20%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/JAVA/">
+              #JAVA
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/C%E8%AF%AD%E8%A8%80%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2.html" target="_self">C语言类型转换</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/Matplotlib%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8.html" target="_self">Matplotlib快速入门</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

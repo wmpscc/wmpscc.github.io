@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>Pavement Crack Segmentation Paper | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="论文,裂缝分割,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>Pavement Crack Segmentation Paper</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-01-29
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E8%AE%BA%E6%96%87/">
+            论文
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="Pavement Crack Segmentation Paper.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <p>2020 年 1 月收集的关于 Pavement Crack Segmentation 的最新论文，pdf 地址换上 arXiv 网址即可。</p>
+<h1 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h1><h3 id="1-A-Deep-Neural-Networks-Approach-for-Pixel-Level-Runway-Pavement-Crack-Segmentation-Using-Drone-Captured-Images"><a href="#1-A-Deep-Neural-Networks-Approach-for-Pixel-Level-Runway-Pavement-Crack-Segmentation-Using-Drone-Captured-Images" class="headerlink" title="1.A Deep Neural Networks Approach for Pixel-Level Runway Pavement Crack Segmentation Using Drone-Captured Images"></a>1.A Deep Neural Networks Approach for Pixel-Level Runway Pavement Crack Segmentation Using Drone-Captured Images</h3><p><a href="https://arxiv.org/abs/2001.03257" target="_blank" rel="external nofollow noopener noreferrer">arXiv:2001.03257</a>  [<a href="./pdf/2001.03257">pdf</a>] cs.CV eess.IV</p>
+<p>Authors: <a href="https://arxiv.org/search/?searchtype=author&query=Jiang%2C+L" target="_blank" rel="external nofollow noopener noreferrer">Liming Jiang</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Xie%2C+Y" target="_blank" rel="external nofollow noopener noreferrer">Yuanchang Xie</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Ren%2C+T" target="_blank" rel="external nofollow noopener noreferrer">Tianzhu Ren</a></p>
+<p><strong>Abstract</strong>: <strong>Pavement</strong> conditions are a critical aspect of asset management and directly affect safety. This study introduces a deep neural network method called U-Net for <strong>pavement</strong> <strong>crack</strong> segmentation based on drone-captured images to reduce the cost and time needed for airport runway inspection. The proposed approach can also be used for highway <strong>pavement</strong> conditions assessment during off-peak periods when there are few vehicles on the road. In this study, runway <strong>pavement</strong> images are collected using drone at various heights from the Fitchburg Municipal Airport (FMA) in Massachusetts to evaluate their quality and applicability for <strong>crack</strong> segmentation, from which an optimal height is determined. Drone images captured at the optimal height are then used to evaluate the <strong>crack</strong> segmentation performance of the U-Net model. Deep learning methods typically require a huge set of annotated training datasets for model development, which can be a major obstacle for their applications. An online annotated <strong>pavement</strong> image dataset is used together with the FMA data to train the U-Net model. The results show that U-Net performs well on the FMA testing data even with limited FMA training images, suggesting that it has good generalization ability and great potential to be used for both airport runways and highway <strong>pavements</strong>.</p>
+<p>Submitted 9 January, 2020; originally announced January 2020.</p>
+<p>Comments: 13 pages, 5 figures</p>
+<h3 id="2-Automated-Pavement-Crack-Segmentation-Using-Fully-Convolutional-U-Net-with-a-Pretrained-ResNet-34-Encoder"><a href="#2-Automated-Pavement-Crack-Segmentation-Using-Fully-Convolutional-U-Net-with-a-Pretrained-ResNet-34-Encoder" class="headerlink" title="2.Automated Pavement Crack Segmentation Using Fully Convolutional U-Net with a Pretrained ResNet-34 Encoder"></a>2.Automated Pavement Crack Segmentation Using Fully Convolutional U-Net with a Pretrained ResNet-34 Encoder</h3><p><a href="https://arxiv.org/abs/2001.01912" target="_blank" rel="external nofollow noopener noreferrer">arXiv:2001.01912</a>  [<a href="./pdf/2001.01912">pdf</a>]  cs.CV</p>
+<p>Authors: <a href="https://arxiv.org/search/?searchtype=author&query=Lau%2C+S+L+H" target="_blank" rel="external nofollow noopener noreferrer">Stephen L. H. Lau</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Wang%2C+X" target="_blank" rel="external nofollow noopener noreferrer">Xin Wang</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Yang%2C+X" target="_blank" rel="external nofollow noopener noreferrer">Xu Yang</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Chong%2C+E+K+P" target="_blank" rel="external nofollow noopener noreferrer">Edwin K. P. Chong</a></p>
+<p><strong>Abstract</strong>: Automated <strong>pavement</strong> <strong>crack</strong> segmentation is a challenging task because of inherent irregular patterns and lighting conditions, in addition to the presence of noise in images. Conventional approaches require a substantial amount of feature engineering to differentiate <strong>crack</strong> regions from non-affected regions. In this paper, we propose a deep learning technique based on a convolutional neural network to perform segmentation tasks on <strong>pavement</strong> <strong>crack</strong> images. Our approach requires minimal feature engineering compared to other machine learning techniques. The proposed neural network architecture is a modified U-Net in which the encoder is replaced with a pretrained ResNet-34 network. To minimize the dice coefficient loss function, we optimize the parameters in the neural network by using an adaptive moment optimizer called AdamW. Additionally, we use a systematic method to find the optimum learning rate instead of doing parametric sweeps. We used a “one-cycle” training schedule based on cyclical learning rates to speed up the convergence. We evaluated the performance of our convolutional neural network on CFD, a <strong>pavement</strong> <strong>crack</strong> image dataset. Our method achieved an F1 score of about 96%. This is the best performance among all other algorithms tested on this dataset, outperforming the previous best method by a 1.7% margin.</p>
+<p>Submitted 10 January, 2020; v1 submitted 7 January, 2020; originally announced January 2020.</p>
+<p>Comments: 9 pages, 6 figures</p>
+<h3 id="3-CrackGAN-A-Labor-Light-Crack-Detection-Approach-Using-Industrial-Pavement-Images-Based-on-Generative-Adversarial-Learning"><a href="#3-CrackGAN-A-Labor-Light-Crack-Detection-Approach-Using-Industrial-Pavement-Images-Based-on-Generative-Adversarial-Learning" class="headerlink" title="3. CrackGAN: A Labor-Light Crack Detection Approach Using Industrial Pavement Images Based on Generative Adversarial Learning"></a>3. CrackGAN: A Labor-Light Crack Detection Approach Using Industrial Pavement Images Based on Generative Adversarial Learning</h3><p><a href="https://arxiv.org/abs/1909.08216" target="_blank" rel="external nofollow noopener noreferrer">arXiv:1909.08216</a>  [<a href="./pdf/1909.08216">pdf</a>, <a href="https://arxiv.org/format/1909.08216" target="_blank" rel="external nofollow noopener noreferrer">other</a>] cs.CV cs.LG eess.IV</p>
+<p>Authors: <a href="https://arxiv.org/search/?searchtype=author&query=Zhang%2C+K" target="_blank" rel="external nofollow noopener noreferrer">Kaige Zhang</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Zhang%2C+Y" target="_blank" rel="external nofollow noopener noreferrer">Yingtao Zhang</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Cheng%2C+H" target="_blank" rel="external nofollow noopener noreferrer">Heng-Da Cheng</a></p>
+<p><strong>Abstract</strong>: Fully convolutional network is a powerful tool for per-pixel semantic segmentation/detection. However, it is problematic when coping with <strong>crack</strong> detection using industrial <strong>pavement</strong> images: the network may easily “converge” to the status that treats all the pixels as background (BG) and still achieves a very good loss, named “All Black” phenomenon, due to the data imbalance and the unavailability of accurate ground truths (GTs). To tackle this problem, we introduce <strong>crack</strong>-patch-only (CPO) supervision and generative adversarial learning for end-to-end training, which forces the network to always produce <strong>crack</strong>-GT images while reserves both <strong>crack</strong> and BG-image translation abilities by feeding a larger-size <strong>crack</strong> image into an asymmetric U-shape generator to overcome the “All Black” issue. The proposed approach is validated using four <strong>crack</strong> datasets; and achieves state-of-the-art performance comparing with that of the recently published works in efficiency and accuracy.</p>
+<p>Submitted 18 September, 2019; originally announced September 2019.</p>
+<h3 id="4-A-Cost-Effective-Solution-for-Road-Crack-Inspection-using-Cameras-and-Deep-Neural-Networks"><a href="#4-A-Cost-Effective-Solution-for-Road-Crack-Inspection-using-Cameras-and-Deep-Neural-Networks" class="headerlink" title="4. A Cost Effective Solution for Road Crack Inspection using Cameras and Deep Neural Networks"></a>4. A Cost Effective Solution for Road Crack Inspection using Cameras and Deep Neural Networks</h3><p><a href="https://arxiv.org/abs/1907.06014" target="_blank" rel="external nofollow noopener noreferrer">arXiv:1907.06014</a>  [<a href="./pdf/1907.06014">pdf</a>] cs.CV cs.LG eess.IV</p>
+<p>Authors: <a href="https://arxiv.org/search/?searchtype=author&query=Mei%2C+Q" target="_blank" rel="external nofollow noopener noreferrer">Qipei Mei</a>, <a href="https://arxiv.org/search/?searchtype=author&query=G%C3%BCl%2C+M" target="_blank" rel="external nofollow noopener noreferrer">Mustafa Gül</a></p>
+<p><strong>Abstract</strong>: Automatic <strong>crack</strong> detection on <strong>pavement</strong> surfaces is an important research field in the scope of developing an intelligent transportation infrastructure system. In this paper, a cost effective solution for road <strong>crack</strong> inspection by mounting commercial grade sport camera, GoPro, on the rear of the moving vehicle is introduced. Also, a novel method called ConnCrack combining conditional Wasserstein generative adversarial network and connectivity maps is proposed for road <strong>crack</strong> detection. In this method, a 121-layer densely connected neural network with deconvolution layers for multi-level feature fusion is used as generator, and a 5-layer fully convolutional network is used as discriminator. To overcome the scattered output issue related to deconvolution layers, connectivity maps are introduced to represent the <strong>crack</strong> information within the proposed ConnCrack. The proposed method is tested on a publicly available dataset as well our collected data. The results show that the proposed method achieves state-of-the-art performance compared with other existing methods in terms of precision, recall and F1 score.</p>
+<p>Submitted 22 October, 2019; v1 submitted 13 July, 2019; originally announced July 2019.</p>
+<h3 id="5-FPCNet-Fast-Pavement-Crack-Detection-Network-Based-on-Encoder-Decoder-Architecture"><a href="#5-FPCNet-Fast-Pavement-Crack-Detection-Network-Based-on-Encoder-Decoder-Architecture" class="headerlink" title="5.FPCNet: Fast Pavement Crack Detection Network Based on Encoder-Decoder Architecture"></a>5.FPCNet: Fast Pavement Crack Detection Network Based on Encoder-Decoder Architecture</h3><p><a href="https://arxiv.org/abs/1907.02248" target="_blank" rel="external nofollow noopener noreferrer">arXiv:1907.02248</a>  [<a href="./pdf/1907.02248">pdf</a>, <a href="https://arxiv.org/format/1907.02248" target="_blank" rel="external nofollow noopener noreferrer">other</a>] cs.CV</p>
+<p>Authors: <a href="https://arxiv.org/search/?searchtype=author&query=Liu%2C+W" target="_blank" rel="external nofollow noopener noreferrer">Wenjun Liu</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Huang%2C+Y" target="_blank" rel="external nofollow noopener noreferrer">Yuchun Huang</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Li%2C+Y" target="_blank" rel="external nofollow noopener noreferrer">Ying Li</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Chen%2C+Q" target="_blank" rel="external nofollow noopener noreferrer">Qi Chen</a></p>
+<p><strong>Abstract</strong>: Timely, accurate and automatic detection of <strong>pavement</strong> <strong>cracks</strong> is necessary for making cost-effective decisions concerning road maintenance. Conventional <strong>crack</strong> detection algorithms focus on the design of single or multiple <strong>crack</strong> features and classifiers. However, complicated topological structures, varying degrees of damage and oil stains make the design of <strong>crack</strong> features difficult. In addition, the contextual information around a <strong>crack</strong> is not investigated extensively in the design process. Accordingly, these design features have limited discriminative adaptability and cannot fuse effectively with the classifiers. To solve these problems, this paper proposes a deep learning network for <strong>pavement</strong> <strong>crack</strong> detection. Using the Encoder-Decoder structure, <strong>crack</strong> characteristics with multiple contexts are automatically learned, and end-to-end <strong>crack</strong> detection is achieved. Specifically, we first propose the Multi-Dilation (MD) module, which can synthesize the <strong>crack</strong> features of multiple context sizes via dilated convolution with multiple rates. The <strong>crack</strong> MD features obtained in this module can describe <strong>cracks</strong> of different widths and topologies. Next, we propose the SE-Upsampling (SEU) module, which uses the Squeeze-and-Excitation learning operation to optimize the MD features. Finally, the above two modules are integrated to develop the fast <strong>crack</strong> detection network, namely, FPCNet. This network continuously optimizes the MD features step-by-step to realize fast pixel-level <strong>crack</strong> detection. Experiments are conducted on challenging public CFD datasets and G45 <strong>crack</strong> datasets involving various <strong>crack</strong> types under different shooting conditions. The distinct performance and speed improvements over all the datasets demonstrate that the proposed method outperforms other state-of-the-art <strong>crack</strong> detection methods.</p>
+<p>Submitted 4 July, 2019; originally announced July 2019.</p>
+<h3 id="6-Feature-Pyramid-and-Hierarchical-Boosting-Network-for-Pavement-Crack-Detection"><a href="#6-Feature-Pyramid-and-Hierarchical-Boosting-Network-for-Pavement-Crack-Detection" class="headerlink" title="6.Feature Pyramid and Hierarchical Boosting Network for Pavement Crack Detection"></a>6.Feature Pyramid and Hierarchical Boosting Network for Pavement Crack Detection</h3><p><a href="https://arxiv.org/abs/1901.06340" target="_blank" rel="external nofollow noopener noreferrer">arXiv:1901.06340</a>  [<a href="./pdf/1901.06340">pdf</a>, <a href="https://arxiv.org/format/1901.06340" target="_blank" rel="external nofollow noopener noreferrer">other</a>] cs.CV</p>
+<p>Authors: <a href="https://arxiv.org/search/?searchtype=author&query=Yang%2C+F" target="_blank" rel="external nofollow noopener noreferrer">Fan Yang</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Zhang%2C+L" target="_blank" rel="external nofollow noopener noreferrer">Lei Zhang</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Yu%2C+S" target="_blank" rel="external nofollow noopener noreferrer">Sijia Yu</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Prokhorov%2C+D" target="_blank" rel="external nofollow noopener noreferrer">Danil Prokhorov</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Mei%2C+X" target="_blank" rel="external nofollow noopener noreferrer">Xue Mei</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Ling%2C+H" target="_blank" rel="external nofollow noopener noreferrer">Haibin Ling</a></p>
+<p><strong>Abstract</strong>: <strong>Pavement</strong> <strong>crack</strong> detection is a critical task for insuring road safety. Manual <strong>crack</strong> detection is extremely time-consuming. Therefore, an automatic road <strong>crack</strong> detection method is required to boost this progress. However, it remains a challenging task due to the intensity inhomogeneity of <strong>cracks</strong> and complexity of the background, e.g., the low contrast with surrounding <strong>pavements</strong> and possible shadows with similar intensity. Inspired by recent advances of deep learning in computer vision, we propose a novel network architecture, named Feature Pyramid and Hierarchical Boosting Network (FPHBN), for <strong>pavement</strong> <strong>crack</strong> detection. The proposed network integrates semantic information to low-level features for <strong>crack</strong> detection in a feature pyramid way. And, it balances the contribution of both easy and hard samples to loss by nested sample reweighting in a hierarchical way. To demonstrate the superiority and generality of the proposed method, we evaluate the proposed method on five <strong>crack</strong> datasets and compare it with state-of-the-art <strong>crack</strong> detection, edge detection, semantic segmentation methods. Extensive experiments show that the proposed method outperforms these state-of-the-art methods in terms of accuracy and generality.</p>
+<p>Submitted 24 January, 2019; v1 submitted 18 January, 2019; originally announced January 2019.</p>
+<h3 id="7-Brain-inspired-robust-delineation-operator"><a href="#7-Brain-inspired-robust-delineation-operator" class="headerlink" title="7.Brain-inspired robust delineation operator"></a>7.Brain-inspired robust delineation operator</h3><p><a href="https://arxiv.org/abs/1811.10240" target="_blank" rel="external nofollow noopener noreferrer">arXiv:1811.10240</a>  [<a href="./pdf/1811.10240">pdf</a>, <a href="https://arxiv.org/format/1811.10240" target="_blank" rel="external nofollow noopener noreferrer">other</a>] cs.CV</p>
+<p>Authors: <a href="https://arxiv.org/search/?searchtype=author&query=Strisciuglio%2C+N" target="_blank" rel="external nofollow noopener noreferrer">Nicola Strisciuglio</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Azzopardi%2C+G" target="_blank" rel="external nofollow noopener noreferrer">George Azzopardi</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Petkov%2C+N" target="_blank" rel="external nofollow noopener noreferrer">Nicolai Petkov</a></p>
+<p><strong>Abstract</strong>: In this paper we present a novel filter, based on the existing COSFIRE filter, for the delineation of patterns of interest. It includes a mechanism of push-pull inhibition that improves robustness to noise in terms of spurious texture. Push-pull inhibition is a phenomenon that is observed in neurons in area V1 of the visual cortex, which suppresses the response of certain simple cells for stimuli of preferred orientation but of non-preferred contrast. This type of inhibition allows for sharper detection of the patterns of interest and improves the quality of delineation especially in images with spurious texture. We performed experiments on images from different applications, namely the detection of rose stems for automatic gardening, the delineation of <strong>cracks</strong> in <strong>pavements</strong> and road surfaces, and the segmentation of blood vessels in retinal images. Push-pull inhibition helped to improve results considerably in all applications.</p>
+<p>Submitted 26 November, 2018; originally announced November 2018.</p>
+<p>Comments: Accepted at Brain-driven Computer Vision workshop at ECCV 2018</p>
+<h3 id="8-Automatic-Pavement-Crack-Detection-Based-on-Structured-Prediction-with-the-Convolutional-Neural-Network"><a href="#8-Automatic-Pavement-Crack-Detection-Based-on-Structured-Prediction-with-the-Convolutional-Neural-Network" class="headerlink" title="8.Automatic Pavement Crack Detection Based on Structured Prediction with the Convolutional Neural Network"></a>8.Automatic Pavement Crack Detection Based on Structured Prediction with the Convolutional Neural Network</h3><p><a href="https://arxiv.org/abs/1802.02208" target="_blank" rel="external nofollow noopener noreferrer">arXiv:1802.02208</a>  [<a href="./pdf/1802.02208">pdf</a>, <a href="https://arxiv.org/format/1802.02208" target="_blank" rel="external nofollow noopener noreferrer">other</a>] cs.CV</p>
+<p>Authors: <a href="https://arxiv.org/search/?searchtype=author&query=Fan%2C+Z" target="_blank" rel="external nofollow noopener noreferrer">Zhun Fan</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Wu%2C+Y" target="_blank" rel="external nofollow noopener noreferrer">Yuming Wu</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Lu%2C+J" target="_blank" rel="external nofollow noopener noreferrer">Jiewei Lu</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Li%2C+W" target="_blank" rel="external nofollow noopener noreferrer">Wenji Li</a></p>
+<p><strong>Abstract</strong>: Automated <strong>pavement</strong> <strong>crack</strong> detection is a challenging task that has been researched for decades due to the complicated <strong>pavement</strong> conditions in real world. In this paper, a supervised method based on deep learning is proposed, which has the capability of dealing with different <strong>pavement</strong> conditions. Specifically, a convolutional neural network (CNN) is used to learn the structure of the <strong>cracks</strong> from raw images, without any preprocessing. Small patches are extracted from <strong>crack</strong> images as inputs to generate a large training database, a CNN is trained and <strong>crack</strong> detection is modeled as a multi-label classification problem. Typically, <strong>crack</strong> pixels are much fewer than non-<strong>crack</strong> pixels. To deal with the problem with severely imbalanced data, a strategy with modifying the ratio of positive to negative samples is proposed. The method is tested on two public databases and compared with five existing methods. Experimental results show that it outperforms the other methods.</p>
+<p>Submitted 1 February, 2018; originally announced February 2018.</p>
+<h3 id="9-Road-Crack-Detection-Using-Deep-Convolutional-Neural-Network-and-Adaptive-Thresholding"><a href="#9-Road-Crack-Detection-Using-Deep-Convolutional-Neural-Network-and-Adaptive-Thresholding" class="headerlink" title="9.Road Crack Detection Using Deep Convolutional Neural Network and Adaptive Thresholding"></a>9.Road Crack Detection Using Deep Convolutional Neural Network and Adaptive Thresholding</h3><p><a href="https://arxiv.org/abs/1904.08582" target="_blank" rel="external nofollow noopener noreferrer">arXiv:1904.08582</a>  [<a href="./pdf/1904.08582">pdf</a>, <a href="https://arxiv.org/format/1904.08582" target="_blank" rel="external nofollow noopener noreferrer">other</a>] cs.CV cs.LG eess.IV</p>
+<p>Authors: <a href="https://arxiv.org/search/?searchtype=author&query=Fan%2C+R" target="_blank" rel="external nofollow noopener noreferrer">Rui Fan</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Bocus%2C+M+J" target="_blank" rel="external nofollow noopener noreferrer">Mohammud Junaid Bocus</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Zhu%2C+Y" target="_blank" rel="external nofollow noopener noreferrer">Yilong Zhu</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Jiao%2C+J" target="_blank" rel="external nofollow noopener noreferrer">Jianhao Jiao</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Wang%2C+L" target="_blank" rel="external nofollow noopener noreferrer">Li Wang</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Ma%2C+F" target="_blank" rel="external nofollow noopener noreferrer">Fulong Ma</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Cheng%2C+S" target="_blank" rel="external nofollow noopener noreferrer">Shanshan Cheng</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Liu%2C+M" target="_blank" rel="external nofollow noopener noreferrer">Ming Liu</a></p>
+<p><strong>Abstract</strong>: <strong>Crack</strong> is one of the most common <strong>road</strong> distresses which may pose <strong>road</strong> safety hazards. Generally, <strong>crack</strong> detection is performed by either certified inspectors or structural engineers. This task is, however, time-consuming, subjective and labor-intensive. In this paper, we propose a novel <strong>road</strong> <strong>crack</strong> detection algorithm based on deep learning and adaptive image segmentation. Firstly, a deep convolutional neural network is trained to determine whether an image contains <strong>cracks</strong> or not. The images containing <strong>cracks</strong> are then smoothed using bilateral filtering, which greatly minimizes the number of noisy pixels. Finally, we utilize an adaptive thresholding method to extract the <strong>cracks</strong> from <strong>road</strong> surface. The experimental results illustrate that our network can classify images with an accuracy of 99.92%, and the <strong>cracks</strong> can be successfully extracted from the images using our proposed thresholding algorithm. △ Less</p>
+<p>Submitted 17 April, 2019; originally announced April 2019.</p>
+<p>Comments: 6 pages, 8 figures, 2019 IEEE Intelligent Vehicles Symposium</p>
+<h3 id="10-Road-Damage-Detection-Using-Deep-Neural-Networks-with-Images-Captured-Through-a-Smartphone"><a href="#10-Road-Damage-Detection-Using-Deep-Neural-Networks-with-Images-Captured-Through-a-Smartphone" class="headerlink" title="10.Road Damage Detection Using Deep Neural Networks with Images Captured Through a Smartphone"></a>10.Road Damage Detection Using Deep Neural Networks with Images Captured Through a Smartphone</h3><p><a href="https://arxiv.org/abs/1801.09454" target="_blank" rel="external nofollow noopener noreferrer">arXiv:1801.09454</a>  [<a href="./pdf/1801.09454">pdf</a>, <a href="https://arxiv.org/format/1801.09454" target="_blank" rel="external nofollow noopener noreferrer">other</a>] cs.CV cs.CY</p>
+<p>Authors: <a href="https://arxiv.org/search/?searchtype=author&query=Maeda%2C+H" target="_blank" rel="external nofollow noopener noreferrer">Hiroya Maeda</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Sekimoto%2C+Y" target="_blank" rel="external nofollow noopener noreferrer">Yoshihide Sekimoto</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Seto%2C+T" target="_blank" rel="external nofollow noopener noreferrer">Toshikazu Seto</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Kashiyama%2C+T" target="_blank" rel="external nofollow noopener noreferrer">Takehiro Kashiyama</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Omata%2C+H" target="_blank" rel="external nofollow noopener noreferrer">Hiroshi Omata</a></p>
+<p>Abstract: Research on <strong>damage</strong> <strong>detection</strong> of <strong>road</strong> surfaces <strong>using</strong> <strong>image</strong> processing techniques has been actively conducted, achieving considerably high <strong>detection</strong> accuracies. Many studies only focus on the <strong>detection</strong> of the presence or absence of <strong>damage</strong>. However, in a real-world scenario, when the <strong>road</strong> managers from a governing body need to repair such <strong>damage</strong>, they need to clearly understand the type of <strong>damage</strong> in order to take effective action. In addition, in many of these previous studies, the researchers acquire their own data <strong>using</strong> different methods. Hence, there is no uniform <strong>road</strong> <strong>damage</strong> dataset available openly, leading to the absence of a benchmark for <strong>road</strong> <strong>damage</strong> <strong>detection</strong>. This study makes three contributions to address these issues. First, to the best of our knowledge, for the first time, a large-scale <strong>road</strong> <strong>damage</strong> dataset is prepared. This dataset is composed of 9,053 <strong>road</strong> <strong>damage</strong> <strong>images</strong> <strong>captured</strong> with a <strong>smartphone</strong> installed on a car, with 15,435 instances of <strong>road</strong> surface <strong>damage</strong> included in these <strong>road</strong> <strong>images</strong>. In order to generate this dataset, we cooperated with 7 municipalities in Japan and acquired <strong>road</strong> <strong>images</strong> for more than 40 hours. These <strong>images</strong> were <strong>captured</strong> in a wide variety of weather and illuminance conditions. In each <strong>image</strong>, we annotated the bounding box representing the location and type of <strong>damage</strong>. Next, we <strong>used</strong> a state-of-the-art object <strong>detection</strong> method <strong>using</strong> convolutional <strong>neural</strong> <strong>networks</strong> to train the <strong>damage</strong> <strong>detection</strong> model with our dataset, and compared the accuracy and runtime speed on both, <strong>using</strong> a GPU server and a <strong>smartphone</strong>. Finally, we demonstrate that the type of <strong>damage</strong> can be classified into eight types with high accuracy by applying the proposed object <strong>detection</strong> method. The <strong>road</strong> <strong>damage</strong> dataset, our experimental results, and the developed <strong>smartphone</strong> application <strong>used</strong> in this study are publicly available (<a href="https://github.com/sekilab/RoadDamageDetector/" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/sekilab/RoadDamageDetector/</a>).</p>
+<p>Submitted 1 February, 2018; v1 submitted 29 January, 2018; originally announced January 2018.</p>
+<p>Comments: 14 pages, 7 figures</p>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/Pavement%20Crack%20Segmentation%20Paper.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/%E8%A3%82%E7%BC%9D%E5%88%86%E5%89%B2/">
+              #裂缝分割
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/%E9%AB%98%E6%95%88%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E8%AE%BE%E8%AE%A1I.html" target="_self">高效神经网络设计I</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/%E8%B7%AF%E9%9D%A2%E8%A3%82%E7%BC%9D%E5%88%86%E5%89%B2%E7%9B%B8%E5%85%B3%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0.html" target="_self">路面裂缝分割相关论文笔记</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

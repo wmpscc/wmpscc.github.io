@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>Depthwise-STFT卷积复现 | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="深度学习,CV,paper,CNN,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>Depthwise-STFT卷积复现</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-02-23
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">
+            深度学习
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="Depthwise-STFT卷积复现.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1582449571790-71c84460-7e3f-4ad5-9ff6-09ea87125a99.png#align=left&display=inline&height=179&name=image.png&originHeight=358&originWidth=1495&size=129538&status=done&style=none&width=747.5" alt="image.png"><br>《<a href="https://arxiv.org/abs/2001.09912" target="_blank" rel="external nofollow noopener noreferrer">Depthwise-STFT based separable Convolutional Neural Networks</a>》论文复现。该论文提出了使用 STFT 替换 Depthwise 结构的卷积层，达到提速的效果。这里是未经优化的复现了文中提到的 Depthwise-STFT 卷积操作（卷积操作部分可以优化，预计计算了减少 8 倍），由于未优化，速度并没有得到明显的提升。</p>
+<p>但是该文提供的改进思路值得学习。</p>
+<ul>
+<li>改进思路</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1582449352814-535346e4-191f-4c77-88bd-adfb322bff50.png#align=left&display=inline&height=255&name=image.png&originHeight=444&originWidth=723&size=53479&status=done&style=none&width=415" alt="image.png"></p>
+<ul>
+<li>论文中达到的效果：</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1582449296743-ee4cdd02-48f0-43d1-98c9-c0c538a751bf.png#align=left&display=inline&height=266&name=image.png&originHeight=531&originWidth=731&size=87660&status=done&style=none&width=365.5" alt="image.png"></p>
+<h4 id="Depthwise-STFT-Conv"><a href="#Depthwise-STFT-Conv" class="headerlink" title="Depthwise-STFT Conv"></a>Depthwise-STFT Conv</h4><p>卷积操作</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> torch <span class="keyword">import</span> nn</span><br><span class="line"><span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> F</span><br><span class="line"><span class="keyword">import</span> cv2</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">STFTConv</span><span class="params">(nn.Module)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, in_c, out_c, kernel_size, stride=<span class="number">1</span>, padding=<span class="number">0</span>)</span>:</span></span><br><span class="line">        super(STFTConv, self).__init__()</span><br><span class="line">        self.in_c = in_c</span><br><span class="line">        self.out_c = out_c</span><br><span class="line">        self.stride = stride</span><br><span class="line">        self.padding = padding</span><br><span class="line">        self.kernel_size = kernel_size</span><br><span class="line"></span><br><span class="line">        self.Y = self.define_Y(kernel_size)</span><br><span class="line">        n = kernel_size[<span class="number">0</span>]</span><br><span class="line">        a = <span class="number">1</span> / n</span><br><span class="line">        self.V = np.array([[a, <span class="number">0</span>], [<span class="number">0</span>, a], [a, a], [a, -a]])</span><br><span class="line">        w1_r, w1_i = self.kernel_fn(self.V[<span class="number">0</span>], self.Y)</span><br><span class="line">        w2_r, w2_i = self.kernel_fn(self.V[<span class="number">1</span>], self.Y)</span><br><span class="line">        w3_r, w3_i = self.kernel_fn(self.V[<span class="number">2</span>], self.Y)</span><br><span class="line">        w4_r, w4_i = self.kernel_fn(self.V[<span class="number">3</span>], self.Y)</span><br><span class="line"></span><br><span class="line">        w1_r = torch.FloatTensor(w1_r).expand(self.out_c, self.in_c, kernel_size[<span class="number">0</span>], kernel_size[<span class="number">1</span>])</span><br><span class="line">        self.w1_r = nn.Parameter(w1_r, requires_grad=<span class="keyword">False</span>)</span><br><span class="line">        w1_i = torch.FloatTensor(w1_i).expand(self.out_c, self.in_c, kernel_size[<span class="number">0</span>], kernel_size[<span class="number">1</span>])</span><br><span class="line">        self.w1_i = nn.Parameter(w1_i, requires_grad=<span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line">        w2_r = torch.FloatTensor(w2_r).expand(self.out_c, self.in_c, kernel_size[<span class="number">0</span>], kernel_size[<span class="number">1</span>])</span><br><span class="line">        self.w2_r = nn.Parameter(w2_r, requires_grad=<span class="keyword">False</span>)</span><br><span class="line">        w2_i = torch.FloatTensor(w2_i).expand(self.out_c, self.in_c, kernel_size[<span class="number">0</span>], kernel_size[<span class="number">1</span>])</span><br><span class="line">        self.w2_i = nn.Parameter(w2_i, requires_grad=<span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line">        w3_r = torch.FloatTensor(w3_r).expand(self.out_c, self.in_c, kernel_size[<span class="number">0</span>], kernel_size[<span class="number">1</span>])</span><br><span class="line">        self.w3_r = nn.Parameter(w3_r, requires_grad=<span class="keyword">False</span>)</span><br><span class="line">        w3_i = torch.FloatTensor(w3_i).expand(self.out_c, self.in_c, kernel_size[<span class="number">0</span>], kernel_size[<span class="number">1</span>])</span><br><span class="line">        self.w3_i = nn.Parameter(w3_i, requires_grad=<span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line">        w4_r = torch.FloatTensor(w4_r).expand(self.out_c, self.in_c, kernel_size[<span class="number">0</span>], kernel_size[<span class="number">1</span>])</span><br><span class="line">        self.w4_r = nn.Parameter(w4_r, requires_grad=<span class="keyword">False</span>)</span><br><span class="line">        w4_i = torch.FloatTensor(w4_i).expand(self.out_c, self.in_c, kernel_size[<span class="number">0</span>], kernel_size[<span class="number">1</span>])</span><br><span class="line">        self.w4_i = nn.Parameter(w4_i, requires_grad=<span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, X)</span>:</span></span><br><span class="line">        c1_r = F.conv2d(X, self.w1_r, stride=self.stride, padding=self.padding)</span><br><span class="line">        c1_i = F.conv2d(X, self.w1_i, stride=self.stride, padding=self.padding)</span><br><span class="line"></span><br><span class="line">        c2_r = F.conv2d(X, self.w2_r, stride=self.stride, padding=self.padding)</span><br><span class="line">        c2_i = F.conv2d(X, self.w2_i, stride=self.stride, padding=self.padding)</span><br><span class="line"></span><br><span class="line">        c3_r = F.conv2d(X, self.w3_r, stride=self.stride, padding=self.padding)</span><br><span class="line">        c3_i = F.conv2d(X, self.w3_i, stride=self.stride, padding=self.padding)</span><br><span class="line"></span><br><span class="line">        c4_r = F.conv2d(X, self.w4_r, stride=self.stride, padding=self.padding)</span><br><span class="line">        c4_i = F.conv2d(X, self.w4_i, stride=self.stride, padding=self.padding)</span><br><span class="line">        c = torch.cat((c1_r, c1_i, c2_r, c2_i, c3_r, c3_i, c4_r, c4_i), dim=<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> torch.abs(c)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">define_Y</span><span class="params">(kernel_size)</span>:</span></span><br><span class="line">        <span class="keyword">assert</span> len(kernel_size) % <span class="number">2</span> == <span class="number">0</span>  <span class="comment"># 2D</span></span><br><span class="line">        w, h = kernel_size</span><br><span class="line">        Y = []</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(w):</span><br><span class="line">            yi = []</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(h):</span><br><span class="line">                yi.append([[i], [j]])  <span class="comment"># 列向量</span></span><br><span class="line">            Y.append(yi)</span><br><span class="line">        Y = np.array(Y)  <span class="comment"># 从1开始</span></span><br><span class="line">        <span class="keyword">return</span> Y</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">kernel_fn</span><span class="params">(self, v, Y)</span>:</span></span><br><span class="line">        w = v.dot(Y)</span><br><span class="line">        w = np.squeeze(w, axis=<span class="number">2</span>)</span><br><span class="line">        <span class="keyword">return</span> np.cos(<span class="number">2</span> * np.pi * w), -np.sin(<span class="number">2</span> * np.pi * w)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_get_stft_kernels</span><span class="params">(size, v)</span>:</span></span><br><span class="line">    <span class="keyword">assert</span> len(size) % <span class="number">2</span> == <span class="number">0</span>  <span class="comment"># 2D</span></span><br><span class="line">    h, w = size</span><br><span class="line">    Y = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(w):</span><br><span class="line">        yi = []</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(h):</span><br><span class="line">            yi.append([[i], [j]])  <span class="comment"># 列向量</span></span><br><span class="line">        Y.append(yi)</span><br><span class="line">    Y = np.array(Y) + <span class="number">1</span>  <span class="comment"># 从1开始</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">kernel_fn</span><span class="params">()</span>:</span></span><br><span class="line">        w = v.dot(Y)</span><br><span class="line">        w = np.squeeze(w, axis=<span class="number">2</span>)</span><br><span class="line">        <span class="keyword">return</span> np.cos(<span class="number">2</span> * np.pi * w), -np.sin(<span class="number">2</span> * np.pi * w)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> kernel_fn()</span><br></pre></td></tr></table></figure>
+
+<h4 id="Depthwise-STFT"><a href="#Depthwise-STFT" class="headerlink" title="Depthwise-STFT"></a>Depthwise-STFT</h4><p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1582449605624-b9796995-6e14-4f73-9d8f-6620def9a997.png#align=left&display=inline&height=201&name=image.png&originHeight=321&originWidth=249&size=13895&status=done&style=none&width=156" alt="image.png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DepthwiseSTFT</span><span class="params">(nn.Module)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, in_c, out_c, kernel_size=<span class="params">(<span class="number">3</span>, <span class="number">3</span>)</span>, stride=<span class="number">1</span>, padding=<span class="number">0</span>)</span>:</span></span><br><span class="line">        super(DepthwiseSTFT, self).__init__()</span><br><span class="line">        self.stft = STFTConv(in_c, in_c, kernel_size, stride=stride, padding=padding)</span><br><span class="line">        self.conv = nn.Conv2d(in_c * <span class="number">8</span>, out_c, kernel_size=(<span class="number">1</span>, <span class="number">1</span>), stride=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, X)</span>:</span></span><br><span class="line">        t = self.stft(X)</span><br><span class="line">        <span class="keyword">return</span> self.conv(t)</span><br></pre></td></tr></table></figure>
+
+<h4 id="Block"><a href="#Block" class="headerlink" title="Block"></a>Block</h4><p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1582449682538-19cf3f14-4ed4-4a2e-adc3-fc8935bf30c9.png#align=left&display=inline&height=231&name=image.png&originHeight=462&originWidth=1180&size=67469&status=done&style=none&width=590" alt="image.png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Block1</span><span class="params">(nn.Module)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, in_c, out_c)</span>:</span></span><br><span class="line">        super(Block1, self).__init__()</span><br><span class="line">        self.stft_3 = DepthwiseSTFT(in_c, in_c, kernel_size=(<span class="number">3</span>, <span class="number">3</span>), padding=<span class="number">1</span>)</span><br><span class="line">        self.stft_5 = DepthwiseSTFT(in_c, in_c, kernel_size=(<span class="number">5</span>, <span class="number">5</span>), padding=<span class="number">2</span>)</span><br><span class="line">        self.conv = nn.Conv2d(in_c * <span class="number">2</span>, out_c, kernel_size=(<span class="number">1</span>, <span class="number">1</span>))</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, X)</span>:</span></span><br><span class="line">        d1 = self.stft_3(X)</span><br><span class="line">        d2 = self.stft_5(X)</span><br><span class="line">        d = torch.cat((d1, d2), dim=<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> self.conv(d)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Block2</span><span class="params">(nn.Module)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, in_c, b, out_c)</span>:</span></span><br><span class="line">        super(Block2, self).__init__()</span><br><span class="line">        self.b = b</span><br><span class="line">        self.conv1 = nn.Conv2d(in_c, self.b, kernel_size=(<span class="number">1</span>, <span class="number">1</span>))</span><br><span class="line">        self.stft_3 = DepthwiseSTFT(self.b, self.b, kernel_size=(<span class="number">3</span>, <span class="number">3</span>), padding=<span class="number">1</span>)</span><br><span class="line">        self.stft_5 = DepthwiseSTFT(self.b, self.b, kernel_size=(<span class="number">5</span>, <span class="number">5</span>), padding=<span class="number">2</span>)</span><br><span class="line">        self.conv2 = nn.Conv2d(in_c, out_c, kernel_size=(<span class="number">1</span>, <span class="number">1</span>))</span><br><span class="line">        self.conv = nn.Conv2d(out_c + self.b * <span class="number">2</span>, out_c, kernel_size=(<span class="number">1</span>, <span class="number">1</span>))</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, X)</span>:</span></span><br><span class="line">        c1 = self.conv1(X)</span><br><span class="line">        c2 = self.conv2(X)</span><br><span class="line">        d1 = self.stft_3(c1)</span><br><span class="line">        d2 = self.stft_5(c1)</span><br><span class="line">        d = torch.cat((d1, d2, c2), dim=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> self.conv(d)</span><br></pre></td></tr></table></figure>
+
+<h3 id="网络整体架构"><a href="#网络整体架构" class="headerlink" title="网络整体架构"></a>网络整体架构</h3><p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1582449759241-b29ce0bf-73cc-49ac-9c4b-bf1b3bf21d36.png#align=left&display=inline&height=213&name=image.png&originHeight=316&originWidth=1104&size=49264&status=done&style=none&width=745" alt="image.png"></p>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/Depthwise-STFT%E5%8D%B7%E7%A7%AF%E5%A4%8D%E7%8E%B0.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/CV/">
+              #CV
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/paper/">
+              #paper
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/CNN/">
+              #CNN
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/%E9%AB%98%E6%95%88%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E8%AE%BE%E8%AE%A1II.html" target="_self">高效神经网络设计II</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/Pytorch%20%E5%9B%BE%E7%89%87%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA.html" target="_self">Pytorch 图片数据增强</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

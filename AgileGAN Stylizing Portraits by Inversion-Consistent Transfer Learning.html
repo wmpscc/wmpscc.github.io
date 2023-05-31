@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>AgileGAN Stylizing Portraits by Inversion-Consistent Transfer Learning | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="深度学习,GAN,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>AgileGAN Stylizing Portraits by Inversion-Consistent Transfer Learning</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2021-07-11
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">
+            深度学习
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="AgileGAN Stylizing Portraits by Inversion-Consistent Transfer Learning.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <p>本文提出了一种快速、仅需要少样本迁移训练即可生成高质量卡通化人脸的方法。</p>
+<h1 id="1-引言"><a href="#1-引言" class="headerlink" title="1 引言"></a>1 引言</h1><p>最近一篇较好的风格化人脸的方法是 Toonify [Pinkney and Adler2020]，该方法给定一张图像，首先通过基于优化的 inversion 寻找其在 StyleGAN2 中的 latent code，再使用该 latent code 在合适的风格生成模型中生成对应风格的人脸图像。作者认为真实图像最佳的 latent code 未必就是风格化最佳的 latent code。作者发现如果学习 inversion 将 latent code 分布映射到 StyleGAN2 原始的高斯分布，这种方法得到的 latent code 在跨风格映射时效果更好。<br>为此，本文作者提出了一种新的 inversion-consistent transfer learning 框架，仅需要少量风格样本就可生成高质量肖像风格化。本文所做主要贡献如下：</p>
+<ul>
+<li>在短时间内，使用有限未配对样本（100 左右）灵活创建高质量肖像风格化模型。</li>
+<li>inversion-consistent transfer learning 框架解决了基于迁移学习风格化中的 inversion 差异的问题。</li>
+<li>分层 VAE 和与它相关的增强$Z^+$latent code 空间能捕获不同等级的面部特征，用于改善肖像风格化。</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1626599486573-a411d70c-20ad-4a97-a6b6-e524a39db9ee.png#clientId=u3a34dc59-76b4-4&from=paste&height=650&id=u060090a4&margin=%5Bobject%20Object%5D&name=image.png&originHeight=650&originWidth=1563&originalType=binary%E2%88%B6=1&size=376398&status=done&style=none&taskId=ucc081cc8-e3ee-490f-a4d2-895a0a31844&width=1563" alt="image.png"></p>
+<h1 id="3-方法"><a href="#3-方法" class="headerlink" title="3 方法"></a>3 方法</h1><p>给定少量风格化样本，目标是设计一个管道生成保留真实人脸身份信息、姿态和表情且具有相应风格的肖像。<br>图 3 展示了本文的整个管道，以预训练的 StyleGAN2 为基础开始。对于预训练的 StyleGAN2，给定高斯分布 Z 中的 latent code，将生成原始训练分布中的图像。<br>该方法在训练时主要分为两个阶段：</p>
+<ul>
+<li>（A）固定后端 StyleGAN2，训练前端 VAE 将图像映射到 latent space</li>
+<li>（B）复制一份 StyleGAN2 副本，微调生成器，以高斯分布样本作为输入，生成风格化样本。</li>
+</ul>
+<p>注意，两个阶段可以并行独立训练。但是，在结构上这两个阶段共享 latent space(Z+和 W+)，并且还由固定的 StyleGAN2 生成器共同锚定。将整个生成问题分解为两个阶段有三个好处。</p>
+<ul>
+<li>1.训练不需要配对数据</li>
+<li>2.分离训练减小了反向传播时的计算负载，能更有效、高效的实现更高分辨率。</li>
+<li>3.合并域仅需要微调生成器而不是整个网络</li>
+</ul>
+<h2 id="3-1-Z-Space"><a href="#3-1-Z-Space" class="headerlink" title="3.1 Z+ Space"></a>3.1 Z+ Space</h2><p>受 Image2StyleGAN [Abdal et al. 2019a]启发，我们通过为每一层使用来自 Z 的不同 latent code 增加模型表达能力，允许单独控制。没有像 Image2StyleGAN 直接增加 W+ space 而是堆叠 Z space 形成新的 Z+ space 有两个理由。（1）本任务涉及跨域，不能假定 W+中的 code 都是的风格化。（2）W+是非高斯分布的，Z+是高斯分布的，它俩直接混用不一定合适。相反，我们风格化任务通过 Z+空间定位，因为这里受更多高斯建模约束会产生更好的跨不同风格的正则化。</p>
+<h2 id="3-2-Hierarchical-Variational-Encoder"><a href="#3-2-Hierarchical-Variational-Encoder" class="headerlink" title="3.2 Hierarchical Variational Encoder"></a>3.2 Hierarchical Variational Encoder</h2><h3 id="混合变分自编码器"><a href="#混合变分自编码器" class="headerlink" title="混合变分自编码器"></a>混合变分自编码器</h3><p>典型的 VAE 由编码器和解码器组成，这里我们使用预训练的 StyleGAN2 模型作为解码器，训练时固定 StyleGAN2 权重，使得编码器网络学习后验分布$q(z|x)$。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1626604412449-6934f77b-821d-4e66-a754-188f61772d51.png#clientId=u3a34dc59-76b4-4&from=paste&height=355&id=u9c6b2460&margin=%5Bobject%20Object%5D&name=image.png&originHeight=355&originWidth=750&originalType=binary%E2%88%B6=1&size=93805&status=done&style=none&taskId=u1ff43e10-e453-4ce2-bc2d-27af3392d85&width=750" alt="image.png"><br>虽然更简单的替代方案可能是学习确定性的编码器，但是 VAE 方法提高了鲁棒性和泛化能力，因为高斯采样分支在学习过程中引入了有用的扰动。编码器参数$\theta$使用随机梯度变分贝叶斯算法求解（SGVB）。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1626604780369-1bdd1061-0272-467c-ad48-6b3825f66798.png#clientId=u3a34dc59-76b4-4&from=paste&height=413&id=u59446701&margin=%5Bobject%20Object%5D&name=image.png&originHeight=413&originWidth=745&originalType=binary%E2%88%B6=1&size=89774&status=done&style=none&taskId=uf3baba1d-a3ac-456e-bfbf-c192c5c8766&width=745" alt="image.png"></p>
+<h3 id="分层特征提取"><a href="#分层特征提取" class="headerlink" title="分层特征提取"></a>分层特征提取</h3><p>StyleGAN2 独特的一方面是将 Z+中的 style code 注入不同的层，可以语义地控制图像生成。这些 style code 可以划分为三组：1）lower layer codes 控制粗略的属性例如脸型，2）middle layer codes 控制更局部的面部特征，3）high layer codes 与精细的细节相关，例如反射和纹理。如果直接从 Z+中估计$18\times512$的 latent code，很难训练这样的网络。图 4 展示了该结构，使用金字塔网络分别提取三个等级的特征图（coarse,medium,fine details）。每个等级的特征图通过一个分离的子编码块，映射到$6\times512$。最后将它们合并，得到$18\times512$ code，再送入全连接层，生成均值和方差去表示高斯重要性分布。</p>
+<h3 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h3><p>首先使用 L2 loss 用于重构解码图像：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1626605865033-00d7a53a-70a9-4ef3-a9a5-5549b930228b.png#clientId=u3a34dc59-76b4-4&from=paste&height=61&id=u4b183ba0&margin=%5Bobject%20Object%5D&name=image.png&originHeight=61&originWidth=746&originalType=binary%E2%88%B6=1&size=7209&status=done&style=none&taskId=ub7130c40-8937-4d8c-82df-48144a236ab&width=746" alt="image.png"><br>使用 LPIPS loss 去学习感知等级的相似度：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1626605907931-5ffa1088-fc54-4e93-b0a9-4b25d114d2d1.png#clientId=u3a34dc59-76b4-4&from=paste&height=63&id=u51e4d429&margin=%5Bobject%20Object%5D&name=image.png&originHeight=63&originWidth=732&originalType=binary%E2%88%B6=1&size=7951&status=done&style=none&taskId=u83591f68-070d-4e34-b2b1-bda18a4b0fe&width=732" alt="image.png"><br>为了保持身份，使用了人脸识别损失：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1626605945584-2804b43f-4f96-46bb-be0e-4afd7941920c.png#clientId=u3a34dc59-76b4-4&from=paste&height=62&id=ufae0c1d8&margin=%5Bobject%20Object%5D&name=image.png&originHeight=62&originWidth=724&originalType=binary%E2%88%B6=1&size=7108&status=done&style=none&taskId=u0e11e911-0994-49eb-8ab8-adfd0d6a4f9&width=724" alt="image.png"><br>KL 散度 loss 定义如下：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1626606037681-acb85d4b-bb29-486e-a736-06b533045c8b.png#clientId=u3a34dc59-76b4-4&from=paste&height=61&id=u4d8e7747&margin=%5Bobject%20Object%5D&name=image.png&originHeight=61&originWidth=734&originalType=binary%E2%88%B6=1&size=7225&status=done&style=none&taskId=uf341be42-ca4c-4062-941d-c698ff68c58&width=734" alt="image.png"><br>整体 loss 组合如下：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1626606069218-06ed0083-51e2-41c5-b258-8ca77e87d6ef.png#clientId=u3a34dc59-76b4-4&from=paste&height=145&id=u5daabeda&margin=%5Bobject%20Object%5D&name=image.png&originHeight=145&originWidth=754&originalType=binary%E2%88%B6=1&size=24933&status=done&style=none&taskId=uf34a885f-5e71-48bb-9878-d81ca67c754&width=754" alt="image.png"></p>
+<h2 id="3-3-Attribute-Aware-Generator"><a href="#3-3-Attribute-Aware-Generator" class="headerlink" title="3.3 Attribute-Aware Generator"></a>3.3 Attribute-Aware Generator</h2><p>生成器基于 StyleGAN2，但增强了多路径结构，以更好地适应与已知属性对应的不同特征，例如性别。图 5 展示了该结构。采用了迁移学习和早停策略去训练生成器。整个网络包括鉴别器的初始化权重，都来自 StyleGAN2。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1626606581317-66adf573-37e9-4aeb-a7e4-11fcec90919f.png#clientId=u3a34dc59-76b4-4&from=paste&height=674&id=ucd5c5ec0&margin=%5Bobject%20Object%5D&name=image.png&originHeight=674&originWidth=1577&originalType=binary%E2%88%B6=1&size=314714&status=done&style=none&taskId=u049043d8-a877-403e-a24e-e05ec8d3610&width=1577" alt="image.png"></p>
+<h3 id="风格化"><a href="#风格化" class="headerlink" title="风格化"></a>风格化</h3><p>因为艺术肖像画与真实肖像有着明显的感知对应关系，本文使用的 StyleGAN2 在高分辨率真实肖像数据集 FFHQ 上进行预训练，作为初始化权重。网络随后在小的风格化数据集上进行迁移学习。使用 StyleGAN2 做风格化有三个主要益处：1）与从头开始训练相比，微调可以显着减少训练数据和高质量生成所需的时间；2）StyleGAN2 的粗到细生成架构可以支持各种艺术风格，包括几何和外观风格化；3）latent code 来自 StyleGAN2 网络，即使网络参数不同，但这样可以更自然的对应上。</p>
+<h3 id="多路径结构"><a href="#多路径结构" class="headerlink" title="多路径结构"></a>多路径结构</h3><p>通常，艺术家在设计角色时，经常强调依赖属性的特征来增强外观，图 6 展示了男女气质被不同程度夸大强调的结果。直接使用单路径和单鉴别器也许不能最好的区分属性依赖特征。当训练多个相同的单路径生成器再进行集成将增加时间和内存。为了高效，我们嵌入了多路径结构到生成器中，对应的增加了多个鉴别器。由于网络的较低层引导面部形状等粗级特征，而较高层影响面部反射和纹理，因此多路径结构更适合嵌入较低层。尽管如此，该结构也可以放在合适的地方。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1626607715356-dd5d6330-1638-44b6-97f4-d21be4bc4cdb.png#clientId=u3a34dc59-76b4-4&from=paste&height=416&id=u5bc420a7&margin=%5Bobject%20Object%5D&name=image.png&originHeight=416&originWidth=738&originalType=binary%E2%88%B6=1&size=195498&status=done&style=none&taskId=u5d755a4d-9896-443a-aabc-eeea794269d&width=738" alt="image.png"></p>
+<h3 id="损失函数-1"><a href="#损失函数-1" class="headerlink" title="损失函数"></a>损失函数</h3><p>对抗损失，其中$y_k$表示目标风格图像，按属性$k$划分（attribute-dependent）：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1626608537866-9b28511a-d25b-4761-b177-dcf50d0fda65.png#clientId=u3a34dc59-76b4-4&from=paste&height=153&id=u9fe23749&margin=%5Bobject%20Object%5D&name=image.png&originHeight=153&originWidth=741&originalType=binary%E2%88%B6=1&size=19594&status=done&style=none&taskId=uc2cdfdc1-d80e-4214-815e-c62478cea5b&width=741" alt="image.png"><br>VGG16-based LPIPS，前 9 层的特征舍弃：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1626608655517-db3a8130-ff0c-4d12-8aac-6113cd9262c5.png#clientId=u3a34dc59-76b4-4&from=paste&height=97&id=u28e00afc&margin=%5Bobject%20Object%5D&name=image.png&originHeight=97&originWidth=732&originalType=binary%E2%88%B6=1&size=12766&status=done&style=none&taskId=u45261ab1-ad4e-4143-b9c7-1f8728d5ad2&width=732" alt="image.png"><br>提高训练稳定性，阻止伪影生成，对于鉴别器引入 R1 正则项[Mescheder et al. 2018]，其中超参数$\gamma=10$：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1626608805273-13593411-2070-4f12-9d80-6ec1aca81d28.png#clientId=u3a34dc59-76b4-4&from=paste&height=88&id=u7ce3ab7f&margin=%5Bobject%20Object%5D&name=image.png&originHeight=88&originWidth=720&originalType=binary%E2%88%B6=1&size=10587&status=done&style=none&taskId=u4708287e-bd96-4818-9318-9231f4d75cc&width=720" alt="image.png"><br>对于生成器，使用了来自 StyleGAN2 的 standard perceptual path-length regu-larization $L_{path}$，这有助于生成模型的可靠性和行为一致性。<br>最后，生成器和鉴别器联合训练优化目标如下：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1626609016883-4eec5a02-5e38-42dc-880c-7ae2e41999b1.png#clientId=u3a34dc59-76b4-4&from=paste&height=158&id=u1fb1c6c0&margin=%5Bobject%20Object%5D&name=image.png&originHeight=158&originWidth=750&originalType=binary%E2%88%B6=1&size=26749&status=done&style=none&taskId=u2ee6f6dc-f973-4a4f-8b8a-a3c97c59477&width=750" alt="image.png"></p>
+<h3 id="早停策略"><a href="#早停策略" class="headerlink" title="早停策略"></a>早停策略</h3><p>小数据集一个主要的潜在问题是鉴别器也许会过拟合训练样本，造成不稳定和降质。为了缓解这个问题，我们采用早停策略，一旦达到预期的风格化效果就停止训练。如图 7 所示，进一步增加迭代次数也可能导致与原始输入表情的偏差增加。为了在输入保真度和风格适合之间取得平衡，我们可以提前停止训练，例如经过 1200 次迭代。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1626609268201-afcbd352-d119-441e-a0d8-37008f7f5d57.png#clientId=u3a34dc59-76b4-4&from=paste&height=425&id=ue62d825b&margin=%5Bobject%20Object%5D&name=image.png&originHeight=425&originWidth=751&originalType=binary%E2%88%B6=1&size=582729&status=done&style=none&taskId=ua47591e1-115a-48dc-ba47-87bc03d12f2&width=751" alt="image.png"></p>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/AgileGAN%20Stylizing%20Portraits%20by%20Inversion-Consistent%20Transfer%20Learning.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/GAN/">
+              #GAN
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/Propagate%20Yourself%20%E6%8E%A2%E7%B4%A2%E6%97%A0%E7%9B%91%E7%9D%A3%E8%A7%86%E8%A7%89%E8%A1%A8%E7%A4%BA%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%83%8F%E7%B4%A0%E7%BA%A7%E4%B8%80%E8%87%B4%E6%80%A7.html" target="_self">Propagate Yourself 探索无监督视觉表示学习的像素级一致性</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/Deep%20Mutual%20Learning.html" target="_self">Deep Mutual Learning</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

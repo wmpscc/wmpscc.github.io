@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>SelfAttentionAndTransformer | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="深度学习,transformer,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>SelfAttentionAndTransformer</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2021-06-24
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">
+            深度学习
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="SelfAttentionAndTransformer.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <h1 id="Self-attention"><a href="#Self-attention" class="headerlink" title="Self-attention"></a>Self-attention</h1><ul>
+<li><strong>1. 计算 q,k,v</strong></li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624513992675-2d8d83c8-70cf-45d1-9adc-8be80654addb.png#clientId=u9f0c95c0-be3b-4&from=paste&height=367&id=uc800fc5a&margin=%5Bobject%20Object%5D&name=image.png&originHeight=734&originWidth=1172&originalType=binary%E2%88%B6=2&size=489255&status=done&style=none&taskId=uc406d831-a599-47ae-9631-3646433f691&width=586" alt="image.png"></p>
+<ul>
+<li><strong>2. 计算 a</strong></li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624514167301-e22c690a-3392-4067-bf10-5ddb9eb7bc91.png#clientId=u9f0c95c0-be3b-4&from=paste&height=296&id=u2cf15032&margin=%5Bobject%20Object%5D&name=image.png&originHeight=592&originWidth=1158&originalType=binary%E2%88%B6=2&size=378166&status=done&style=none&taskId=udc96d5d7-eb48-454f-8763-69643d836f4&width=579" alt="image.png"><br>扩展之后，得到<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624514299634-c09e1e8c-bf7c-47b0-9f1a-a533ed1da3a0.png#clientId=u9f0c95c0-be3b-4&from=paste&height=296&id=u1b545909&margin=%5Bobject%20Object%5D&name=image.png&originHeight=592&originWidth=1118&originalType=binary%E2%88%B6=2&size=411918&status=done&style=none&taskId=uf698ed84-aa99-4e29-b193-6502f183b52&width=559" alt="image.png"></p>
+$A$通过正则化（这里使用的是 softmax）得到$A^\prime$
+
+<ul>
+<li><strong>3. 计算 b</strong></li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624514575307-9302437b-0596-4591-bc52-e240c276d4ee.png#clientId=u9f0c95c0-be3b-4&from=paste&height=379&id=ud39eb89a&margin=%5Bobject%20Object%5D&name=image.png&originHeight=757&originWidth=1131&originalType=binary%E2%88%B6=2&size=408988&status=done&style=none&taskId=u11934c38-b854-47d4-be29-8a1bd673bbe&width=565.5" alt="image.png"></p>
+<ul>
+<li><strong>整体来看</strong></li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624514932515-e6bfd757-1af5-4dfc-b755-3f731afd6a34.png#clientId=u9f0c95c0-be3b-4&from=paste&height=435&id=u1fff834c&margin=%5Bobject%20Object%5D&name=image.png&originHeight=870&originWidth=1117&originalType=binary%E2%88%B6=2&size=292788&status=done&style=none&taskId=u32a40639-634e-48f3-b9bc-0ba6c7b9d37&width=558.5" alt="image.png"></p>
+<h2 id="多头自注意力"><a href="#多头自注意力" class="headerlink" title="多头自注意力"></a>多头自注意力</h2><p>该方式将 q,k,v 再次划分，与之前方式一样分别计算。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624515180606-1aa29b98-0791-4454-aeb5-0bc91db8baa6.png#clientId=u9f0c95c0-be3b-4&from=paste&height=437&id=u9c9ef0c0&margin=%5Bobject%20Object%5D&name=image.png&originHeight=874&originWidth=1151&originalType=binary%E2%88%B6=2&size=434168&status=done&style=none&taskId=ubb82e49d-8d0a-456b-a3ac-1a6280440a5&width=575.5" alt="image.png"><br>这样计算的结果是多头的，之后乘以变换矩阵，维度与输入保持一致，再送入下一层。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624515458017-f5e53aac-a8d0-4c53-871c-0fd4b2c899de.png#clientId=u9f0c95c0-be3b-4&from=paste&height=104&id=ueef993b1&margin=%5Bobject%20Object%5D&name=image.png&originHeight=207&originWidth=1184&originalType=binary%E2%88%B6=2&size=58425&status=done&style=none&taskId=u6e2b6362-0a1c-48eb-a2f0-971d1de26a6&width=592" alt="image.png"></p>
+<h2 id="位置编码"><a href="#位置编码" class="headerlink" title="位置编码"></a>位置编码</h2><p>给输入加上位置向量$e^i$。位置向量有很多种方法，研究方向之一。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624515854212-ca03288c-ac37-4102-a27a-d00c999b1fb6.png#clientId=u9f0c95c0-be3b-4&from=paste&height=398&id=u6769987d&margin=%5Bobject%20Object%5D&name=image.png&originHeight=795&originWidth=1098&originalType=binary%E2%88%B6=2&size=532857&status=done&style=none&taskId=u8023e605-76dc-454d-8f69-dc3609d4770&width=549" alt="image.png"></p>
+<h1 id="Transformer"><a href="#Transformer" class="headerlink" title="Transformer"></a>Transformer</h1><h2 id="Encoder"><a href="#Encoder" class="headerlink" title="Encoder"></a>Encoder</h2><p>transformer 是由多个 block 堆叠而成的。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624588271048-893628c0-8837-45fa-a74e-6361f753e703.png#clientId=u066ac473-e6da-4&from=paste&height=424&id=u849e03c5&margin=%5Bobject%20Object%5D&name=image.png&originHeight=848&originWidth=1165&originalType=binary%E2%88%B6=2&size=688430&status=done&style=none&taskId=u90f73188-4d60-416d-9d28-2314403decd&width=582.5" alt="image.png"><br>详细看每个 block，向量输入自注意力层，自注意力层输出的向量与输入相加，形成残差结构，所得的和经过 LayerNorm，输入全连接层，同样使用了残差结构，最后经过 LayerNorm 输出。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624588441220-7d177d81-a2db-4a55-a044-6ad555c5e0b0.png#clientId=u066ac473-e6da-4&from=paste&height=436&id=u64298072&margin=%5Bobject%20Object%5D&name=image.png&originHeight=871&originWidth=1181&originalType=binary%E2%88%B6=2&size=522942&status=done&style=none&taskId=ubbad23f1-06c9-4de6-928c-367486600b1&width=590.5" alt="image.png"><br>原始 transformer 论文中的表述如下<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624588872512-b3fd262f-d4b5-4fc0-93b1-96f8e54c32f9.png#clientId=u066ac473-e6da-4&from=paste&height=316&id=uce83b063&margin=%5Bobject%20Object%5D&name=image.png&originHeight=632&originWidth=1157&originalType=binary%E2%88%B6=2&size=470255&status=done&style=none&taskId=u9cbbc184-cade-40fe-8bd2-a0279c8dcde&width=578.5" alt="image.png"></p>
+<h2 id="Deoder"><a href="#Deoder" class="headerlink" title="Deoder"></a>Deoder</h2><h3 id="Autoregressive（AT）"><a href="#Autoregressive（AT）" class="headerlink" title="Autoregressive（AT）"></a>Autoregressive（AT）</h3><p>以语音识别为例，整体来看。首先输入开始符号，得到第一个输出。再将第一个输出作为输入重新输入解码器，依此类推。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624589843993-6ad85bd3-631d-4c89-a521-59dc359fb8d5.png#clientId=u066ac473-e6da-4&from=paste&height=359&id=u160d0e47&margin=%5Bobject%20Object%5D&name=image.png&originHeight=718&originWidth=1122&originalType=binary%E2%88%B6=2&size=596415&status=done&style=none&taskId=u3aaf3208-372a-4e33-9f3a-7c3c8ee9e8d&width=561" alt="image.png"><br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624589977924-ba9f5dc1-b68e-498c-9cc6-1e5ce3e40210.png#clientId=u066ac473-e6da-4&from=paste&height=438&id=u6cdbb01a&margin=%5Bobject%20Object%5D&name=image.png&originHeight=876&originWidth=1075&originalType=binary%E2%88%B6=2&size=558505&status=done&style=none&taskId=u521d9f19-b0f8-40fa-b533-9731c639d6f&width=537.5" alt="image.png"></p>
+<ul>
+<li><strong>Masked Self-attention</strong></li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624590335623-27571219-3c73-4208-b9a6-dd61bb4a0eea.png#clientId=u066ac473-e6da-4&from=paste&height=371&id=uf6c05fac&margin=%5Bobject%20Object%5D&name=image.png&originHeight=742&originWidth=1130&originalType=binary%E2%88%B6=2&size=842053&status=done&style=none&taskId=u96702abb-8117-4d5e-8750-9f9237c7318&width=565" alt="image.png"><br>不考虑它之后的。为啥呢？因为它是依次输入的，输入 a2 时，还没有 a3 和 a4。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624590393959-dacafd8a-05dc-4528-a19f-4f827e1d2f4b.png#clientId=u066ac473-e6da-4&from=paste&height=300&id=ubcf9b38f&margin=%5Bobject%20Object%5D&name=image.png&originHeight=599&originWidth=1130&originalType=binary%E2%88%B6=2&size=256692&status=done&style=none&taskId=u59728b0a-e035-4335-ada9-d0409c19b8a&width=565" alt="image.png"></p>
+<ul>
+<li>存在问题：不知道准确的输出长度</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624590712785-12679113-dea8-4852-b6ff-89c0d4b8e334.png#clientId=u066ac473-e6da-4&from=paste&height=384&id=u709e7621&margin=%5Bobject%20Object%5D&name=image.png&originHeight=767&originWidth=1106&originalType=binary%E2%88%B6=2&size=546756&status=done&style=none&taskId=u4a21fc80-56ee-4428-ac84-e33c160f30a&width=553" alt="image.png"><br>输出类别添加 stop token，结束时让 END 输出最大。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624590830593-3c4632c8-09f1-4557-adcd-3ad4fce6f28b.png#clientId=u066ac473-e6da-4&from=paste&height=319&id=u9e25848e&margin=%5Bobject%20Object%5D&name=image.png&originHeight=637&originWidth=1079&originalType=binary%E2%88%B6=2&size=508459&status=done&style=none&taskId=u413a24e7-6a8b-452b-a0ad-3fe521b1d13&width=539.5" alt="image.png"></p>
+<h3 id="Non-autoregressive（NAT）"><a href="#Non-autoregressive（NAT）" class="headerlink" title="Non-autoregressive（NAT）"></a>Non-autoregressive（NAT）</h3><p>NAT 一次性输入开始符号，直接得到结果。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624591245224-a7abdce7-44f9-4de9-bb8e-f27cf3a9db6f.png#clientId=u066ac473-e6da-4&from=paste&height=383&id=u2a6c06e9&margin=%5Bobject%20Object%5D&name=image.png&originHeight=765&originWidth=1093&originalType=binary%E2%88%B6=2&size=584687&status=done&style=none&taskId=u778a8cb2-579f-4ea9-8775-cd4acad84a8&width=546.5" alt="image.png"></p>
+<h3 id="详细来看"><a href="#详细来看" class="headerlink" title="详细来看"></a>详细来看</h3><p><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624592225391-5258f6f2-ae1f-4999-915d-230f27e96f42.png#clientId=u066ac473-e6da-4&from=paste&height=440&id=ub8191dd5&margin=%5Bobject%20Object%5D&name=image.png&originHeight=879&originWidth=980&originalType=binary%E2%88%B6=2&size=393775&status=done&style=none&taskId=u1d291d38-210d-442f-8655-c6bc1af97a1&width=490" alt="image.png"><br>提供一个 q，得到 v。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624592279843-ae6cc844-ee97-4825-a61b-8302cceae99f.png#clientId=u066ac473-e6da-4&from=paste&height=425&id=ub8ef0b6f&margin=%5Bobject%20Object%5D&name=image.png&originHeight=849&originWidth=1132&originalType=binary%E2%88%B6=2&size=488937&status=done&style=none&taskId=udbbc6a8f-5027-44f8-b2ce-a7b86d63a4a&width=566" alt="image.png"><br>依此类推<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624592323221-0ef41270-4a5a-4c60-8e65-068b6ac43597.png#clientId=u066ac473-e6da-4&from=paste&height=430&id=ufd53496a&margin=%5Bobject%20Object%5D&name=image.png&originHeight=860&originWidth=1116&originalType=binary%E2%88%B6=2&size=499054&status=done&style=none&taskId=ub2594d32-6b61-462a-b079-081d3169b77&width=558" alt="image.png"></p>
+<h2 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h2><p>训练时，需要注意。输入是 GT，输出包含结束符 END。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624592824751-6bbaf2f5-62d3-49d9-bc5e-8550a254da17.png#clientId=u066ac473-e6da-4&from=paste&height=417&id=ua4c3f674&margin=%5Bobject%20Object%5D&name=image.png&originHeight=833&originWidth=1118&originalType=binary%E2%88%B6=2&size=615835&status=done&style=none&taskId=u108d94a6-ed0d-47aa-80d0-1dcf5758474&width=559" alt="image.png"><br>测试时可能输出是错误的，可以在训练时，刻意添加错误的 GT。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624593855724-9f46367f-b82b-4146-9886-9148ae3c36b0.png#clientId=u066ac473-e6da-4&from=paste&height=424&id=u1e614911&margin=%5Bobject%20Object%5D&name=image.png&originHeight=848&originWidth=1036&originalType=binary%E2%88%B6=2&size=566010&status=done&style=none&taskId=u2efd59c8-e4c3-49c7-833a-a8e0e9fa0b4&width=518" alt="image.png"><br>即<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624593945667-b06000ca-2aba-455f-b498-1a3413f3043b.png#clientId=u066ac473-e6da-4&from=paste&height=387&id=u25da15e7&margin=%5Bobject%20Object%5D&name=image.png&originHeight=773&originWidth=1091&originalType=binary%E2%88%B6=2&size=448692&status=done&style=none&taskId=ud703a4e0-3bd5-477f-b3cb-e9d9d9c1045&width=545.5" alt="image.png"></p>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/SelfAttentionAndTransformer.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/transformer/">
+              #transformer
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/%E5%AD%A6%E4%B9%A0%E5%9F%BA%E4%BA%8E%E6%B5%81%E7%9A%84%E7%89%B9%E5%BE%81%E5%8F%98%E5%BD%A2%E4%BB%A5%E5%AE%9E%E7%8E%B0%E7%85%A7%E6%98%8E%E6%AD%A3%E9%9D%A2%E4%B8%8D%E4%B8%80%E8%87%B4%E7%9A%84%E4%BA%BA%E8%84%B8%E6%AD%A3%E9%9D%A2%E5%8C%96.html" target="_self">学习基于流的特征变形以实现照明正面不一致的人脸正面化</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/DeepViT%20Towards%20Deeper%20Vision%20Transformer.html" target="_self">DeepViT Towards Deeper Vision Transformer</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

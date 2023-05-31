@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>CPP常用库函数以及STL | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="编程,C++,STL,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>CPP常用库函数以及STL</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-01-22
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E7%BC%96%E7%A8%8B/">
+            编程
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="CPP常用库函数以及STL.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <h2 id="其他操作"><a href="#其他操作" class="headerlink" title="其他操作"></a>其他操作</h2><h4 id="memset"><a href="#memset" class="headerlink" title="memset"></a>memset</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> * <span class="title">memset</span> <span class="params">( <span class="keyword">void</span> * ptr, <span class="keyword">int</span> value, <span class="keyword">size_t</span> num )</span></span>;</span><br><span class="line"><span class="built_in">memset</span>(ptr,<span class="number">0xff</span>,<span class="keyword">sizeof</span>(ptr));</span><br></pre></td></tr></table></figure>
+
+<p>使用 memset 初始化 vector</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; vec(<span class="number">10</span>,<span class="number">1</span>);</span><br><span class="line"><span class="built_in">memset</span>(vec.data(),<span class="number">0</span>,vec.size()*<span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br></pre></td></tr></table></figure>
+
+<h1 id="include-lt-bits-stdc-h-gt"><a href="#include-lt-bits-stdc-h-gt" class="headerlink" title="#include&lt;bits/stdc++.h&gt;"></a>#include&lt;bits/stdc++.h&gt;</h1><p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579693882996-a4cedd52-d108-49a3-b4b3-53fd3c2e1ff3.png#align=left&display=inline&height=635&originHeight=635&originWidth=1240&size=0&status=done&style=none&width=1240" alt=""></p>
+<p>需要注意的是：对于 set 和 map 而言，find 并不是第一个满足条件的对象位置，而是其中的任意一个对象。</p>
+<p>Standard Template Library: Algorithms</p>
+<h4 id="全排列"><a href="#全排列" class="headerlink" title="全排列"></a>全排列</h4><p>序列升序</p>
+<p>next_permutation(a.begin(), a.end())</p>
+<p>序列降序</p>
+<p>prev_permutation(b.begin(), b.end())</p>
+<h4 id="64int"><a href="#64int" class="headerlink" title="64int"></a>64int</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">   <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"><span class="built_in">scanf</span>(<span class="string">"%I64d"</span>, ≪);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"%I64d"</span>, ll);</span><br></pre></td></tr></table></figure>
+
+<h4 id="lower-bound-a-a-n-x"><a href="#lower-bound-a-a-n-x" class="headerlink" title="lower_bound(a,a+n,x)"></a>lower_bound(a,a+n,x)</h4><p>二分查找，查找大于或等于 x 的第一个位置，只能查找 vector&lt;&gt;数组，返回值为 vector&lt;&gt;::iterator 指针</p>
+<h4 id="unique-vector1-begin-vector1-end"><a href="#unique-vector1-begin-vector1-end" class="headerlink" title="unique(vector1.begin(),vector1.end())"></a>unique(vector1.begin(),vector1.end())</h4><p>unique 就是让连续的相同值变成一个</p>
+<h4 id="binary-search-v-begin-v-end-6-myfunction"><a href="#binary-search-v-begin-v-end-6-myfunction" class="headerlink" title="binary_search (v.begin(), v.end(), 6, myfunction)"></a>binary_search (v.begin(), v.end(), 6, myfunction)</h4><p>bool myfunction (int i,int j) { return (i&lt;j); }</p>
+<h4 id="reverse-vector1-begin-vector1-end"><a href="#reverse-vector1-begin-vector1-end" class="headerlink" title="reverse(vector1.begin(),vector1.end())"></a>reverse(vector1.begin(),vector1.end())</h4><h4 id="find-myvector-begin-myvector-end-30"><a href="#find-myvector-begin-myvector-end-30" class="headerlink" title="find (myvector.begin(), myvector.end(), 30);"></a>find (myvector.begin(), myvector.end(), 30);</h4><p>An iterator to the first element in the range that compares equal to val.<br>If no elements match, the function returns last.</p>
+<h4 id="equal-range"><a href="#equal-range" class="headerlink" title="equal_range"></a>equal_range</h4><p>bounds=std::equal_range (v.begin(), v.end(), 20, mygreater);</p>
+<p>bounds.first:is an iterator to the lower bound of the subrange of equivalent values,</p>
+<p>bounds.second:its upper bound.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 30 30 20 20 20 10 10 10</span><br><span class="line"> &#x2F;&#x2F;       ^        ^</span><br></pre></td></tr></table></figure>
+
+<h3 id="Non-modifying-sequence-operations"><a href="#Non-modifying-sequence-operations" class="headerlink" title="Non-modifying sequence operations:"></a>Non-modifying sequence operations:</h3><h4 id="for-each"><a href="#for-each" class="headerlink" title="for_each"></a>for_each</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">out</span><span class="params">(<span class="keyword">int</span> i)</span></span>&#123;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; i &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> a[] = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">4</span>&#125;;</span><br><span class="line">	for_each(a, a+<span class="number">5</span>, out);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; b;</span><br><span class="line">	b.push_back(<span class="number">1</span>);</span><br><span class="line">	b.push_back(<span class="number">2</span>);</span><br><span class="line">	b.push_back(<span class="number">3</span>);</span><br><span class="line">	for_each(b.begin(), b.end(), out);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="find"><a href="#find" class="headerlink" title="find"></a>find</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;::iterator it;</span><br><span class="line">it = find (myvector.begin(), myvector.end(), <span class="number">30</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="find-if"><a href="#find-if" class="headerlink" title="find_if"></a>find_if</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">IsOdd</span> <span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> ((i%<span class="number">2</span>)==<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;::iterator it = <span class="built_in">std</span>::find_if (myvector.begin(), myvector.end(), IsOdd);</span><br></pre></td></tr></table></figure>
+
+<h4 id="find-first-of"><a href="#find-first-of" class="headerlink" title="find_first_of"></a>find_first_of</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">comp_case_insensitive</span> <span class="params">(<span class="keyword">char</span> c1, <span class="keyword">char</span> c2)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (<span class="built_in">std</span>::<span class="built_in">tolower</span>(c1)==<span class="built_in">std</span>::<span class="built_in">tolower</span>(c2));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> mychars[] = &#123;<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'A'</span>,<span class="string">'B'</span>,<span class="string">'C'</span>&#125;;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt; haystack (mychars,mychars+<span class="number">6</span>);</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt;::iterator it;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> needle[] = &#123;<span class="string">'D'</span>&#125;;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// using default comparison:</span></span><br><span class="line">  it = find_first_of (haystack.begin(), haystack.end(), needle, needle+<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (it!=haystack.end())</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"The first match is: "</span> &lt;&lt; *it &lt;&lt; <span class="string">'\n'</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// using predicate comparison:</span></span><br><span class="line">  it = find_first_of (haystack.begin(), haystack.end(),</span><br><span class="line">                      needle, needle+<span class="number">1</span>, comp_case_insensitive);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (it!=haystack.end())</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"The first match is: "</span> &lt;&lt; *it &lt;&lt; <span class="string">'\n'</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="常用库函数"><a href="#常用库函数" class="headerlink" title="常用库函数"></a>常用库函数</h2><h3 id="sort"><a href="#sort" class="headerlink" title="sort"></a>sort</h3><p>位置：algorithm<br>功能：给一个数组（或者一个 STL，这个会在第三章介绍）排序。<br>格式：sort(a+1,a+n+1,cmp);<br>说明：<br>a 是数组的名称，同时也是指向数组首地址的指针。<br>+1 或者+n+1 为地址偏移量，表示需要排序的范围。<br>也可以替换为其他 STL 迭代器。<br>cmp 是自己写的函数，格式如下：<br>bool cmp(Type a, Type b)<br>{<br>//比较方法，如果 a 应该在 b 前则返回 true。<br>}</p>
+<h3 id="unique"><a href="#unique" class="headerlink" title="unique"></a>unique</h3><p>位置：algorithm<br>功能：去除一个容器（也可以是数组）内的所有重复元素。<br>格式：unique(a+1,a+n+1);<br>说明：<br>与 sort 函数类似。</p>
+<h3 id="gcd"><a href="#gcd" class="headerlink" title="__gcd"></a>__gcd</h3><p>位置：algorithm<br>功能：求两个整数的最大公约数。<br>格式：__gcd(a,b);<br>说明：两个参数的类型必须相同。</p>
+<h3 id="next-permutation"><a href="#next-permutation" class="headerlink" title="next_permutation"></a>next_permutation</h3><p>位置：algorithm<br>功能：求下一个（字典序）排列<br>格式：next_permutation(s+1,s+n+1);<br>说明：<br>一定要保证参数 s 是一个排列。</p>
+<h3 id="strcmp"><a href="#strcmp" class="headerlink" title="strcmp"></a>strcmp</h3><p>位置：cstring<br>功能：比较两个字符串<br>格式：strcmp(s1,s2)<br>说明：<br>相等返回 0，s1 字典序较小返回-1，较大返回 1。</p>
+<h3 id="memset-1"><a href="#memset-1" class="headerlink" title="memset"></a>memset</h3><p>位置：cstring<br>功能：将内存区间的每一个字节（注意是字节而不是变量）赋值为给定数。<br>格式：memset(a,0,sizeof(a));<br>说明：<br>只能为整数数组赋值为 0/-1。<br>可以对字符数组任意赋值。</p>
+<h3 id="memcpy"><a href="#memcpy" class="headerlink" title="memcpy"></a>memcpy</h3><p>位置：cstring<br>功能：将一个内存区间复制。<br>格式：memcpy(to,from,sizeof(to));</p>
+<h2 id="STL"><a href="#STL" class="headerlink" title="STL"></a>STL</h2><h3 id="lower-bound"><a href="#lower-bound" class="headerlink" title="lower_bound"></a>lower_bound</h3><p>功能：返回一个非递减序列[first, last)中的第一个大于等于值 val 的位置。<br>声明：lower_bound(ForwardIter first, ForwardIter last,const _Tp&amp; val)  -arraylistname</p>
+<h3 id="upper-bound"><a href="#upper-bound" class="headerlink" title="upper_bound"></a>upper_bound</h3><p>功能：算法返回一个非递减序列[first, last)中第一个大于 val 的位置。<br>声明：upper_bound(ForwardIter first, ForwardIter last, const _Tp&amp; val)</p>
+<h3 id="vector"><a href="#vector" class="headerlink" title="vector"></a>vector</h3><p>功能：一个可变大小的数组。<br>声明：vector&lt;类型&gt; 变量名;<br>访问：变量名[位置]（当数组用即可）<br>插入：变量名.push_back(变量);<br>说明：<br>它的本体是一个对象。</p>
+<h3 id="priority-queue"><a href="#priority-queue" class="headerlink" title="priority_queue"></a>priority_queue</h3><p>功能：堆<br>声明：priority_queue&lt;类型&gt; 变量名;<br>访问：变量名.top();（仅能访问堆顶元素）<br>插入：变量名.push(变量);<br>删除：变量名.pop();<br>说明：<br>类型需要定义&lt;运算符。<br>注意 pq 实现的是反人类的大根堆，自定义&lt;号时需要注意实际上是&gt;。</p>
+<h3 id="set"><a href="#set" class="headerlink" title="set"></a>set</h3><p>功能：集合<br>声明：set&lt;类型&gt; 变量名;<br>访问：变量名.find(值);<br>插入：变量名.insert(值);<br>删除：变量名.erase(迭代器);<br>变量名.erase(值);<br>说明：<br>单次操作复杂度 O(logn)。</p>
+<h3 id="map"><a href="#map" class="headerlink" title="map"></a>map</h3><p>功能：映射<br>声明：map&lt;源类型,目标类型&gt; 变量名;<br>访问：变量名[源类型值]（如果不存在该值则会进行插入。）<br>说明：<br>单次操作复杂度 O(logn)。</p>
+<h3 id="string"><a href="#string" class="headerlink" title="string"></a>string</h3><p>功能：灵活的字符串对象<br>声明：string 变量名;<br>赋值：变量名=”C 风格字符串常量”;<br>合并：变量名+变量名 2（例如 s1=”a”,s2=”b”,s1+s2=”ab”）<br>求长：变量名.length();（其余 STL 求大小均为变量名.size()）<br>访问：变量名[位置]（当数组用）<br>说明：不能作为 C 风格函数的参数。</p>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/CPP%E5%B8%B8%E7%94%A8%E5%BA%93%E5%87%BD%E6%95%B0%E4%BB%A5%E5%8F%8ASTL.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/C/">
+              #C++
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/STL/">
+              #STL
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/MarkDown%20and%20LaTex.html" target="_self">MarkDown and LaTex</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/C%E8%AF%AD%E8%A8%80%E7%94%A8EGE%E5%BA%93%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0%E5%88%AB%E8%B8%A9%E7%99%BD%E5%9D%97%E6%B8%B8%E6%88%8F.html" target="_self">C语言用EGE库简单实现别踩白块游戏</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

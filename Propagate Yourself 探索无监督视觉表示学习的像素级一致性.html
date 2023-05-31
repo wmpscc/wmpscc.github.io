@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>Propagate Yourself 探索无监督视觉表示学习的像素级一致性 | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="深度学习,对比学习,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>Propagate Yourself 探索无监督视觉表示学习的像素级一致性</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2021-07-02
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">
+            深度学习
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="Propagate Yourself 探索无监督视觉表示学习的像素级一致性.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <h3 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h3><p>用于无监督视觉表示学习的对比学习方法已经达到了显着的迁移性能水平。我们认为对比学习的力量尚未完全释放，因为当前的方法仅针对实例级前置任务进行训练，导致表示对于需要密集像素预测的下游任务可能不是最佳的。在本文中，我们介绍了用于学习密集特征表示的像素级前置任务。第一个任务直接在像素级别应用对比学习。我们另外提出了一个 pixel-to-propagation 的一致性任务，它产生了更好的结果，甚至大大超过了最先进的方法。具体来说，当迁移到 Pascal VOC 对象检测（C4）、COCO 对象检测（FPN/C4）它实现了 60.2AP、41.4 / 40.5 mAP 和 77.2 mIoU。使用 ResNet-50 骨干网络的 Cityscapes 语义分割，分别为 2.6 AP、0.8 /1.0mAP 和 1.0mIoU 比之前基于实例级对比学习的最佳方法好。此外，发现像素级前置任务不仅对常规骨干网络的预训练有效，而且对用于密集下游任务的头网络也有效，并且是对实例级对比方法的补充。这些结果证明了在像素级别定义前置任务的强大潜力，并提出了无监督视觉表示学习的新途径。<br>​</p>
+<h3 id="贡献"><a href="#贡献" class="headerlink" title="贡献"></a>贡献</h3><ul>
+<li>提出两个像素级对比学习方法（PixContrast，PixPro）</li>
+<li>像素级方法是对已有实例级方法的补充，前者擅长学习空间敏感特征，后者提供更好的分类能力。</li>
+</ul>
+<p>​</p>
+<h1 id="3-方法"><a href="#3-方法" class="headerlink" title="3 方法"></a>3 方法</h1><h2 id="3-1-像素级对比学习"><a href="#3-1-像素级对比学习" class="headerlink" title="3.1 像素级对比学习"></a>3.1 像素级对比学习</h2><p>z 正如大多数实例级对比学习方法那样，PixContrast 首项从同一图像增强采样两份，两份图像具有相同分辨率。分别送入常规编码器和动量编码器去计算图像特征。编码器网络由骨干网络（本文默认采用 ResNet）和投影头组成，前者可用于任意图像神经网络，后者由两个连续的 1x1 卷积层（分别输出 2048 通道和 256 通道）组成，在其中间有一个 BN 层和一个 ReLU 层，以产生特定分辨率的特征图，例如 7x7。以前的方法为每个增强视图计算单个图像的特征向量，而 PixContrast 计算可以用于像素级前置任务的特征图。然后将学习到的骨干网络表征用于特征迁移。架构的说明如图 2 所示。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1625279639802-9f7c3a73-4446-4d6d-8c51-db7e101621e1.png#clientId=u51bad4e1-6609-4&from=paste&height=415&id=u9bcfa810&margin=%5Bobject%20Object%5D&name=image.png&originHeight=415&originWidth=1498&originalType=binary%E2%88%B6=1&size=94536&status=done&style=none&taskId=ubf75a40b-517f-48a8-adc8-07aa435dab7&width=1498" alt="image.png"></p>
+<h3 id="Pixel-Contrast"><a href="#Pixel-Contrast" class="headerlink" title="Pixel Contrast"></a>Pixel Contrast</h3><p>通过从两个视图计算出两个特征图，我们可以构建用于表示学习的像素对比前置任务。在特征图中的每个像素首先被扭曲到原始图像空间，然后计算两个特征图所有像素对之间的距离。这个距离被归一化到特征图对角线长度，以解释增强视图之间的比例差异。归一化后的距离，还基于阈值 T 生成正/负对。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1625280699967-d6d47f9b-0502-4900-8c6a-55fd942f9eb8.png#clientId=u51bad4e1-6609-4&from=paste&height=110&id=u51de859b&margin=%5Bobject%20Object%5D&name=image.png&originHeight=110&originWidth=573&originalType=binary%E2%88%B6=1&size=12287&status=done&style=none&taskId=u6450fe95-4b9a-4fc6-8a2d-378cc065a13&width=573" alt="image.png"><br>其中 i 和 j 是来自两个视图的像素；dist(i,j)表示像素 i 和 j 在原始图像空间中的归一化距离。阈值默认被设置为了 T=0.7。<br>与实例级对比学习方法类似，我们采用对比损失进行标注学习：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1625280836755-ad53b79f-6784-4779-a687-1ba070137a95.png#clientId=u51bad4e1-6609-4&from=paste&height=177&id=u2938288b&margin=%5Bobject%20Object%5D&name=image.png&originHeight=177&originWidth=713&originalType=binary%E2%88%B6=1&size=19339&status=done&style=none&taskId=ua63f774b-1d69-49a0-8d19-16561edbc20&width=713" alt="image.png"><br>其中 i 是第一个视图中的像素，它也位于第二个视图中。$\Omega_{p}^{i}$和$\Omega_{n}^{i}$分别是在第二视图中关于像素 i 的正集和负集。$\mathbf{x}_{i}$和$\mathbf{x}_{j}^{\prime}$是两个视图上的像素特征向量；$\mathcal{T}$是一个标量 temperature 超参数，默认设置为 0.3。损失在位于两个视图交集的第一个视图上的所有像素上取平均值。类似地，第二个视图上的像素 j 的对比损失也被计算和取平均值。最终 loss 是 mini-batch 所有图像对取均值。<br>正如后面实验所展示的那样，这种将实例级对比学习直接扩展到像素级在表征学习中表现良好。</p>
+<h2 id="3-2-Pixel-to-Propagation-Consistency"><a href="#3-2-Pixel-to-Propagation-Consistency" class="headerlink" title="3.2 Pixel-to-Propagation Consistency"></a>3.2 Pixel-to-Propagation Consistency</h2><p>学习表示的空间敏感性和空间平滑度可能会影响需要密集预测的下游任务的迁移性能。前者衡量区分空间接近像素的能力，需要在标签变化的边界区域进行准确预测。后者属性鼓励空间上接近的像素相似，这有助于预测属于同一标签的区域。上一小节中的 PixContrast 方法仅仅鼓励学习具有空间敏感性的特征。在下文中，我们提出了一个新的像素级前置任务，它额外的在表征学习中引入了空间平滑性。<br>这想新的前置任务涉及两个关键的组件。第一个是 pixel propagation module，它通过传播相似像素的特征来过滤一个像素的特征。这种传播对学习的表示具有特征去噪、平滑的效果，导致像素级预测任务中像素之间的解决方案更加一致。第二组件是是一个非对称结构，它其中一个分支产生常规特征图。另一分支合并 pixel-propagation module。前置任务寻找两个分支特征图之间的一致性而不考虑负对。一方面，这个设计从某种程度上保持了学习表征的空间敏感性，这归功于 regular branch。另一方面，对比学习的性能已知受到负对处理方式的严重影响，这非对称设计使得表征学习仅依赖正对之间的一致性，不存在仔细调整负对的问题。我们把这种前置任务称为 picel-to-propagation consistency（PPC）。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1625312228882-5b4c6261-3372-4544-8fa4-aac8fa23da55.png#clientId=ua6d052e9-9946-4&from=paste&height=623&id=u7314b7a2&margin=%5Bobject%20Object%5D&name=image.png&originHeight=623&originWidth=757&originalType=binary%E2%88%B6=1&size=60686&status=done&style=none&taskId=ud6bf81f5-6b1d-451d-9b14-b1785a4728d&width=757" alt="image.png"></p>
+<h3 id="Pixel-Propagation-Module"><a href="#Pixel-Propagation-Module" class="headerlink" title="Pixel Propagation Module"></a>Pixel Propagation Module</h3><p>对于每个像素特征$\mathbf{X}_{i}$，像素传播模块通过传播来自同一图像 $\Omega$ 内的所有像素$\mathbf{X}_{j}$的特征来计算它的平滑变换$\mathbf{y}_{i}$：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1625299764277-187bc99d-379b-455b-8ef6-601e6adee568.png#clientId=ua6d052e9-9946-4&from=paste&height=68&id=ua801f948&margin=%5Bobject%20Object%5D&name=image.png&originHeight=68&originWidth=571&originalType=binary%E2%88%B6=1&size=6852&status=done&style=none&taskId=ud46bf53e-08c5-4c38-83f8-452d4c7051e&width=571" alt="image.png"><br>其中$s(\cdot, \cdot)$是定义如下的相似度函数：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1625299839169-640f8411-d437-4557-b8b5-3ba31be5aad3.png#clientId=ua6d052e9-9946-4&from=paste&height=63&id=u64ee9524&margin=%5Bobject%20Object%5D&name=image.png&originHeight=63&originWidth=599&originalType=binary%E2%88%B6=1&size=7726&status=done&style=none&taskId=u3a1329a2-40aa-4aa0-8ca8-9e9591b01d1&width=599" alt="image.png"><br>其中$\gamma$是控制相似度函数锐度(sharpness)的指数，默认设置为 2；$g(\cdot)$是一个转换函数，可以由$l$个线性层实例化，其两个连续层之间有一个 BN 层和 ReLU 层。当$l=0$，$g(\cdot)$是一个恒等函数，方程（3）将是一个非参数模块。根据经验，我们发现所有$l={0,1,2}$都表现良好，我们默认设置$l=1$，因为它的结果稍好些。图 3 展示了提出的 pixel propagation 模块。</p>
+<h3 id="Pixel-to-Propagation-Consistency-Loss"><a href="#Pixel-to-Propagation-Consistency-Loss" class="headerlink" title="Pixel-to-Propagation Consistency Loss"></a>Pixel-to-Propagation Consistency Loss</h3><p>在非对称架构设计中，有两个不同的编码器：常规编码器，其后应用像素传播模块以产生平滑特征，和一个没有传播模块的动量编码器。两个增强视图都通过两个编码器，并且鼓励来自不同编码器的特征保持一致：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1625302194623-8a7691a0-c292-4cf9-af3d-3f0fdc096d89.png#clientId=ua6d052e9-9946-4&from=paste&height=65&id=uc0ce72d3&margin=%5Bobject%20Object%5D&name=image.png&originHeight=65&originWidth=632&originalType=binary%E2%88%B6=1&size=7501&status=done&style=none&taskId=u8ccb56c0-2994-4fb8-a183-4764799281b&width=632" alt="image.png"><br>其中 i 和 j 是根据式 1 中的分配规则来自两个增强视图的正像素对；$\mathbf{x}_{i}^{\prime}$和$\mathbf{y}_{i}$分别是动量编码器和传播编码器的像素特征向量。这种损失在每个图像的所有正对上进行平均，然后在小批量中进一步对图像进行平均以驱动表示学习。</p>
+<h2 id="3-4-Combined-with-Instance-Contrast"><a href="#3-4-Combined-with-Instance-Contrast" class="headerlink" title="3.4 Combined with Instance Contrast"></a>3.4 Combined with Instance Contrast</h2><p>采用流行的实例级方法 SimCLR，与像素级前置任务的动量编码器对齐。在这种组合中，像素级和实例级前置任务的两个损失由乘法因子$\alpha$平衡，默认它被设置为 1。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1625312092542-56c98af6-8e23-4143-a0b1-317e3c2ddc08.png#clientId=ua6d052e9-9946-4&from=paste&height=62&id=uf36097f9&margin=%5Bobject%20Object%5D&name=image.png&originHeight=62&originWidth=516&originalType=binary%E2%88%B6=1&size=5145&status=done&style=none&taskId=u8280b245-7269-407c-ab0f-c3753579b67&width=516" alt="image.png"><br>通常来说，这两个任务是互补的：像素级前置任务适合空间推理的表示，而实例级前置任务学习分类表示。</p>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/Propagate%20Yourself%20%E6%8E%A2%E7%B4%A2%E6%97%A0%E7%9B%91%E7%9D%A3%E8%A7%86%E8%A7%89%E8%A1%A8%E7%A4%BA%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%83%8F%E7%B4%A0%E7%BA%A7%E4%B8%80%E8%87%B4%E6%80%A7.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0/">
+              #对比学习
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/Large%20Memory%20Layers%20with%20Product%20Keys.html" target="_self">Large Memory Layers with Product Keys</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/AgileGAN%20Stylizing%20Portraits%20by%20Inversion-Consistent%20Transfer%20Learning.html" target="_self">AgileGAN Stylizing Portraits by Inversion-Consistent Transfer Learning</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

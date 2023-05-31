@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>NumPy学习笔记 | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="数据科学,numpy,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>NumPy学习笔记</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-01-23
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6/">
+            数据科学
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="NumPy学习笔记.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <p>本文是我在学习过程中收集的 numpy 方法，并做了记录。</p>
+<h2 id="NumPy-方法-1"><a href="#NumPy-方法-1" class="headerlink" title="NumPy 方法"></a>NumPy 方法</h2><h3 id="np-ceil-x-y-限制元素范围-1"><a href="#np-ceil-x-y-限制元素范围-1" class="headerlink" title="np.ceil(x, y) 限制元素范围"></a>np.ceil(x, y) 限制元素范围</h3><ul>
+<li>x 输入的数据</li>
+<li>y float 型，每个元素的上限</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">housing[&quot;income_cat&quot;] &#x3D; np.ceil(housing[&quot;median_income&quot;] &#x2F; 1.5)     # 每个元素都除1.5</span><br></pre></td></tr></table></figure>
+
+<h3 id="permutation-x-随机生成一个排列或返回一个-range"><a href="#permutation-x-随机生成一个排列或返回一个-range" class="headerlink" title="permutation(x) 随机生成一个排列或返回一个 range"></a>permutation(x) 随机生成一个排列或返回一个 range</h3><p>如果 x 是一个多维数组，则只会沿着它的第一个索引进行混洗。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line">shuffle_index &#x3D; np.random.permutation(60000)</span><br><span class="line">X_train, y_train &#x3D; X_train[shuffle_index], y_train[shuffle_index]</span><br></pre></td></tr></table></figure>
+
+<h3 id="numpy-argmax-返回沿轴的最大值的索引"><a href="#numpy-argmax-返回沿轴的最大值的索引" class="headerlink" title="numpy.argmax() 返回沿轴的最大值的索引"></a>numpy.argmax() 返回沿轴的最大值的索引</h3><p>返回沿轴的最大值的索引。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># some_digit_scores 内容</span><br><span class="line"># array([[-311402.62954431, -363517.28355739, -446449.5306454 ,</span><br><span class="line">#         -183226.61023518, -414337.15339485,  161855.74572176,</span><br><span class="line">#         -452576.39616343, -471957.14962573, -518542.33997148,</span><br><span class="line">#         -536774.63961222]])</span><br><span class="line">np.argmax(some_digit_scores)</span><br><span class="line"># Out</span><br><span class="line"># 5</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>a : array_like; 输入数组</li>
+<li>axis : int, optional; 默认情况下，索引是放在平面数组中，否则沿着指定的轴。</li>
+<li>out : array, optional; 如果提供，结果将被插入到这个数组中。它应该是适当的形状和 dtype。</li>
+</ul>
+<h3 id="np-linalg-inv-计算矩阵的逆"><a href="#np-linalg-inv-计算矩阵的逆" class="headerlink" title="np.linalg.inv() 计算矩阵的逆"></a>np.linalg.inv() 计算矩阵的逆</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">X_b &#x3D; np.c_[np.ones((100, 1)), X]  # add x0 &#x3D; 1 to each instance</span><br><span class="line">theta_best &#x3D; np.linalg.inv(X_b.T.dot(X_b)).dot(X_b.T).dot(y)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>a : (…, M, M) array_like；被求逆的矩阵</li>
+</ul>
+<h3 id="numpy-dot-a-b-out-None-计算两个数组的点积"><a href="#numpy-dot-a-b-out-None-计算两个数组的点积" class="headerlink" title="numpy.dot(a, b, out=None) 计算两个数组的点积"></a>numpy.dot(a, b, out=None) 计算两个数组的点积</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; np.dot(3, 4)</span><br><span class="line">12</span><br><span class="line"></span><br><span class="line"># Neither argument is complex-conjugated:</span><br><span class="line">&gt;&gt;&gt; np.dot([2j, 3j], [2j, 3j])</span><br><span class="line">(-13+0j)</span><br><span class="line"></span><br><span class="line"># For 2-D arrays it is the matrix product:</span><br><span class="line">&gt;&gt;&gt; a &#x3D; [[1, 0], [0, 1]]</span><br><span class="line">&gt;&gt;&gt; b &#x3D; [[4, 1], [2, 2]]</span><br><span class="line">&gt;&gt;&gt; np.dot(a, b)</span><br><span class="line">array([[4, 1],</span><br><span class="line">       [2, 2]])</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; a &#x3D; np.arange(3*4*5*6).reshape((3,4,5,6))</span><br><span class="line">&gt;&gt;&gt; b &#x3D; np.arange(3*4*5*6)[::-1].reshape((5,4,6,3))</span><br><span class="line">&gt;&gt;&gt; np.dot(a, b)[2,3,2,1,2,2]</span><br><span class="line">499128</span><br><span class="line">&gt;&gt;&gt; sum(a[2,3,2,:] * b[1,2,:,2])</span><br><span class="line">499128</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>a : array_like；First argument.</li>
+<li>b : array_like；Second argument.</li>
+</ul>
+<h3 id="numpy-ndarray-T-计算矩阵的转置"><a href="#numpy-ndarray-T-计算矩阵的转置" class="headerlink" title="numpy.ndarray.T() 计算矩阵的转置"></a>numpy.ndarray.T() 计算矩阵的转置</h3><p>与<code>self.transpose()</code>相同，如果<code>self.ndim &lt; 2</code>则返回它自身。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; x &#x3D; np.array([[1.,2.],[3.,4.]])</span><br><span class="line">&gt;&gt;&gt; x</span><br><span class="line">array([[ 1.,  2.],</span><br><span class="line">       [ 3.,  4.]])</span><br><span class="line">&gt;&gt;&gt; x.T</span><br><span class="line">array([[ 1.,  3.],</span><br><span class="line">       [ 2.,  4.]])</span><br><span class="line">&gt;&gt;&gt; x &#x3D; np.array([1.,2.,3.,4.])</span><br><span class="line">&gt;&gt;&gt; x</span><br><span class="line">array([ 1.,  2.,  3.,  4.])</span><br><span class="line">&gt;&gt;&gt; x.T</span><br><span class="line">array([ 1.,  2.,  3.,  4.])</span><br></pre></td></tr></table></figure>
+
+<h3 id="numpy-random-seed-生成器种子"><a href="#numpy-random-seed-生成器种子" class="headerlink" title="numpy.random.seed() 生成器种子"></a>numpy.random.seed() 生成器种子</h3><p>该方法由<code>RandomState</code>初始化，它可以被重新设置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">np.random.seed(42)</span><br><span class="line">theta &#x3D; np.random.randn(2,1)  # random initialization</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>seed : int or array_like, optional；必须为 32 位无符号整数。</li>
+</ul>
+<h3 id="numpy-random-randn-从标准正太分布返回样本"><a href="#numpy-random-randn-从标准正太分布返回样本" class="headerlink" title="numpy.random.randn() 从标准正太分布返回样本"></a>numpy.random.randn() 从标准正太分布返回样本</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; theta &#x3D; np.random.randn(2,1)</span><br><span class="line">array([[ 4.21509616],</span><br><span class="line">       [ 2.77011339]])</span><br></pre></td></tr></table></figure>
+
+<h6 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h6><ul>
+<li>d0, d1, …, dn : int, optional；返回的数组维度，应该都是正值。如果没有给出，将返回一个 Python float 值。</li>
+</ul>
+<h6 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h6><ul>
+<li>Z : ndarray or float；一个经过标准正态分布抽样的，<code>(d0, d1, ..., dn)</code>维度的浮点数组。</li>
+</ul>
+<h3 id="numpy-array-创建一个数组"><a href="#numpy-array-创建一个数组" class="headerlink" title="numpy.array() 创建一个数组"></a>numpy.array() 创建一个数组</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">theta_path_bgd &#x3D; np.array(theta_path_bgd)</span><br><span class="line">theta_path_sgd &#x3D; np.array(theta_path_sgd)</span><br><span class="line">theta_path_mgd &#x3D; np.array(theta_path_mgd)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>object : array_like</li>
+<li>dtype : data-type, optional</li>
+</ul>
+<h3 id="numpy-random-rand-nmbsp-生成给定-shap-的随机值"><a href="#numpy-random-rand-nmbsp-生成给定-shap-的随机值" class="headerlink" title="numpy.random.rand()&nmbsp;生成给定 shap 的随机值"></a>numpy.random.rand()&nmbsp;生成给定 shap 的随机值</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">m &#x3D; 100</span><br><span class="line">X &#x3D; 6 * np.random.rand(m, 1) - 3</span><br><span class="line">y &#x3D; 0.5 * X**2 + X + 2 + np.random.randn(m, 1)</span><br><span class="line">&gt;&gt;&gt; np.random.rand(3,2)</span><br><span class="line">array([[ 0.14022471,  0.96360618],  #random</span><br><span class="line">       [ 0.37601032,  0.25528411],  #random</span><br><span class="line">       [ 0.49313049,  0.94909878]]) #random</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>d0, d1, …, dn : int, optional；返回的数组维度，必须是正值。如果为空，则返回一个 Python float 值。</li>
+</ul>
+<h3 id="numpy-linspace-在指定区间返回间隔均匀的样本-start-stop"><a href="#numpy-linspace-在指定区间返回间隔均匀的样本-start-stop" class="headerlink" title="numpy.linspace() 在指定区间返回间隔均匀的样本[start, stop]"></a>numpy.linspace() 在指定区间返回间隔均匀的样本[start, stop]</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">X_new&#x3D;np.linspace(-3, 3, 100).reshape(100, 1)</span><br><span class="line">X_new_poly &#x3D; poly_features.transform(X_new)</span><br><span class="line">y_new &#x3D; lin_reg.predict(X_new_poly)</span><br><span class="line">plt.plot(X, y, &quot;b.&quot;)</span><br><span class="line">plt.plot(X_new, y_new, &quot;r-&quot;, linewidth&#x3D;2, label&#x3D;&quot;Predictions&quot;)</span><br><span class="line">plt.xlabel(&quot;&#123;% raw %&#125;$x_1$&#123;% endraw %&#125;&quot;, fontsize&#x3D;18)</span><br><span class="line">plt.ylabel(&quot;&#123;% raw %&#125;$y$&#123;% endraw %&#125;&quot;, rotation&#x3D;0, fontsize&#x3D;18)</span><br><span class="line">plt.legend(loc&#x3D;&quot;upper left&quot;, fontsize&#x3D;14)</span><br><span class="line">plt.axis([-3, 3, 0, 10])</span><br><span class="line">save_fig(&quot;quadratic_predictions_plot&quot;)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>start : scalar；序列的起始值</li>
+<li>stop : scalar；序列的结束值</li>
+<li>num : int, optional；要生成的样本数量，默认为 50 个。</li>
+<li>endpoint : bool, optional；若为 True 则包括结束值，否则不包括结束值，即[start, stop)区间。默认为 True。</li>
+<li>dtype : dtype, optional；输出数组的类型，若未给出则从输入数据推断类型。</li>
+</ul>
+<h3 id="meshgrid-从坐标向量返回坐标矩阵"><a href="#meshgrid-从坐标向量返回坐标矩阵" class="headerlink" title="meshgrid()   从坐标向量返回坐标矩阵"></a>meshgrid()   从坐标向量返回坐标矩阵</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; nx, ny &#x3D; (3, 2)</span><br><span class="line">&gt;&gt;&gt; x &#x3D; np.linspace(0, 1, nx)</span><br><span class="line">&gt;&gt;&gt; y &#x3D; np.linspace(0, 1, ny)</span><br><span class="line">&gt;&gt;&gt; xv, yv &#x3D; np.meshgrid(x, y)</span><br><span class="line">&gt;&gt;&gt; xv</span><br><span class="line">array([[ 0. ,  0.5,  1. ],</span><br><span class="line">       [ 0. ,  0.5,  1. ]])</span><br><span class="line">&gt;&gt;&gt; yv</span><br><span class="line">array([[ 0.,  0.,  0.],</span><br><span class="line">       [ 1.,  1.,  1.]])</span><br><span class="line">&gt;&gt;&gt; xv, yv &#x3D; np.meshgrid(x, y, sparse&#x3D;True)  # make sparse output arrays</span><br><span class="line">&gt;&gt;&gt; xv</span><br><span class="line">array([[ 0. ,  0.5,  1. ]])</span><br><span class="line">&gt;&gt;&gt; yv</span><br><span class="line">array([[ 0.],</span><br><span class="line">       [ 1.]])</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>x1, x2,…, xn : array_like；代表网格坐标的一维数组。</li>
+<li>indexing : {‘xy’, ‘ij’}, optional；输出的笛卡儿（’xy’，默认）或矩阵（’ij’）索引。</li>
+<li>sparse : bool, optional；如果为 True 则返回稀疏矩阵以减少内存，默认为 False。<br>norm()   矩阵或向量范数</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">t1a, t1b, t2a, t2b &#x3D; -1, 3, -1.5, 1.5</span><br><span class="line"></span><br><span class="line"># ignoring bias term</span><br><span class="line">t1s &#x3D; np.linspace(t1a, t1b, 500)</span><br><span class="line">t2s &#x3D; np.linspace(t2a, t2b, 500)</span><br><span class="line">t1, t2 &#x3D; np.meshgrid(t1s, t2s)</span><br><span class="line">T &#x3D; np.c_[t1.ravel(), t2.ravel()]</span><br><span class="line">Xr &#x3D; np.array([[-1, 1], [-0.3, -1], [1, 0.1]])</span><br><span class="line">yr &#x3D; 2 * Xr[:, :1] + 0.5 * Xr[:, 1:]</span><br><span class="line"></span><br><span class="line">J &#x3D; (1&#x2F;len(Xr) * np.sum((T.dot(Xr.T) - yr.T)**2, axis&#x3D;1)).reshape(t1.shape)</span><br><span class="line"></span><br><span class="line">N1 &#x3D; np.linalg.norm(T, ord&#x3D;1, axis&#x3D;1).reshape(t1.shape)</span><br><span class="line">N2 &#x3D; np.linalg.norm(T, ord&#x3D;2, axis&#x3D;1).reshape(t1.shape)</span><br><span class="line"></span><br><span class="line">t_min_idx &#x3D; np.unravel_index(np.argmin(J), J.shape)</span><br><span class="line">t1_min, t2_min &#x3D; t1[t_min_idx], t2[t_min_idx]</span><br><span class="line"></span><br><span class="line">t_init &#x3D; np.array([[0.25], [-1]])</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>x : array_like；输入的数组，如果<code>axis</code>是 None，则<code>x</code>必须是 1-D 或 2-D。</li>
+<li>ord : {non-zero int, inf, -inf, ‘fro’, ‘nuc’}, optional；范数的顺序，inf 表示 numpy 的 inf 对象。</li>
+<li>axis : {int, 2-tuple of ints, None}, optional</li>
+<li>keepdims : bool, optional</li>
+</ul>
+<p>以下范数可以被计算：<br>| ord | norm for matrices | norm for vectors|<br>|–|–|–|<br>|None | Frobenius norm | 2-norm|<br>|‘fro’ | Frobenius norm | –|<br>|‘nuc’ | nuclear norm | –|<br>|inf | max(sum(abs(x), axis=1)) | max(abs(x))|<br>|-inf | min(sum(abs(x), axis=1)) | min(abs(x))|<br>|0 | – | sum(x != 0)|<br>|1 | max(sum(abs(x), axis=0)) | as below|<br>|-1 | min(sum(abs(x), axis=0)) | as below|<br>|2 | 2-norm (largest sing. value) | as below|<br>|-2 | smallest singular value | as below|<br>|other | – | sum(abs(x)<strong>ord)</strong>(1./ord)|</p>
+<p>对于<code>ord &lt;= 0</code>的值，它严格来说不是数学规范的范数，但它作为数值目的任然有用。</p>
+<h3 id="unravel-index-将平面索引或平面索引数组转换为坐标数组的元组"><a href="#unravel-index-将平面索引或平面索引数组转换为坐标数组的元组" class="headerlink" title="unravel_index()   将平面索引或平面索引数组转换为坐标数组的元组"></a>unravel_index()   将平面索引或平面索引数组转换为坐标数组的元组</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; np.unravel_index([22, 41, 37], (7,6))</span><br><span class="line">(array([3, 6, 6]), array([4, 5, 1]))</span><br><span class="line">&gt;&gt;&gt; np.unravel_index([31, 41, 13], (7,6), order&#x3D;&#39;F&#39;)</span><br><span class="line">(array([3, 6, 6]), array([4, 5, 1]))</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; np.unravel_index(1621, (6,7,8,9))</span><br><span class="line">(3, 1, 4, 1)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>indices : array_like；一个整数数组，其元素是索引到维数组 dims 的平坦版本中。</li>
+<li>dims : tuple of ints；用于分解索引的数组的形状。</li>
+<li>order : {‘C’, ‘F’}, optional；决定<code>indices</code>应该按 row-major (C-style) or column-major (Fortran-style) 顺序。</li>
+</ul>
+<h3 id="mean-计算沿指定轴的算术平均值"><a href="#mean-计算沿指定轴的算术平均值" class="headerlink" title="mean()   计算沿指定轴的算术平均值"></a>mean()   计算沿指定轴的算术平均值</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; a &#x3D; np.array([[1, 2], [3, 4]])</span><br><span class="line">&gt;&gt;&gt; np.mean(a)</span><br><span class="line">2.5</span><br><span class="line">&gt;&gt;&gt; np.mean(a, axis&#x3D;0)</span><br><span class="line">array([ 2.,  3.])</span><br><span class="line">&gt;&gt;&gt; np.mean(a, axis&#x3D;1)</span><br><span class="line">array([ 1.5,  3.5])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; a &#x3D; np.zeros((2, 512*512), dtype&#x3D;np.float32)</span><br><span class="line">&gt;&gt;&gt; a[0, :] &#x3D; 1.0</span><br><span class="line">&gt;&gt;&gt; a[1, :] &#x3D; 0.1</span><br><span class="line">&gt;&gt;&gt; np.mean(a)</span><br><span class="line">0.54999924</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>a : array_like；包含要求平均值的数组，如果不是数组，则尝试进行转换。</li>
+<li>axis : None or int or tuple of ints, optional；计算平均值的轴，默认计算扁平数组。</li>
+<li>dtype : data-type, optional；用于计算平均值的类型。</li>
+<li>out : ndarray, optional</li>
+</ul>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/NumPy%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/numpy/">
+              #numpy
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/sklearn%E8%B0%83%E5%8F%82%E4%B8%8E%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86.html" target="_self">sklearn调参与数据预处理</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/Pandas%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html" target="_self">Pandas学习笔记</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

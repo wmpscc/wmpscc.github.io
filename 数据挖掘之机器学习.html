@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>数据挖掘之机器学习 | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="机器学习,kaggle,sklearn,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>数据挖掘之机器学习</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-01-23
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">
+            机器学习
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="数据挖掘之机器学习.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <h1 id="调参"><a href="#调参" class="headerlink" title="调参"></a>调参</h1><h3 id="GridSearchCV-对估算器指定参数值进行详尽搜索"><a href="#GridSearchCV-对估算器指定参数值进行详尽搜索" class="headerlink" title="GridSearchCV() 对估算器指定参数值进行详尽搜索"></a>GridSearchCV() 对估算器指定参数值进行详尽搜索</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.model_selection import GridSearchCV</span><br><span class="line"></span><br><span class="line">param_grid &#x3D; [</span><br><span class="line">    # try 12 (3×4) combinations of hyperparameters</span><br><span class="line">    &#123;&#39;n_estimators&#39;: [3, 10, 30], &#39;max_features&#39;: [2, 4, 6, 8]&#125;,</span><br><span class="line">    # then try 6 (2×3) combinations with bootstrap set as False</span><br><span class="line">    &#123;&#39;bootstrap&#39;: [False], &#39;n_estimators&#39;: [3, 10], &#39;max_features&#39;: [2, 3, 4]&#125;,</span><br><span class="line">  ]</span><br><span class="line"></span><br><span class="line">forest_reg &#x3D; RandomForestRegressor(random_state&#x3D;42)</span><br><span class="line"># train across 5 folds, that&#39;s a total of (12+6)*5&#x3D;90 rounds of training</span><br><span class="line">grid_search &#x3D; GridSearchCV(forest_reg, param_grid, cv&#x3D;5,</span><br><span class="line">                           scoring&#x3D;&#39;neg_mean_squared_error&#39;)</span><br><span class="line">grid_search.fit(housing_prepared, housing_labels)</span><br><span class="line"></span><br><span class="line">grid_search.best_params_</span><br><span class="line"># Out:&#123;&#39;max_features&#39;: 8, &#39;n_estimators&#39;: 30&#125;</span><br><span class="line"></span><br><span class="line">grid_search.best_estimator_</span><br><span class="line"># Out:</span><br><span class="line"># RandomForestRegressor(bootstrap&#x3D;True, criterion&#x3D;&#39;mse&#39;, max_depth&#x3D;None,</span><br><span class="line">#            max_features&#x3D;8, max_leaf_nodes&#x3D;None, min_impurity_decrease&#x3D;0.0,</span><br><span class="line">#            min_impurity_split&#x3D;None, min_samples_leaf&#x3D;1,</span><br><span class="line">#            min_samples_split&#x3D;2, min_weight_fraction_leaf&#x3D;0.0,</span><br><span class="line">#            n_estimators&#x3D;30, n_jobs&#x3D;1, oob_score&#x3D;False, random_state&#x3D;42,</span><br><span class="line">#            verbose&#x3D;0, warm_start&#x3D;False)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>estimator : estimator object.每个估算器需要提供一个<code>score</code>函数或填写<code>scoring</code>参数。</li>
+<li>param_grid : dict or list of dictionaries，键作为参数名称，list 作为参数的字典。或存有这样的字典的列表。</li>
+<li>scoring : string, callable, list/tuple, dict or None, default: None，</li>
+<li>cv : int, cross-validation generator or an iterable, optional，如果是整数，则代表 KFold</li>
+<li>refit : boolean, or string, default=True，应用已找到的最好的参数到整个数据集上。<table>
+<thead>
+<tr>
+<th>Methods</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>decision_function(X)</td>
+<td>Call decision_function on the estimator with the best found parameters.</td>
+</tr>
+<tr>
+<td>fit(X[, y, groups])</td>
+<td>Run fit with all sets of parameters.</td>
+</tr>
+<tr>
+<td>get_params([deep])</td>
+<td>Get parameters for this estimator.</td>
+</tr>
+<tr>
+<td>inverse_transform(Xt)</td>
+<td>Call inverse_transform on the estimator with the best found params.</td>
+</tr>
+<tr>
+<td>predict(X)</td>
+<td>Call predict on the estimator with the best found parameters.</td>
+</tr>
+<tr>
+<td>predict_log_proba(X)</td>
+<td>Call predict_log_proba on the estimator with the best found parameters.</td>
+</tr>
+<tr>
+<td>predict_proba(X)</td>
+<td>Call predict_proba on the estimator with the best found parameters.</td>
+</tr>
+<tr>
+<td>score(X[, y])</td>
+<td>Returns the score on the given data, if the estimator has been refit.</td>
+</tr>
+<tr>
+<td>set_params(**params)</td>
+<td>Set the parameters of this estimator.</td>
+</tr>
+<tr>
+<td>transform(X)</td>
+<td>Call transform on the estimator with the best found parameters.</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<h3 id="RandomizedSearchCV"><a href="#RandomizedSearchCV" class="headerlink" title="RandomizedSearchCV()"></a>RandomizedSearchCV()</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.model_selection import RandomizedSearchCV</span><br><span class="line">from scipy.stats import randint</span><br><span class="line"></span><br><span class="line">param_distribs &#x3D; &#123;</span><br><span class="line">        &#39;n_estimators&#39;: randint(low&#x3D;1, high&#x3D;200),</span><br><span class="line">        &#39;max_features&#39;: randint(low&#x3D;1, high&#x3D;8),</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">forest_reg &#x3D; RandomForestRegressor(random_state&#x3D;42)</span><br><span class="line">rnd_search &#x3D; RandomizedSearchCV(forest_reg, param_distributions&#x3D;param_distribs,</span><br><span class="line">                                n_iter&#x3D;10, cv&#x3D;5, scoring&#x3D;&#39;neg_mean_squared_error&#39;, random_state&#x3D;42)</span><br><span class="line">rnd_search.fit(housing_prepared, housing_labels)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>estimator : estimator object.指定估算器对象。</li>
+<li>param_distributions : dict，给定以参数名为键，list 为参数的字典。或提供一个分布，分布必须提供一个<code>rvs</code>方法进行采样，例如来自 scipy.stats.distributions 的方法。</li>
+<li>n_iter : int, default=10，采样参数设置数量。</li>
+<li>scoring : string, callable, list/tuple, dict or None, default: None</li>
+<li>cv : int, cross-validation generator or an iterable, optional</li>
+<li>refit : boolean, or string default=True</li>
+<li>random_state : int, RandomState instance or None, optional, default=None</li>
+</ul>
+<h1 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h1><h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><h3 id="RandomForestClassifier"><a href="#RandomForestClassifier" class="headerlink" title="RandomForestClassifier"></a>RandomForestClassifier</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.ensemble import RandomForestClassifier</span><br><span class="line">from sklearn.model_selection import cross_val_score</span><br><span class="line">rnd_clf &#x3D; RandomForestClassifier(n_estimators&#x3D;500, max_leaf_nodes&#x3D;50, n_jobs&#x3D;-1)</span><br><span class="line">scores &#x3D; cross_val_score(rnd_clf, trainData, trainLabel,</span><br><span class="line">                         scoring&#x3D;&quot;recall&quot;, cv&#x3D;10)</span><br><span class="line">scores.mean()</span><br></pre></td></tr></table></figure>
+
+<h3 id="ExtraTreesClassifier"><a href="#ExtraTreesClassifier" class="headerlink" title="ExtraTreesClassifier"></a>ExtraTreesClassifier</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.ensemble import ExtraTreesClassifier</span><br><span class="line">from sklearn.model_selection import cross_val_score</span><br><span class="line">etr_clf &#x3D; ExtraTreesClassifier(n_estimators&#x3D;500, max_leaf_nodes&#x3D;50, n_jobs&#x3D;-1)</span><br><span class="line">etr_score &#x3D; cross_val_score(etr_clf, trainData, trainLabel, scoring&#x3D;&#39;recall&#39;, cv&#x3D;10)</span><br><span class="line">etr_score.mean()</span><br></pre></td></tr></table></figure>
+
+<h3 id="GradientBoostingClassifier"><a href="#GradientBoostingClassifier" class="headerlink" title="GradientBoostingClassifier"></a>GradientBoostingClassifier</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.ensemble import GradientBoostingClassifier</span><br><span class="line">gbdt &#x3D; GradientBoostingClassifier(learning_rate&#x3D;0.1,min_samples_leaf&#x3D;2,max_depth&#x3D;6,n_estimators&#x3D;100)</span><br></pre></td></tr></table></figure>
+
+<h3 id="XGBClassifier"><a href="#XGBClassifier" class="headerlink" title="XGBClassifier"></a>XGBClassifier</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">from xgboost.sklearn import XGBClassifier</span><br><span class="line">from sklearn import cross_validation, metrics</span><br><span class="line">xgb1 &#x3D; XGBClassifier(learning_rate &#x3D;0.05,</span><br><span class="line">                     n_estimators&#x3D;1000,</span><br><span class="line">                     max_depth&#x3D;3,</span><br><span class="line">                     min_child_weight&#x3D;1,</span><br><span class="line">                     gamma&#x3D;0.1,</span><br><span class="line">                     subsample&#x3D;0.8,</span><br><span class="line">                     colsample_bytree&#x3D;0.8,</span><br><span class="line">                     objective&#x3D; &#39;binary:logistic&#39;,</span><br><span class="line">                     nthread&#x3D;4,</span><br><span class="line">                     reg_alpha&#x3D;0.001,</span><br><span class="line">                     reg_lambda&#x3D;0.001,</span><br><span class="line">                     scale_pos_weight&#x3D;1,</span><br><span class="line">                     seed&#x3D;27)</span><br><span class="line">xgb1.fit(subTrain, subLabel)</span><br><span class="line">xgb1_pred &#x3D; xgb1.predict(trainData)</span><br><span class="line">xgb1_pred_prob &#x3D; xgb1.predict_proba(trainData)[:, 1]</span><br><span class="line">print(metrics.accuracy_score(trainLabel, xgb1_pred))</span><br><span class="line">print(metrics.roc_auc_score(trainLabel, xgb1_pred_prob))</span><br><span class="line">xgb1_f2 &#x3D; calc_f2(trainLabel, xgb1_pred)</span><br><span class="line">print(xgb1_f2)</span><br></pre></td></tr></table></figure>
+
+<h3 id="Lightgbm"><a href="#Lightgbm" class="headerlink" title="Lightgbm"></a>Lightgbm</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">import lightgbm as lgb</span><br><span class="line">lgb_clf &#x3D; lgb.LGBMClassifier(learning_rate&#x3D;0.1,</span><br><span class="line">                            boosting_type&#x3D;&#39;gbdt&#39;,</span><br><span class="line">                            objective&#x3D;&#39;binary&#39;,</span><br><span class="line">                            n_estimators&#x3D;1000,</span><br><span class="line">                            metric&#x3D;&#39;auc&#39;,</span><br><span class="line">                            max_depth&#x3D;3,</span><br><span class="line">                            num_leaves&#x3D;5,</span><br><span class="line">                            subsample&#x3D;0.7,</span><br><span class="line">                            colsample_bytree&#x3D;0.7,</span><br><span class="line">                            min_data_in_leaf&#x3D;450,</span><br><span class="line">                            feature_fraction&#x3D;0.7,</span><br><span class="line">                            bagging_fraction&#x3D;0.7,</span><br><span class="line">                            bagging_freq&#x3D;6,</span><br><span class="line">                            lambda_l1&#x3D;1,</span><br><span class="line">                            lambda_l2&#x3D;0.001,</span><br><span class="line">                            min_gain_to_split&#x3D;0.265,</span><br><span class="line">                            verbose&#x3D;5,</span><br><span class="line">                            is_unbalance&#x3D;True)</span><br><span class="line">lgb_clf.fit(subTrain, subLabel)</span><br><span class="line">lgb_clf_pred &#x3D; lgb_clf.predict(trainData)</span><br></pre></td></tr></table></figure>
+
+<h2 id="模型融合"><a href="#模型融合" class="headerlink" title="模型融合"></a>模型融合</h2><h3 id="BaggingClassifier"><a href="#BaggingClassifier" class="headerlink" title="BaggingClassifier"></a>BaggingClassifier</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.ensemble import BaggingClassifier</span><br><span class="line">bag_rnd &#x3D; BaggingClassifier(rnd_clf, n_estimators&#x3D;10, max_samples&#x3D;1000, bootstrap&#x3D;True, n_jobs&#x3D;-1)</span><br><span class="line">bag_rnd.fit(subTrain, subLabel)</span><br><span class="line">rnd_pred &#x3D; bag_rnd.predict(trainData)</span><br></pre></td></tr></table></figure>
+
+<h3 id="VotingClassifier"><a href="#VotingClassifier" class="headerlink" title="VotingClassifier"></a>VotingClassifier</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.ensemble import VotingClassifier</span><br><span class="line">from xgboost.sklearn import XGBClassifier</span><br><span class="line">xgb &#x3D; XGBClassifier(learning_rate &#x3D;0.1,</span><br><span class="line">                     n_estimators&#x3D;1000,</span><br><span class="line">                     max_depth&#x3D;3,</span><br><span class="line">                     min_child_weight&#x3D;1,</span><br><span class="line">                     gamma&#x3D;0.1,</span><br><span class="line">                     subsample&#x3D;0.8,</span><br><span class="line">                     colsample_bytree&#x3D;0.8,</span><br><span class="line">                     objective&#x3D; &#39;binary:logistic&#39;,</span><br><span class="line">                     nthread&#x3D;4,</span><br><span class="line">                     reg_alpha&#x3D;0.001,</span><br><span class="line">                     reg_lambda&#x3D;0.001,</span><br><span class="line">                     scale_pos_weight&#x3D;1)</span><br><span class="line"></span><br><span class="line">import lightgbm as lgb</span><br><span class="line">lgb_clf &#x3D; lgb.LGBMClassifier(learning_rate&#x3D;0.1,</span><br><span class="line">                            boosting_type&#x3D;&#39;gbdt&#39;,</span><br><span class="line">                            objective&#x3D;&#39;binary&#39;,</span><br><span class="line">                            n_estimators&#x3D;1000,</span><br><span class="line">                            metric&#x3D;&#39;auc&#39;,</span><br><span class="line">                            max_depth&#x3D;3,</span><br><span class="line">                            num_leaves&#x3D;5,</span><br><span class="line">                            subsample&#x3D;0.7,</span><br><span class="line">                            colsample_bytree&#x3D;0.7,</span><br><span class="line">                            min_data_in_leaf&#x3D;450,</span><br><span class="line">                            feature_fraction&#x3D;0.7,</span><br><span class="line">                            bagging_fraction&#x3D;0.7,</span><br><span class="line">                            bagging_freq&#x3D;6,</span><br><span class="line">                            lambda_l1&#x3D;1,</span><br><span class="line">                            lambda_l2&#x3D;0.001,</span><br><span class="line">                            min_gain_to_split&#x3D;0.265,</span><br><span class="line">                            verbose&#x3D;5,</span><br><span class="line">                            is_unbalance&#x3D;True)</span><br><span class="line"></span><br><span class="line">from sklearn.ensemble import GradientBoostingClassifier</span><br><span class="line">gbdt &#x3D; GradientBoostingClassifier(learning_rate&#x3D;0.05, min_samples_split&#x3D;320, min_samples_leaf&#x3D;7, max_depth&#x3D;7,</span><br><span class="line">                                 max_features&#x3D;&#39;sqrt&#39;, subsample&#x3D;0.7, random_state&#x3D;10)</span><br><span class="line"></span><br><span class="line">vot &#x3D; VotingClassifier(estimators&#x3D;[(&#39;xgb&#39;, xgb), (&#39;lgb&#39;, lgb_clf)], voting&#x3D;&#39;soft&#39;)</span><br><span class="line">vot.fit(trainData, trainLabel)</span><br><span class="line">vot_pred &#x3D; vot.predict(testData)</span><br><span class="line">vot_pred &#x3D; pd.DataFrame(vot_pred)</span><br><span class="line">submData[&#39;acc_now_delinq&#39;] &#x3D; vot_pred</span><br><span class="line">submData.to_csv(os.path.join(homePath, &#39;submit.csv&#39;), index&#x3D;False)</span><br></pre></td></tr></table></figure>
+
+<h3 id="StackingClassifier"><a href="#StackingClassifier" class="headerlink" title="StackingClassifier"></a>StackingClassifier</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.ensemble import RandomForestClassifier</span><br><span class="line">rnd_clf &#x3D; RandomForestClassifier(n_estimators&#x3D;110, min_samples_split&#x3D;90, min_samples_leaf&#x3D;15,max_depth&#x3D;10,oob_score&#x3D;True,max_features&#x3D;10)</span><br><span class="line"></span><br><span class="line">from xgboost.sklearn import XGBClassifier</span><br><span class="line">xgb &#x3D; XGBClassifier(learning_rate &#x3D;0.05,</span><br><span class="line">                     n_estimators&#x3D;1000,</span><br><span class="line">                     max_depth&#x3D;3,</span><br><span class="line">                     min_child_weight&#x3D;1,</span><br><span class="line">                     gamma&#x3D;0.1,</span><br><span class="line">                     subsample&#x3D;0.8,</span><br><span class="line">                     colsample_bytree&#x3D;0.8,</span><br><span class="line">                     objective&#x3D; &#39;binary:logistic&#39;,</span><br><span class="line">                     nthread&#x3D;4,</span><br><span class="line">                     reg_alpha&#x3D;0.001,</span><br><span class="line">                     reg_lambda&#x3D;0.001,</span><br><span class="line">                     scale_pos_weight&#x3D;1)</span><br><span class="line"></span><br><span class="line">import lightgbm as lgb</span><br><span class="line">lgb_clf &#x3D; lgb.LGBMClassifier(learning_rate&#x3D;0.1,</span><br><span class="line">                            boosting_type&#x3D;&#39;gbdt&#39;,</span><br><span class="line">                            objective&#x3D;&#39;binary&#39;,</span><br><span class="line">                            n_estimators&#x3D;1000,</span><br><span class="line">                            metric&#x3D;&#39;auc&#39;,</span><br><span class="line">                            max_depth&#x3D;3,</span><br><span class="line">                            num_leaves&#x3D;5,</span><br><span class="line">                            subsample&#x3D;0.7,</span><br><span class="line">                            colsample_bytree&#x3D;0.7,</span><br><span class="line">                            min_data_in_leaf&#x3D;450,</span><br><span class="line">                            feature_fraction&#x3D;0.7,</span><br><span class="line">                            bagging_fraction&#x3D;0.7,</span><br><span class="line">                            bagging_freq&#x3D;6,</span><br><span class="line">                            lambda_l1&#x3D;1,</span><br><span class="line">                            lambda_l2&#x3D;0.001,</span><br><span class="line">                            min_gain_to_split&#x3D;0.265,</span><br><span class="line">                            verbose&#x3D;5,</span><br><span class="line">                            is_unbalance&#x3D;True)</span><br><span class="line"></span><br><span class="line">from sklearn.ensemble import GradientBoostingClassifier</span><br><span class="line">gbdt &#x3D; GradientBoostingClassifier(learning_rate&#x3D;0.05, min_samples_split&#x3D;320, min_samples_leaf&#x3D;7, max_depth&#x3D;7,</span><br><span class="line">                                 max_features&#x3D;&#39;sqrt&#39;, subsample&#x3D;0.7)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">from mlxtend.classifier import StackingClassifier</span><br><span class="line">stack_clf &#x3D; StackingClassifier(classifiers&#x3D;[gbdt, lgb_clf, rnd_clf, xgb], meta_classifier&#x3D;xgb)</span><br><span class="line"></span><br><span class="line">stack_clf.fit(trainData, trainLabel)</span><br><span class="line">stack_pred &#x3D; stack_clf.predict(testData)</span><br></pre></td></tr></table></figure>
+
+<h1 id="数据处理"><a href="#数据处理" class="headerlink" title="数据处理"></a>数据处理</h1><h2 id="特征放缩"><a href="#特征放缩" class="headerlink" title="特征放缩"></a>特征放缩</h2><h3 id="MinMax-scaling-归一化"><a href="#MinMax-scaling-归一化" class="headerlink" title="MinMax scaling 归一化"></a>MinMax scaling 归一化</h3><p>该方法更容易受离散点影响<br><code>X_std = (X - X.min(axis=0)) / (X.max(axis=0) - X.min(axis=0))</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">X_scaled &#x3D; X_std * (max - min) + min</span><br><span class="line">&gt;&gt;&gt; from sklearn.preprocessing import MinMaxScaler</span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line">&gt;&gt;&gt; data &#x3D; [[-1, 2], [-0.5, 6], [0, 10], [1, 18]]</span><br><span class="line">&gt;&gt;&gt; scaler &#x3D; MinMaxScaler()</span><br><span class="line">&gt;&gt;&gt; print(scaler.fit(data))</span><br><span class="line">MinMaxScaler(copy&#x3D;True, feature_range&#x3D;(0, 1))</span><br><span class="line">&gt;&gt;&gt; print(scaler.data_max_)</span><br><span class="line">[  1.  18.]</span><br><span class="line">&gt;&gt;&gt; print(scaler.transform(data))</span><br><span class="line">[[ 0.    0.  ]</span><br><span class="line"> [ 0.25  0.25]</span><br><span class="line"> [ 0.5   0.5 ]</span><br><span class="line"> [ 1.    1.  ]]</span><br><span class="line">&gt;&gt;&gt; print(scaler.transform([[2, 2]]))</span><br><span class="line">[[ 1.5  0. ]]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>feature_range : tuple (min, max), default=(0, 1)，归一化后值的范围</li>
+<li>copy : boolean, optional, default True，是否复制数据在新的数据上归一化</li>
+</ul>
+<h3 id="零均值标准化"><a href="#零均值标准化" class="headerlink" title="零均值标准化"></a>零均值标准化</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; from sklearn.preprocessing import StandardScaler</span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line">&gt;&gt;&gt; data &#x3D; [[0, 0], [0, 0], [1, 1], [1, 1]]</span><br><span class="line">&gt;&gt;&gt; scaler &#x3D; StandardScaler()</span><br><span class="line">&gt;&gt;&gt; print(scaler.fit(data))</span><br><span class="line">StandardScaler(copy&#x3D;True, with_mean&#x3D;True, with_std&#x3D;True)</span><br><span class="line">&gt;&gt;&gt; print(scaler.mean_)</span><br><span class="line">[ 0.5  0.5]</span><br><span class="line">&gt;&gt;&gt; print(scaler.transform(data))</span><br><span class="line">[[-1. -1.]</span><br><span class="line"> [-1. -1.]</span><br><span class="line"> [ 1.  1.]</span><br><span class="line"> [ 1.  1.]]</span><br><span class="line">&gt;&gt;&gt; print(scaler.transform([[2, 2]]))</span><br><span class="line">[[ 3.  3.]]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>copy : boolean, optional, default True，是否复制数据在新的数据上执行</li>
+<li>with_mean : boolean, True by default，若为 True 则在缩放前将数据居中。但在稀疏矩阵上是行不通的。</li>
+<li>with_std : boolean, True by default，若为 True，则将数据放缩到单位方差或等效于单位标准差</li>
+</ul>
+<h2 id="处理空数据"><a href="#处理空数据" class="headerlink" title="处理空数据"></a>处理空数据</h2><h3 id="Imputer-处理丢失值"><a href="#Imputer-处理丢失值" class="headerlink" title="Imputer() 处理丢失值"></a>Imputer() 处理丢失值</h3><p>各属性必须是数值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.preprocessing import Imputer</span><br><span class="line"># 指定用何值替换丢失的值，此处为中位数</span><br><span class="line">imputer &#x3D; Imputer(strategy&#x3D;&quot;median&quot;)</span><br><span class="line"></span><br><span class="line"># 使实例适应数据</span><br><span class="line">imputer.fit(housing_num)</span><br><span class="line"></span><br><span class="line"># 结果在statistics_ 变量中</span><br><span class="line">imputer.statistics_</span><br><span class="line"></span><br><span class="line"># 替换</span><br><span class="line">X &#x3D; imputer.transform(housing_num)</span><br><span class="line">housing_tr &#x3D; pd.DataFrame(X, columns&#x3D;housing_num.columns,</span><br><span class="line">                          index &#x3D; list(housing.index.values))</span><br><span class="line"></span><br><span class="line"># 预览</span><br><span class="line">housing_tr.loc[sample_incomplete_rows.index.values]</span><br></pre></td></tr></table></figure>
+
+<h2 id="处理文本数据"><a href="#处理文本数据" class="headerlink" title="处理文本数据"></a>处理文本数据</h2><h3 id="pandas-factorize-将输入值编码为枚举类型或分类变量"><a href="#pandas-factorize-将输入值编码为枚举类型或分类变量" class="headerlink" title="pandas.factorize() 将输入值编码为枚举类型或分类变量"></a>pandas.factorize() 将输入值编码为枚举类型或分类变量</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">housing_cat &#x3D; housing[&#39;ocean_proximity&#39;]</span><br><span class="line">housing_cat.head(10)</span><br><span class="line"># 输出</span><br><span class="line"># 17606     &lt;1H OCEAN</span><br><span class="line"># 18632     &lt;1H OCEAN</span><br><span class="line"># 14650    NEAR OCEAN</span><br><span class="line"># 3230         INLAND</span><br><span class="line"># 3555      &lt;1H OCEAN</span><br><span class="line"># 19480        INLAND</span><br><span class="line"># 8879      &lt;1H OCEAN</span><br><span class="line"># 13685        INLAND</span><br><span class="line"># 4937      &lt;1H OCEAN</span><br><span class="line"># 4861      &lt;1H OCEAN</span><br><span class="line"># Name: ocean_proximity, dtype: object</span><br><span class="line"></span><br><span class="line">housing_cat_encoded, housing_categories &#x3D; housing_cat.factorize()</span><br><span class="line">housing_cat_encoded[:10]</span><br><span class="line"># 输出</span><br><span class="line"># array([0, 0, 1, 2, 0, 2, 0, 2, 0, 0], dtype&#x3D;int64)</span><br></pre></td></tr></table></figure>
+
+<h5 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h5><ul>
+<li>values : ndarray (1-d)；序列</li>
+<li>sort : boolean, default False；根据值排序</li>
+<li>na_sentinel : int, default -1；给未找到赋的值</li>
+<li>size_hint : hint to the hashtable sizer</li>
+</ul>
+<h5 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h5><ul>
+<li>labels : the indexer to the original array</li>
+<li>uniques : ndarray (1-d) or Index；当传递的值是 Index 或 Series 时，返回独特的索引。</li>
+</ul>
+<h3 id="OneHotEncoder-编码整数特征为-one-hot-向量"><a href="#OneHotEncoder-编码整数特征为-one-hot-向量" class="headerlink" title="OneHotEncoder 编码整数特征为 one-hot 向量"></a>OneHotEncoder 编码整数特征为 one-hot 向量</h3><p>返回值为稀疏矩阵</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.preprocessing import OneHotEncoder</span><br><span class="line"></span><br><span class="line">encoder &#x3D; OneHotEncoder()</span><br><span class="line">housing_cat_1hot &#x3D; encoder.fit_transform(housing_cat_encoded.reshape(-1,1))</span><br><span class="line">housing_cat_1hot</span><br></pre></td></tr></table></figure>
+
+<p>注意<code>fit_transform()</code>期望一个二维数组，所以这里将数据 reshape 了。</p>
+<h4 id="处理文本特征示例"><a href="#处理文本特征示例" class="headerlink" title="处理文本特征示例"></a>处理文本特征示例</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">housing_cat &#x3D; housing[&#39;ocean_proximity&#39;]</span><br><span class="line">housing_cat.head(10)</span><br><span class="line"># 17606     &lt;1H OCEAN</span><br><span class="line"># 18632     &lt;1H OCEAN</span><br><span class="line"># 14650    NEAR OCEAN</span><br><span class="line"># 3230         INLAND</span><br><span class="line"># 3555      &lt;1H OCEAN</span><br><span class="line"># 19480        INLAND</span><br><span class="line"># 8879      &lt;1H OCEAN</span><br><span class="line"># 13685        INLAND</span><br><span class="line"># 4937      &lt;1H OCEAN</span><br><span class="line"># 4861      &lt;1H OCEAN</span><br><span class="line"># Name: ocean_proximity, dtype: object</span><br><span class="line"></span><br><span class="line">housing_cat_encoded, housing_categories &#x3D; housing_cat.factorize()</span><br><span class="line">housing_cat_encoded[:10]</span><br><span class="line"># array([0, 0, 1, 2, 0, 2, 0, 2, 0, 0], dtype&#x3D;int64)</span><br><span class="line"></span><br><span class="line">housing_categories</span><br><span class="line"># Index([&#39;&lt;1H OCEAN&#39;, &#39;NEAR OCEAN&#39;, &#39;INLAND&#39;, &#39;NEAR BAY&#39;, &#39;ISLAND&#39;], dtype&#x3D;&#39;object&#39;)</span><br><span class="line"></span><br><span class="line">from sklearn.preprocessing import OneHotEncoder</span><br><span class="line"></span><br><span class="line">encoder &#x3D; OneHotEncoder()</span><br><span class="line">print(housing_cat_encoded.reshape(-1,1))</span><br><span class="line">housing_cat_1hot &#x3D; encoder.fit_transform(housing_cat_encoded.reshape(-1,1))</span><br><span class="line">housing_cat_1hot</span><br><span class="line"># [[0]</span><br><span class="line">#  [0]</span><br><span class="line">#  [1]</span><br><span class="line">#  ...,</span><br><span class="line">#  [2]</span><br><span class="line">#  [0]</span><br><span class="line">#  [3]]</span><br><span class="line"># &lt;16512x5 sparse matrix of type &#39;&lt;class &#39;numpy.float64&#39;&gt;&#39;</span><br><span class="line"># 	with 16512 stored elements in Compressed Sparse Row format&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LabelEncoder-标签编码"><a href="#LabelEncoder-标签编码" class="headerlink" title="LabelEncoder   标签编码"></a>LabelEncoder   标签编码</h3><p>LabelEncoder`是一个可以用来将标签规范化的工具类，它可以将标签的编码值范围限定在[0,n_classes-1]。简单来说就是对不连续的数字或者文本进行编号。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; from sklearn import preprocessing</span><br><span class="line">&gt;&gt;&gt; le &#x3D; preprocessing.LabelEncoder()</span><br><span class="line">&gt;&gt;&gt; le.fit([1, 2, 2, 6])</span><br><span class="line">LabelEncoder()</span><br><span class="line">&gt;&gt;&gt; le.classes_</span><br><span class="line">array([1, 2, 6])</span><br><span class="line">&gt;&gt;&gt; le.transform([1, 1, 2, 6])</span><br><span class="line">array([0, 0, 1, 2])</span><br><span class="line">&gt;&gt;&gt; le.inverse_transform([0, 0, 1, 2])</span><br><span class="line">array([1, 1, 2, 6])</span><br></pre></td></tr></table></figure>
+
+<p>当然，它也可以用于非数值型标签的编码转换成数值标签（只要它们是可哈希并且可比较的）:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; le &#x3D; preprocessing.LabelEncoder()</span><br><span class="line">&gt;&gt;&gt; le.fit([&quot;paris&quot;, &quot;paris&quot;, &quot;tokyo&quot;, &quot;amsterdam&quot;])</span><br><span class="line">LabelEncoder()</span><br><span class="line">&gt;&gt;&gt; list(le.classes_)</span><br><span class="line">[&#39;amsterdam&#39;, &#39;paris&#39;, &#39;tokyo&#39;]</span><br><span class="line">&gt;&gt;&gt; le.transform([&quot;tokyo&quot;, &quot;tokyo&quot;, &quot;paris&quot;])</span><br><span class="line">array([2, 2, 1])</span><br><span class="line">&gt;&gt;&gt; list(le.inverse_transform([2, 2, 1]))</span><br><span class="line">[&#39;tokyo&#39;, &#39;tokyo&#39;, &#39;paris&#39;]</span><br></pre></td></tr></table></figure>
+
+<h3 id="LabelBinarizer-标签二值化"><a href="#LabelBinarizer-标签二值化" class="headerlink" title="LabelBinarizer   标签二值化"></a>LabelBinarizer   标签二值化</h3><p>LabelBinarizer 是一个用来从多类别列表创建标签矩阵的工具类:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; from sklearn import preprocessing</span><br><span class="line">&gt;&gt;&gt; lb &#x3D; preprocessing.LabelBinarizer()</span><br><span class="line">&gt;&gt;&gt; lb.fit([1, 2, 6, 4, 2])</span><br><span class="line">LabelBinarizer(neg_label&#x3D;0, pos_label&#x3D;1, sparse_output&#x3D;False)</span><br><span class="line">&gt;&gt;&gt; lb.classes_</span><br><span class="line">array([1, 2, 4, 6])</span><br><span class="line">&gt;&gt;&gt; lb.transform([1, 6])</span><br><span class="line">array([[1, 0, 0, 0],</span><br><span class="line">       [0, 0, 0, 1]])</span><br></pre></td></tr></table></figure>
+
+<p>对于多类别是实例，可以使用:class:MultiLabelBinarizer:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; lb &#x3D; preprocessing.MultiLabelBinarizer()</span><br><span class="line">&gt;&gt;&gt; lb.fit_transform([(1, 2), (3,)])</span><br><span class="line">array([[1, 1, 0],</span><br><span class="line">       [0, 0, 1]])</span><br><span class="line">&gt;&gt;&gt; lb.classes_</span><br><span class="line">array([1, 2, 3])</span><br></pre></td></tr></table></figure>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98%E4%B9%8B%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/kaggle/">
+              #kaggle
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/sklearn/">
+              #sklearn
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9CII.html" target="_self">数据预处理常用操作II</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/SKlearn%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E6%96%B9%E6%B3%95.html" target="_self">SKlearn模型评估方法</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

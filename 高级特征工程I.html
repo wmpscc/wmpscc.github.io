@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>高级特征工程I | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="数据科学,总结,kaggle,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>高级特征工程I</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-01-22
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6/">
+            数据科学
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="高级特征工程I.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <h1 id="Mean-encodings"><a href="#Mean-encodings" class="headerlink" title="Mean encodings"></a>Mean encodings</h1><p>以下是 Coursera 上的<a href="https://www.coursera.org/learn/competitive-data-science/home/week/3" target="_blank" rel="external nofollow noopener noreferrer">How to Win a Data Science Competition: Learn from Top Kagglers</a>课程笔记。</p>
+<h3 id="学习目标"><a href="#学习目标" class="headerlink" title="学习目标"></a>学习目标</h3><ul>
+<li>Regularize mean encodings</li>
+<li>Extend mean encodings</li>
+<li>Summarize the concept of mean encodings</li>
+</ul>
+<h2 id="Concept-of-mean-encoding"><a href="#Concept-of-mean-encoding" class="headerlink" title="Concept of mean encoding"></a>Concept of mean encoding</h2><p>均值编码是一种非常强大的技术，它有很多名字，例如:likelihood encoding、target encoding，但这里我们叫它均值编码。我们举一个二分类任务的例子。</p>
+<table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center">feature</th>
+<th align="center">feature_label</th>
+<th align="center">feature_mean</th>
+<th align="center">target</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">0</td>
+<td align="center">Moscow</td>
+<td align="center">1</td>
+<td align="center">0.4</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">Moscow</td>
+<td align="center">1</td>
+<td align="center">0.4</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">Moscow</td>
+<td align="center">1</td>
+<td align="center">0.4</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">Moscow</td>
+<td align="center">1</td>
+<td align="center">0.4</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">Moscow</td>
+<td align="center">1</td>
+<td align="center">0.4</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td align="center">Tver</td>
+<td align="center">2</td>
+<td align="center">0.8</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td align="center">Tver</td>
+<td align="center">2</td>
+<td align="center">0.8</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">7</td>
+<td align="center">Tver</td>
+<td align="center">2</td>
+<td align="center">0.8</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">8</td>
+<td align="center">Tver</td>
+<td align="center">2</td>
+<td align="center">0.8</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">9</td>
+<td align="center">Klin</td>
+<td align="center">0</td>
+<td align="center">0.0</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">10</td>
+<td align="center">klin</td>
+<td align="center">0</td>
+<td align="center">0.0</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">11</td>
+<td align="center">Tver</td>
+<td align="center">2</td>
+<td align="center">1</td>
+<td align="center">1</td>
+</tr>
+</tbody></table>
+<p>我们想对<code>feature</code>变量进行编码，最直接、常用的方式就是<code>label encoding</code>，这就是第二列数据。</p>
+<p>平均编码以不同的方式去完成这个任务，它用每个城市自身对应的目标均值来进行编码。例如，对于<code>Moscow</code>，我们有五行，三个 0 和两个 1。 所以我们用 2 除以 5 或 0.4 对它进行编码。用同样的方法处理其他城市。</p>
+<p>现在了解一下细节。当我们的数据集非常大，包含数百个不同的城市，让我们试着比较一下。我们绘制了 0,1 class 的直方图。<br><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579696190562-12ff1969-f7da-40f7-8964-9d3405758f76.jpeg#align=left&display=inline&height=274&originHeight=274&originWidth=375&size=0&status=done&style=none&width=375" alt=""></p>
+<p>在<code>label encoding</code>的情况下，我们得到的图看起来没有任何逻辑顺序。<br><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579696190568-c067487d-7446-452a-b821-ba7e57321f5b.jpeg#align=left&display=inline&height=274&originHeight=274&originWidth=380&size=0&status=done&style=none&width=380" alt=""></p>
+<p>但是当我们使用<code>mean encoding</code>对目标进行编码时，类看起来更加可分了，像是被排序过。</p>
+<p>一般来说，模型对复杂、非线性的特征目标越依赖，<code>均值编码</code>越有效。例如树模型的深度有限，可以用平均编码来补偿它，可以用它的短板来获得更好的分数。</p>
+<p>以上只是一个例子，传递的是一种思想，实际上可以做很多类似的操作。</p>
+<h4 id="Ways-to-use-target-variable"><a href="#Ways-to-use-target-variable" class="headerlink" title="Ways to use target variable"></a>Ways to use target variable</h4><blockquote>
+<p>Goods-number of ones in a group,</p>
+<p>Bads-number of zeros</p>
+</blockquote>
+<ul>
+<li>$Likelihood = \frac {Goods}{Goods+Bads} = mean(target)$</li>
+<li>$Weight of Evidence = \ln(\frac{Goods}{Bads}) * 100$</li>
+<li>$Count = Goods = sum(target)$</li>
+<li>$Diff = Goods - Bads$
+
+</li>
+</ul>
+<p>构造<code>Mean encoding</code>的例子</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">means= X_tr.groupby(col).target.mean()</span><br><span class="line">train_new[col+<span class="string">'_mean_target'</span>] = train_new[col].map(means)</span><br><span class="line">val_new[col+<span class="string">'_mean_target'</span>] = val_new[col].map(means)</span><br></pre></td></tr></table></figure>
+
+<p>将它运用到模型中，出现了严重的过拟合，但是为什么呢？</p>
+<ul>
+<li><p>Train</p>
+<table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center">feature</th>
+<th align="center">feature_label</th>
+<th align="center">feature_mean</th>
+<th align="center">target</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">8</td>
+<td align="center">Tver</td>
+<td align="center">2</td>
+<td align="center">0.8</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">9</td>
+<td align="center">Klin</td>
+<td align="center">0</td>
+<td align="center">0.0</td>
+<td align="center">0</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>Validation</p>
+<table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center">feature</th>
+<th align="center">feature_label</th>
+<th align="center">feature_mean</th>
+<th align="center">target</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">10</td>
+<td align="center">klin</td>
+<td align="center">0</td>
+<td align="center">0.0</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">11</td>
+<td align="center">Tver</td>
+<td align="center">2</td>
+<td align="center">1</td>
+<td align="center">1</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<blockquote>
+<p>When they are categorized, it’s pretty common to get results like in an example, target 0 in train and target 1 in validation. Mean encodings turns into a perfect feature for such categories. That’s why we immediately get very good scores on train and fail hardly on validation.</p>
+</blockquote>
+<h2 id="Regularization"><a href="#Regularization" class="headerlink" title="Regularization"></a>Regularization</h2><p>在上一节，我们意识到平均编码不能按原样使用，需要对训练数据进行某种正规化。现在我们将实施四种不同的正则化方法。</p>
+<ul>
+<li>1.CV loop inside training data;</li>
+<li>2.Smoothing;</li>
+<li>3.Adding random noise;</li>
+<li>4.Sorting and calculating expanding mean.</li>
+</ul>
+<h3 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h3><ul>
+<li>There are a lot ways to regularize mean encodings</li>
+<li>Unending battle with target variable leakage</li>
+<li><strong>CV loop</strong> or <strong>Expanding mean</strong> for partical tasks.</li>
+</ul>
+<h3 id="1-KFold-scheme"><a href="#1-KFold-scheme" class="headerlink" title="1.KFold scheme"></a>1.KFold scheme</h3><p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696190589-cb5ab8a5-ceb5-4b5b-b60c-de0d15f041f7.png#align=left&display=inline&height=717&originHeight=717&originWidth=1240&size=0&status=done&style=none&width=1240" alt=""></p>
+<p>通常做四到五折的交叉验证就能得到不错的结果，无序调整此数字。</p>
+<p>代码例子<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696190606-9c1aaa90-a331-492e-9cc0-0aa54fa09f69.png#align=left&display=inline&height=458&originHeight=458&originWidth=1148&size=0&status=done&style=none&width=1148" alt=""></p>
+<p>这个方法看起来已经完全避免了目标变量的泄露，但事实并非如此。</p>
+<p>这里我们通过<code>留一法</code>对<code>Moscow</code>进行编码</p>
+<table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center">feature</th>
+<th align="center">feature_mean</th>
+<th align="center">target</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">0</td>
+<td align="center">Moscow</td>
+<td align="center">0.50</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">Moscow</td>
+<td align="center">0.25</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">Moscow</td>
+<td align="center">0.25</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">Moscow</td>
+<td align="center">0.50</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">Moscow</td>
+<td align="center">0.50</td>
+<td align="center">0</td>
+</tr>
+</tbody></table>
+<p>对于第一行，我们得到 0.5，因为有两个 1 和 其余行中有两个 0。 同样，对于第二行，我们得到 0.25，依此类推。 但仔细观察，所有结果和由此产生的特征。 它完美地分割数据，具有等于或等的特征的行 大于 0.5 的目标为 0，其余行的目标为 1。 我们没有明确使用目标变量，但我们的编码是有偏置的。</p>
+<p>目标变量的泄露效果对于<code>KFold scheme</code>仍然是有效的，只是效果温和了点。</p>
+<p>在实践中，如果您有足够的数据并使用四或五折，编码将通过这种正规化策略正常工作。 只是要小心并使用正确的验证。</p>
+<h3 id="2-Smoothing"><a href="#2-Smoothing" class="headerlink" title="2.Smoothing"></a>2.Smoothing</h3><ul>
+<li>Alpha controls the amount of regularization</li>
+<li>Only works together with some other regularization method</li>
+</ul>
+$$\frac{mean(target)_nrows + globalmean_alpha}{nrows+alpha}$$
+<p>它具有控制正则化量的超参数 alpha。 当 alpha 为零时，我们没有正则化，并且当 alpha 接近无穷大时，一切都变成了 globalmean。</p>
+<p>在某种意义上，alpha 等于我们可以信任的类别大小。也可以使用其他一些公式，基本上任何惩罚编码类别的东西都可以被认为是<code>smoothing</code>。</p>
+<h3 id="3-Nosie"><a href="#3-Nosie" class="headerlink" title="3.Nosie"></a>3.Nosie</h3><ul>
+<li>Noise degrades the quality of encoding</li>
+</ul>
+<p>通过添加噪声，会降低训练数据的编码质量。这种方法很不稳定，很难使它工作。主要问题在于我们需要添加的噪声量。</p>
+<ul>
+<li>How much noise should we add?</li>
+</ul>
+<p>太多的噪声会把这个特征变成垃圾，虽然噪声太小意味着更正规化。你需要努力地微调它。</p>
+<ul>
+<li>Usually used together with LOO(Leave one out).</li>
+</ul>
+<p>这种方法通常与 LOO 正则化一起使用。如果你没有很多时间，它可能不是最好选择。</p>
+<h3 id="4-Expanding-mean"><a href="#4-Expanding-mean" class="headerlink" title="4.Expanding mean"></a>4.Expanding mean</h3><ul>
+<li>Least amount of leakage</li>
+<li>No hyper parameters</li>
+<li>Irregular encoding quality</li>
+<li>Built-in in CatBoost.</li>
+</ul>
+<p>代码例子</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cumsum = df_tr.groupby(col)[<span class="string">'target'</span>].cumsum() - df_tr[<span class="string">'target'</span>]</span><br><span class="line">cumcnt = df_tr.groupby(col).cumcount()</span><br><span class="line">train_new[col + <span class="string">'_mean_target'</span>] = cusum/cumcnt</span><br></pre></td></tr></table></figure>
+
+<p>cumsum 存储目标变量的累计和，直到给定行，cumcnt 存储累积计数。该方法引入的目标变量的泄漏量最少，唯一的缺点是特征质量不均匀。但这不是什么大不了的事，我们可以从不同的数据排列计算编码的平均模型。</p>
+<p>它被用于 CatBoost 库中，证明了它在分类数据集上表现非常出色。</p>
+<h2 id="Extensions-and-generalizations"><a href="#Extensions-and-generalizations" class="headerlink" title="Extensions and generalizations"></a>Extensions and generalizations</h2><ul>
+<li>如何在回归和多分类任务中进行<code>Mean encoding</code></li>
+<li>如何将编码应用于具有多对多关系的领域</li>
+<li>我们可以根据时间序列中的目标构建哪些功能</li>
+<li>编码交互和数字特征</li>
+</ul>
+<h3 id="Many-to-many-relations"><a href="#Many-to-many-relations" class="headerlink" title="Many-to-many relations"></a>Many-to-many relations</h3><ul>
+<li>原始数据<table>
+<thead>
+<tr>
+<th align="center">User_id</th>
+<th align="center">APPS</th>
+<th align="center">Target</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">10</td>
+<td align="center">APP1;APP2;APP3</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">11</td>
+<td align="center">APP4;APP1</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">12</td>
+<td align="center">APP2</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">100</td>
+<td align="center">APP3;APP9</td>
+<td align="center">0</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<p>现在考虑一个例子，基于用在智能手机上已装的 APP，预测它是否会安装，这是一个二分类任务。从表中数据可知，每个用户可能有多个应用程序，每个应用程序由多个用户使用，因此这是多对多的关系。而麻烦在于，如何从多对多的关系中提取均值。</p>
+<ul>
+<li>长数据表示<table>
+<thead>
+<tr>
+<th align="center">User_id</th>
+<th align="center">APP_id</th>
+<th align="center">Target</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">10</td>
+<td align="center">APP1</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">10</td>
+<td align="center">APP2</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">10</td>
+<td align="center">APP3</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">11</td>
+<td align="center">APP4</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">11</td>
+<td align="center">APP1</td>
+<td align="center">1</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<p>把原始数据转为长数据表示，如上表。使用此表，我们可以自然地计算 APP 的<code>均值编码</code>。但是如何将其映射回用户呢？</p>
+<p>每个用户都有许多 APP，但不都是“APP1,APP2,APP3”。因此我们用向量表示(0.1,0.2,0.1)，我们还可以从向量中收集各种统计数据，比如均值、标准差、最大最小值等等。</p>
+<h3 id="Time-series"><a href="#Time-series" class="headerlink" title="Time series"></a>Time series</h3><ul>
+<li>Time structure allows us to make a lot of complicated features.</li>
+<li>Rolling statistics of target variable.</li>
+</ul>
+<p>一方面，这是一种限制，另一方面，它允许我们只做一些复杂的特征。考虑一个例子：</p>
+<table>
+<thead>
+<tr>
+<th align="center">Day</th>
+<th align="center">User</th>
+<th align="center">Spend</th>
+<th align="center">Amount</th>
+<th align="center">Prev_user</th>
+<th align="center">Prev_spend_avg</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">101</td>
+<td align="center">FOOD</td>
+<td align="center">2.0</td>
+<td align="center">0.0</td>
+<td align="center">0.0</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">101</td>
+<td align="center">GAS</td>
+<td align="center">4.0</td>
+<td align="center">0.0</td>
+<td align="center">0.0</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">102</td>
+<td align="center">FOOD</td>
+<td align="center">3.0</td>
+<td align="center">0.0</td>
+<td align="center">0.0</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">101</td>
+<td align="center">GAS</td>
+<td align="center">4.0</td>
+<td align="center">6.0</td>
+<td align="center">4.0</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">101</td>
+<td align="center">TV</td>
+<td align="center">8.0</td>
+<td align="center">6.0</td>
+<td align="center">0.0</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">102</td>
+<td align="center">FOOD</td>
+<td align="center">2.0</td>
+<td align="center">3.0</td>
+<td align="center">2.5</td>
+</tr>
+</tbody></table>
+<p>我们需要预测用户会为哪个类别花钱。 我们有两天的时间，两个用户， 和三个支出类别。 一些好的特征是用户在前一天消费总额，所有用户在给定类别中花费的平均金额。 因此，在第 1 天，用户 101 花费 6 美元，用户 102 花费$3。 因此，我们认为这些数字是第 2 天的未来值。 同样，可以按类别划分平均金额。</p>
+<p>我们拥有的数据越多，可以创造的特征就越复杂。</p>
+<h3 id="Interactions-and-numerical-features"><a href="#Interactions-and-numerical-features" class="headerlink" title="Interactions and numerical features"></a>Interactions and numerical features</h3><ul>
+<li>Analyzing fitted model</li>
+<li>Binning numeric and selecting interactions</li>
+</ul>
+<p>在实践中，通常需要编码数字特征以及进行特征组合。要对数字特征进行编码，我们只需要对其进行分区，然后将其视为分类。我们以没有进行任何编码的原始特征和决策树模型为例。</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696190620-b3fe9d5b-f760-464c-958a-7f53bdf9dbfb.png#align=left&display=inline&height=400&originHeight=400&originWidth=799&size=0&status=done&style=none&width=799" alt=""></p>
+<ul>
+<li>如何为数字特征分组？</li>
+</ul>
+<p>如果数字特征有很多分裂点，则表示它于目标有一些复杂的依赖，并且试图去编码它。此外这些精确的分裂点可用于对特征进行分类，所以通过分析模型结构，我们既可以识别这些可疑的数字特征，又可以找到很好的方法去给它分组。</p>
+<ul>
+<li>如何挑选特征组合？</li>
+</ul>
+<p>先看决策树中如何提取交互特征。参照上图，如果两个特征在相邻的节点中，则这两个特征在相互作用。考虑到这点，我们可以遍历模型中的所有树，计算每个特征组合出现的次数。最常见的组合可能值得进行均值编码。</p>
+<p>例如，如果我们发现<code>feature1</code>和<code>feature2</code>这一对特征最常见，我们可以在数据中连接这些特征，这意味编码产生交互。</p>
+<h3 id="Correct-validation-reminder"><a href="#Correct-validation-reminder" class="headerlink" title="Correct validation reminder"></a>Correct validation reminder</h3><ul>
+<li>Local experiments:</li>
+<li>Estimate encodings on X_tr</li>
+<li>Map them to X_tr and X_val</li>
+<li>Regularize on X_tr</li>
+<li>Validate model on X_tr/X_val split</li>
+<li>Submission:</li>
+<li>Estimate encodings on whole Train data</li>
+<li>Map them on Train and Test</li>
+<li>Regularize on Train</li>
+<li>Fit on Train</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696190591-e2019256-0bbd-4771-870a-8e63c0c81391.png#align=left&display=inline&height=141&originHeight=141&originWidth=369&size=0&status=done&style=none&width=369" alt=""></p>
+<h2 id="End"><a href="#End" class="headerlink" title="End"></a>End</h2><ul>
+<li><strong>Main advantages:</strong></li>
+<li>Compact transformation of categorical variables</li>
+<li>Powerful basis for feature engineering</li>
+<li><strong>Disadvantages:</strong></li>
+<li>Need careful validation, there a lot of ways to overfit</li>
+<li>Significant improvements only on specific datasets</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579696190619-e6e8a8f4-4be5-4029-8ba4-d3dabd4e4e76.jpeg#align=left&display=inline&height=640&originHeight=640&originWidth=1080&size=0&status=done&style=none&width=1080" alt=""></p>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/%E9%AB%98%E7%BA%A7%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8BI.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/%E6%80%BB%E7%BB%93/">
+              #总结
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/kaggle/">
+              #kaggle
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/%E9%A1%B6%E7%BA%A7Kagglers%E7%9A%84%E5%BF%83%E5%BE%97%E5%92%8C%E6%8A%80%E5%B7%A7.html" target="_self">顶级Kagglers的心得和技巧</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/%E9%AB%98%E7%BA%A7%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8BII.html" target="_self">高级特征工程II</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

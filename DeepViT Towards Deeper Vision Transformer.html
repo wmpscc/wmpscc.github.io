@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>DeepViT Towards Deeper Vision Transformer | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="深度学习,transformer,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>DeepViT Towards Deeper Vision Transformer</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2021-06-25
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">
+            深度学习
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="DeepViT Towards Deeper Vision Transformer.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <h3 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h3><p>最近，视觉变换器（ViTs）被成功应用于图像分类任务。在本文中，我们表明，与卷积神经网络（CNN）可以通过堆叠更多的卷积层而得到改善不同，ViTs 的性能在扩展到更深的时候会迅速饱和。更具体地说，我们从经验上观察到，这种扩展的困难是由注意力塌陷问题引起的：随着变换器的深入，注意力图逐渐变得相似，甚至在某些层之后变得基本相同。换句话说，在深度 ViT 模型的顶层，特征图往往是相同的。这一事实表明，在 ViT 的较深层，自我注意机制不能学习有效的概念来进行表征学习，阻碍了模型获得预期的性能增益。基于上述观察，我们提出了一种简单而有效的方法，即 Re-attention，来重新生成注意力图，以增加不同层的多样性，其计算和内存成本可以忽略不计。所提出的方法使训练更深的 ViT 模型成为可能，并通过对现有的 ViT 模型进行微小的修改，使其性能不断提高。值得注意的是，当用 32 个 transformer block 训练一个深度 ViT 模型时，在 ImageNet 上的 Top-1 分类精度可以提高 1.6%。代码可在<a href="https://github.com/zhoudaquan/dvit_repo" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/zhoudaquan/dvit_repo</a> 公开。</p>
+<h1 id="1-引言"><a href="#1-引言" class="headerlink" title="1. 引言"></a>1. 引言</h1><p>最近的研究[7, 37]表明，transformer[38]可以成功地应用于视觉任务[18]，与卷积神经网络（CNN）[9, 35]相比，性能具有竞争力。 视觉网络（CNN）[9, 35]。与通过堆叠多个卷积（如 3×3）来聚集全局信息的 CNN 不同[9, 10]，视觉变换器（ViTs）[7]利用自我注意（SA）机制的优势[38]来捕捉空间模式和非局部依赖。这使得 ViTs 能够聚集丰富的全局信息，而无需像 CNN 那样手工制作逐层的局部特征提取。CNNs，从而实现了更好的性能。例如，如[37]所示，在 ImageNet 分类中，具有 22M 可学习参数的 12 块 ViT 模型比具有 30 多个瓶颈卷积块的 ResNet-101 模型取得更好的结果。<br>深度 CNN 模型的最新进展主要是通过训练具有大量层的深度模型来推动的，这是由新颖的模型架构设计所促成的[9, 41, 31, 20, 47]。这是因为更深的 CNN 可以为输入图像学习更丰富、更复杂的表征，并在视觉任务上提供更好的性能[1, 45, 29].因此，如何有效地扩展 CNN 的深度是最近深度学习领域的一个重要主题，这刺激了像残差学习[9]的技术。<br>考虑到浅层 ViTs 的显著性能，一个自然的问题出现了：我们能不能像 CNN 一样，通过使 ViTs 变得更深来进一步提高性能？虽然乍一看似乎很简单，但答案可能并不简单，因为 ViT 与 CNN 的本质区别在于它对自我注意机制的严重依赖。为了解决这个问题，我们在这项工作中详细调查了 ViTs 沿着深度的可扩展性。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624603270496-820c6a01-9e0c-4d40-89fc-cd53a18e21f1.png#clientId=u4b9b8bf4-2dc5-4&from=paste&height=529&id=u31ec63eb&margin=%5Bobject%20Object%5D&name=image.png&originHeight=529&originWidth=495&originalType=binary%E2%88%B6=1&size=104957&status=done&style=none&taskId=u7e238412-1b14-4046-be97-0475dea4a1c&width=495" alt="image.png"><br>我们首先在 ImageNet 上进行了试验性研究，以调查 ViT 的性能如何随着模型深度的增加而变化。在图 1 中，我们展示了 ViTs[7]在不同块数（绿线）下的表现。不同的块数（绿线），范围从 12 到 32。如图所示，随着变压器块数的增加，模型的性能并没有相应提高。令我们惊讶的是，有 32 个变压器块的 ViT 模型的性能甚至比有 24 个变压器块的模型还要差。这意味着像 CNN[9]那样直接堆叠更多的变换器块在增强 ViT 模型方面是低效的。然后，我们深入研究这一现象的原因。我们根据经验观察到，随着 ViTs 深度的增加，用于聚合每个 transformer block 特征的注意力图在某些层之后往往会过于相似，这使得表征在某些层之后停止发展。我们把这个具体问题命名为注意力崩溃。这表明，随着 ViT 的深入，自我注意机制对于产生不同的注意来捕捉丰富的表征变得不那么有效。<br>为了解决注意力崩溃的问题，并有效地扩大视觉转换器的深度，我们提出了一个简单而有效的自我注意力机制，命名为 Re-attention。我们的 Re-attention 利用了多头自我注意（MHSA）结构的优势，通过以可学习的方式交换不同注意头的信息来重新生成注意图。实验表明，在没有任何额外的增强和正则化策略的情况下，只需用 Re-attention 替换 ViTs 中的 MHSA 模块，我们就可以用甚至 32 个转化器块来训练非常深的视觉转化器，并取得一致的改进，如图 1 所示。此外，我们还提供了消减分析，以帮助更好地理解 Re-attention 在扩展视觉变换器方面的作用。<br>总的来上，我们的贡献如下：</p>
+<ul>
+<li>我们深度研究了视觉 Transformer 的行为，观察他们不能像 CNNs 那样从持续堆叠更多层中受益。我们进一步确定了这种违反直觉的现象背后的根本原因，并首次将其总结为注意力崩溃。</li>
+<li>我们提出了 Re-attention，一种简单而有效的注意力机制，它考虑到了不同注意力头之间的信息交流。</li>
+<li>据我们所知，我们是第一个成功地在 ImageNet-1k 上从头开始训练 32 块 ViT，并且性能持续提高。我们表明，通过用我们的 Re-attention 替换自我注意模块，在 ImageNet-1k 数据集上可以取得最先进的结果，而不需要在更大的数据集上进行任何预训练。</li>
+</ul>
+<p>​</p>
+<h1 id="3-重温视觉-Transformer"><a href="#3-重温视觉-Transformer" class="headerlink" title="3. 重温视觉 Transformer"></a>3. 重温视觉 Transformer</h1><p><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624607603943-97cdd28d-c943-4af8-bab0-90409a43efe2.png#clientId=u4b9b8bf4-2dc5-4&from=paste&height=604&id=u2150f4b6&margin=%5Bobject%20Object%5D&name=image.png&originHeight=604&originWidth=482&originalType=binary%E2%88%B6=1&size=116637&status=done&style=none&taskId=u6e976f59-4e28-47ce-871c-c08742d4802&width=482" alt="image.png"><br>一个视觉变换器 (ViT) 模型 [37, 7]，如图 2(a) 所示，由三个主要部分组成：用于补丁嵌入的线性层（即，将高分辨率输入图像映射到低分辨率特征图），一堆具有多头自注意和前馈层的 transformer block，用于特征编码，以及一个用于分类分数预测的线性层。在这一节中，我们首先回顾了它独特的 transformer block，特别是自注意力机制，然后我们提供了关于自注意力崩溃问题的研究。</p>
+<h2 id="3-1-多头自注意力"><a href="#3-1-多头自注意力" class="headerlink" title="3.1 多头自注意力"></a>3.1 多头自注意力</h2><p>Transformers[38]在自然语言中被广泛使用，用于将输入词标记的序列编码为嵌入序列。在处理图像时，为了符合这种序列到序列的学习结构，ViTs 首先将输入图像均匀地分成多个块，并将每个块编码为一个标记嵌入。然后，所有这些标记，连同一个类标记，被送入 Transformers 块的堆栈。<br>每个转换块由一个多头自注意（MHSA）层和一个前馈多层感知器（MLP）组成。MHSA 通过对输入进行线性转换，将 query(Q)和一对 key(K)-value(V)生成一个可训练的关联存储器，并将其输出。在数学上，MHSA 的输出是通过以下方式计算的。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624609101756-7572eacf-c014-4945-865d-ccaaebd06e88.png#clientId=u4b9b8bf4-2dc5-4&from=paste&height=41&id=ubc45a3d5&margin=%5Bobject%20Object%5D&name=image.png&originHeight=41&originWidth=440&originalType=binary%E2%88%B6=1&size=8170&status=done&style=none&taskId=u693717da-4b8e-4c4e-b239-7133bbca989&width=440" alt="image.png"><br>其中 √d 是一个基于网络深度的缩放系数。然后，MHSA 的输出被归一化，并被送入 MLP 以生成下一个区块的输入。在上述自注意中，Q 和 K 相乘生成注意图，它代表了每层内所有 tokrn 之间的关联性。它被用来检索和组合值 V 中的嵌入。在下文中，我们特别分析注意力图在扩展 ViT 的作用。为了方便起见，我们用$\mathbf{A} \in \mathbb{R}^{H \times T \times T}$来表示注意力图，其中 H 是 SA 头的数量，T 是 token 的数量。对于第 h 个 SA 头，注意力图被计算为$\mathbf{A}_{h,:,:}=\operatorname{Softmax}\left(Q_{h} K_{h}^{\top} / \sqrt{d}\right)$，其中$Q_h$和$K_h$来自于对应的头。在上下文清楚的情况下，我们省略了 下标 h。</p>
+<h2 id="3-2-注意力崩溃"><a href="#3-2-注意力崩溃" class="headerlink" title="3.2 注意力崩溃"></a>3.2 注意力崩溃</h2><p>受深度 CNN 的成功启发[9, 30, 35, 36]，我们对 ViTs 的性能随着深度的增加而变化进行了系统研究。在不丧失一般性的前提下，我们首先按照[37]中的常见做法，将隐藏维度和头数分别固定为 384 和 121。然后，我们将不同数量的转化器块（从 12 到 32 不等）堆叠起来，以建立对应于不同深度的多个 ViT 模型。在 ImageNet[18]上对图像分类的整体性能进行了评估，并在图 1 中进行了总结。从性能曲线上看，我们惊讶地发现，随着模型的深入，分类的准确性提高得很慢，而且很快就饱和了。更具体地说，我们可以观察到，在采用了 24 个转化器块之后，改进就停止了。这一现象表明，现有的 ViTs 很难从更深的架构中获得好处。<br>这样的问题是相当反直觉的，值得探索，因为类似的问题（即如何有效地训练一个更深的模型）在 CNN 的早期发展阶段也被观察到[9]，但后来得到了妥善解决[9，10]。通过对 transfromer 架构的深入研究，我们想强调的是，自注意力机制在 ViTs 中起着关键作用，这使得它与 CNN 有很大的不同。与 CNN 的显著不同。因此，我们首先调查了自注意力，或者更具体地说，生成的注意图$\mathbf{A}$是如何随着模型的深入而变化的。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624610980461-4efbb1fb-1c4b-42b6-8db6-fde40068f560.png#clientId=ub7fddef9-dc22-4&from=paste&height=537&id=ud54b0a99&margin=%5Bobject%20Object%5D&name=image.png&originHeight=537&originWidth=1365&originalType=binary%E2%88%B6=1&size=267676&status=done&style=none&taskId=u72510d90-62b0-4915-b7f4-c73dd76de71&width=1365" alt="image.png"><br>为了衡量各层注意图的演变，我们计算了不同层的注意图之间的跨层相似性。 不同层的注意图之间的跨层相似性：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624611059381-5f690fd7-1e51-412b-807e-73bc0db3c98f.png#clientId=ub7fddef9-dc22-4&from=paste&height=110&id=u5ea94d53&margin=%5Bobject%20Object%5D&name=image.png&originHeight=110&originWidth=472&originalType=binary%E2%88%B6=1&size=12181&status=done&style=none&taskId=uf24e913f-a0d6-4308-914f-e4cc9f9866a&width=472" alt="image.png"><br>其中$M^{p,q}$是 p 层和 q 层的注意力图之间的余弦相似性矩阵，每个元素$M_{h,t}^{p,q}$衡量 head h 和 token t 的注意力相似性。考虑到一个特定的自注意层和它的第 h 个头，$\mathbf{A}_{h,:, t}^{*}$是一个 T 维向量，代表输入 token t 对 T 个输出 token 中的每个标记的贡献程度。因此，$M_{h, t}^{p, q}$提供了一个适当的衡量标准，说明一个 token 的贡献在 p 层和 q 层之间如何变化。当$M_{h, t}^{p, q}$等于 1 时，意味着 token t 在 p 层和 q 层中对自注意力起着完全相同的作用。<br>给出公式（2），然后我们在 ImageNet-1k 上训练一个有 32 个转换块的 ViT 模型，并研究所有注意力图之间的上述相似性。如图 3（a）所示，第 17 个块之后的 M 中相似注意力图的比例大于 90%。这表明之后学习的注意力图谱是相似的，转化器块可能退化为 MLP。因此，进一步堆叠这种退化的 MHSA 可能会引入模型等级退化的问题（即，将各层参数相乘所得的模型参数张量的等级会降低），并限制了模型的学习能力。这也被我们对所学特征的退化的分析所验证，如下图所示。这种观察到的注意力塌陷可能是观察到的 ViTs 的性能饱和的原因之一。为了进一步验证不同深度的 ViTs 是否存在这种现象，我们分别对具有 12、16、24 和 32 个转换块的 ViTs 进行了同样的实验，并计算具有类似注意力图的块数。图 3(b)所示的结果清楚地表明，当增加更多的 transformer 块时，类似注意力图块的数量与总块数的比例增加。<br>为了了解注意力崩溃如何伤害 ViT 模型的性能，我们进一步研究它如何影响深层的特征学习。对于一个特定的 32 块 ViT 模型，我们通过调查它们的余弦相似度来比较最终输出特征和每个中间转化块的输出。图 4 中的结果表明，相似度相当高，学到的特征在第 20 个块之后就停止了演变。注意力相似性的增加与特征相似性之间存在着密切的关联。这一观察表明，注意力崩溃是造成 ViTs 的不可扩展问题的原因。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624618246382-b8e0700b-4d18-4838-a034-f9d2dda529e3.png#clientId=ub7fddef9-dc22-4&from=paste&height=511&id=uf4279cca&margin=%5Bobject%20Object%5D&name=image.png&originHeight=511&originWidth=635&originalType=binary%E2%88%B6=1&size=182929&status=done&style=none&taskId=u5ce4b23a-161f-4041-b1dc-6fe5c0b0c41&width=635" alt="image.png"></p>
+<h1 id="4-Re-attention-for-Deep-ViT"><a href="#4-Re-attention-for-Deep-ViT" class="headerlink" title="4. Re-attention for Deep ViT"></a>4. Re-attention for Deep ViT</h1><p>正如上文所揭示的，将 ViT 扩展到更深层次的一个主要障碍是注意力崩溃问题。在本节中，我们提出了两种解决方法，一种是增加计算自我注意力的隐藏维度，另一种是一种新的 Re-attention 机制。</p>
+<h2 id="4-1-高维空间中的自注意力"><a href="#4-1-高维空间中的自注意力" class="headerlink" title="4.1 高维空间中的自注意力"></a>4.1 高维空间中的自注意力</h2><p>征服注意力崩溃的一个直观的解决方案是增加每个符号的嵌入维度。这将增强每个 token embedding 的表示能力，以编码更多的信息。因此，由此产生的注意力图谱可以更加多样化，每个区块的注意力图谱之间的相似性可以得到教育。在不丧失一般性的前提下，我们通过进行一组基于 ViT 模型的实验，用 12 个区块进行快速实验来验证这种方法。按照以前基于变压器的工作[38, 7]，选择了四个嵌入尺寸，从 256 到 768 不等。详细的配置和结果见表 1。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624619083622-35093d8d-8414-47e1-ba8f-ca2d44304b9f.png#clientId=ub7fddef9-dc22-4&from=paste&height=676&id=u4bb1894f&margin=%5Bobject%20Object%5D&name=image.png&originHeight=676&originWidth=499&originalType=binary%E2%88%B6=1&size=139739&status=done&style=none&taskId=u90985e3f-ad74-4219-92dc-c630173a645&width=499" alt="image.png"><br>从图 5 和表 1 可以看出，通过增加嵌入维度，具有相似注意力图的区块数量减少了，注意力塌陷得到了缓解。因此，模型的性能也相应提高。这验证了我们的核心假设–注意力塌陷是扩展 ViT 的主要瓶颈。尽管它很有效，但增加嵌入维度也大大增加了计算成本，带来的性能改善也趋于减少。此外，一个更大的模型（具有更高的嵌入维度）通常需要更多的数据进行训练，遭受过度拟合的风险并降低效率。</p>
+<h2 id="4-2-Re-attention"><a href="#4-2-Re-attention" class="headerlink" title="4.2 Re-attention"></a>4.2 Re-attention</h2><p>在第 3 节中已经证明，不同 transformer block 的注意图之间的相似性很高，特别是对于深层。然而，我们发现来自同一 transformer block 的不同头部的注意力图的相似性相当小，如图 3（c）所示。很明显，来自同一自我注意层的不同头部关注的是输入标记的不同方面。基于这一观察，我们建议建立跨头通信来重新生成注意力图，并训练深度 ViTs，使其表现更好。<br>具体来说，我们使用头部的注意力图作为基础，并通过动态地聚合它们来生成一组新的注意力图谱。为了实现这一目标，我们定义了一个可学习的变换矩阵$\Theta \in \mathbb{R}^{H \times H}$，然后用它将多头的注意力图混合成重新生成的新图，再与 V 相乘。具体来说，重新注意是通过以下方式实现：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1624619952604-ff2b868d-0bb7-4888-825c-acdea41addb6.png#clientId=ub7fddef9-dc22-4&from=paste&height=85&id=uaa033894&margin=%5Bobject%20Object%5D&name=image.png&originHeight=85&originWidth=493&originalType=binary%E2%88%B6=1&size=11907&status=done&style=none&taskId=u4e41a102-c785-4fc1-af6a-914df67bb00&width=493" alt="image.png"><br>其中转换矩阵 Θ 沿头部维度乘以自我注意图 A。这里 Norm 是一个归一化函数，用于减少层间的差异。Θ 是端到端可学习的。<br><strong>优点：</strong>所提出的 Re-attention 的优点有两个方面。首先，与其他可能的注意力增强方法相比，如随机丢弃<br>的一些元素，或者调整 SoftMax 的温度，我们的 Re-attention 利用了不同注意力头之间的相互作用来收集它们的互补信息，更好地提高了注意力图的多样性。这一点也被我们下面的实验所验证。此外，我们的 Re-attention 是有效的，易于实现的。它只需要几行代码，计算量可以忽略不计。与原始的自我注意相比，它只需要几行代码和可以忽略不计的计算开销。因此，它比增加嵌入维度的方法要有效得多。</p>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/DeepViT%20Towards%20Deeper%20Vision%20Transformer.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/transformer/">
+              #transformer
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/SelfAttentionAndTransformer.html" target="_self">SelfAttentionAndTransformer</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/Large%20Memory%20Layers%20with%20Product%20Keys.html" target="_self">Large Memory Layers with Product Keys</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

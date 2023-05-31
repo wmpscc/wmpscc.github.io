@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>Pytorch 图片数据增强 | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="深度学习,数据增强,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>Pytorch 图片数据增强</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-02-25
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">
+            深度学习
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="Pytorch 图片数据增强.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <p>Pytorch 随机擦除和<a href="http://arxiv.org/pdf/2002.02917v1" target="_blank" rel="external nofollow noopener noreferrer">Möbius 变换变换</a></p>
+<p>直接上代码</p>
+<ul>
+<li>使用时按需选择</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> transforms</span><br><span class="line"></span><br><span class="line">train_transforms = transforms.Compose([</span><br><span class="line">        transforms.RandomRotation(<span class="number">10</span>),</span><br><span class="line">        transforms.RandomHorizontalFlip(),</span><br><span class="line">        <span class="comment"># transforms.MobiusTransformations(),</span></span><br><span class="line">        <span class="comment"># transforms.RandomResizedCrop(input_size),</span></span><br><span class="line">        transforms.Resize(input_size),</span><br><span class="line">        transforms.ToTensor(),</span><br><span class="line">        transforms.Normalize((<span class="number">.5</span>, <span class="number">.5</span>, <span class="number">.5</span>), (<span class="number">.5</span>, <span class="number">.5</span>, <span class="number">.5</span>))</span><br><span class="line">        <span class="comment"># transforms.RandomErasing()</span></span><br><span class="line">    ])</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>transforms.py</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> absolute_import</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> torchvision.transforms <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> mobius_transformations <span class="keyword">as</span> mt</span><br><span class="line"><span class="keyword">import</span> cv2</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RandomErasing</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    Class that performs Random Erasing in Random Erasing Data Augmentation by Zhong et al.</span></span><br><span class="line"><span class="string">    -------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="string">    probability: The probability that the operation will be performed.</span></span><br><span class="line"><span class="string">    sl: min erasing area</span></span><br><span class="line"><span class="string">    sh: max erasing area</span></span><br><span class="line"><span class="string">    r1: min aspect ratio</span></span><br><span class="line"><span class="string">    mean: erasing value</span></span><br><span class="line"><span class="string">    -------------------------------------------------------------------------------------</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, probability=<span class="number">0.5</span>, sl=<span class="number">0.02</span>, sh=<span class="number">0.4</span>, r1=<span class="number">0.3</span>, mean=[<span class="number">0.4914</span>, <span class="number">0.4822</span>, <span class="number">0.4465</span>])</span>:</span></span><br><span class="line">        self.probability = probability</span><br><span class="line">        self.mean = mean</span><br><span class="line">        self.sl = sl</span><br><span class="line">        self.sh = sh</span><br><span class="line">        self.r1 = r1</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, X)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> random.uniform(<span class="number">0</span>, <span class="number">1</span>) &gt; self.probability:</span><br><span class="line">            <span class="keyword">return</span> X</span><br><span class="line">        <span class="keyword">for</span> img <span class="keyword">in</span> X:</span><br><span class="line">            <span class="keyword">for</span> attempt <span class="keyword">in</span> range(<span class="number">1</span>):</span><br><span class="line">                area = img.size()[<span class="number">1</span>] * img.size()[<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line">                target_area = random.uniform(self.sl, self.sh) * area</span><br><span class="line">                aspect_ratio = random.uniform(self.r1, <span class="number">1</span> / self.r1)</span><br><span class="line"></span><br><span class="line">                h = int(round(math.sqrt(target_area * aspect_ratio)))</span><br><span class="line">                w = int(round(math.sqrt(target_area / aspect_ratio)))</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> w &lt; img.size()[<span class="number">2</span>] <span class="keyword">and</span> h &lt; img.size()[<span class="number">1</span>]:</span><br><span class="line">                    x1 = random.randint(<span class="number">0</span>, img.size()[<span class="number">1</span>] - h)</span><br><span class="line">                    y1 = random.randint(<span class="number">0</span>, img.size()[<span class="number">2</span>] - w)</span><br><span class="line">                    <span class="keyword">if</span> img.size()[<span class="number">0</span>] == <span class="number">3</span>:</span><br><span class="line">                        img[<span class="number">0</span>, x1:x1 + h, y1:y1 + w] = self.mean[<span class="number">0</span>]</span><br><span class="line">                        img[<span class="number">1</span>, x1:x1 + h, y1:y1 + w] = self.mean[<span class="number">1</span>]</span><br><span class="line">                        img[<span class="number">2</span>, x1:x1 + h, y1:y1 + w] = self.mean[<span class="number">2</span>]</span><br><span class="line">                    <span class="keyword">else</span>:</span><br><span class="line">                        img[<span class="number">0</span>, x1:x1 + h, y1:y1 + w] = self.mean[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> X</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MobiusTransformations</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.FUNCLIST = [mt._clockwise_twist, mt._clockwise_half_twist, mt._spread, mt._spread_twist,</span><br><span class="line">                         mt._counter_clockwise_twist,</span><br><span class="line">                         mt._counter_clockwise_half_twist, mt._inverse, mt._inverse_spread]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, X)</span>:</span></span><br><span class="line">        source_image = np.asarray(X).astype(np.float64)</span><br><span class="line">        transformation_type = random.choice(self.FUNCLIST)</span><br><span class="line">        out_image = mt.apply_SL2C_elt_to_image(source_image, transformation_type)</span><br><span class="line">        np.clip(out_image, <span class="number">0</span>, <span class="number">255</span>, out_image)</span><br><span class="line">        out_image = Image.fromarray(out_image.astype(<span class="string">'uint8'</span>), <span class="string">"RGB"</span>)</span><br><span class="line">        <span class="keyword">return</span> out_image</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>mobius_transformations.py</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> math <span class="keyword">as</span> m</span><br><span class="line"><span class="keyword">from</span> numpy <span class="keyword">import</span> pi <span class="keyword">as</span> PI</span><br><span class="line"><span class="keyword">import</span> cv2</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">### Apply tranformations</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_abcd_from_3points</span><span class="params">(z1, z2, z3, w1, w2, w3)</span>:</span></span><br><span class="line">    a = np.linalg.det(np.array([[z1 * w1, w1, <span class="number">1</span>], [z2 * w2, w2, <span class="number">1</span>], [z3 * w3, w3, <span class="number">1</span>]]))</span><br><span class="line">    b = np.linalg.det(np.array([[z1 * w1, z1, w1], [z2 * w2, z2, w2], [z3 * w3, z3, w3]]))</span><br><span class="line">    c = np.linalg.det(np.array([[z1, w1, <span class="number">1</span>], [z2, w2, <span class="number">1</span>], [z3, w3, <span class="number">1</span>]]))</span><br><span class="line">    d = np.linalg.det(np.array([[z1 * w1, z1, <span class="number">1</span>], [z2 * w2, z2, <span class="number">1</span>], [z3 * w3, z3, <span class="number">1</span>]]))</span><br><span class="line">    <span class="keyword">return</span> a, b, c, d</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_clockwise_twist</span><span class="params">(x, y)</span>:</span></span><br><span class="line">    z1, z2, z3 = complex(<span class="number">1</span>, <span class="number">0.5</span> * y), complex(<span class="number">0.5</span> * x, <span class="number">0.8</span> * y), complex(<span class="number">0.6</span> * x, <span class="number">0.5</span> * y)</span><br><span class="line">    w1 = complex(<span class="number">0.5</span> * x, y - <span class="number">1</span>)</span><br><span class="line">    w2 = complex(<span class="number">0.5</span> * x + <span class="number">0.3</span> * m.sin(<span class="number">0.4</span> * PI) * y, <span class="number">0.5</span> * y + <span class="number">0.3</span> * m.cos(<span class="number">0.4</span> * PI) * y)</span><br><span class="line">    w3 = complex(<span class="number">0.5</span> * x + <span class="number">0.1</span> * m.cos(<span class="number">0.1</span> * PI) * y, <span class="number">0.5</span> * y - <span class="number">0.1</span> * m.sin(<span class="number">0.1</span> * PI) * x)</span><br><span class="line">    <span class="keyword">return</span> get_abcd_from_3points(z1, z2, z3, w1, w2, w3)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_clockwise_half_twist</span><span class="params">(x, y)</span>:</span></span><br><span class="line">    z1, z2, z3 = complex(<span class="number">1</span>, <span class="number">0.5</span> * y), complex(<span class="number">0.5</span> * x, <span class="number">0.8</span> * y), complex(<span class="number">0.6</span> * x, <span class="number">0.5</span> * y)</span><br><span class="line">    w1 = complex(<span class="number">0.5</span> * x, y - <span class="number">1</span>)</span><br><span class="line">    w2 = complex(<span class="number">0.5</span> * x + <span class="number">0.4</span> * y, <span class="number">0.5</span> * y)</span><br><span class="line">    w3 = complex(<span class="number">0.5</span> * x, <span class="number">0.5</span> * y - <span class="number">0.1</span> * x)</span><br><span class="line">    <span class="keyword">return</span> get_abcd_from_3points(z1, z2, z3, w1, w2, w3)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_spread</span><span class="params">(x, y)</span>:</span></span><br><span class="line">    z1, z2, z3 = complex(<span class="number">0.3</span> * x, <span class="number">0.5</span> * y), complex(<span class="number">0.5</span> * x, <span class="number">0.7</span> * y), complex(<span class="number">0.7</span> * x, <span class="number">0.5</span> * y)</span><br><span class="line">    w1, w2, w3 = complex(<span class="number">0.2</span> * x, <span class="number">0.5</span> * y), complex(<span class="number">0.5</span> * x, <span class="number">0.8</span> * y), complex(<span class="number">0.8</span> * x, <span class="number">0.5</span> * y)</span><br><span class="line">    <span class="keyword">return</span> get_abcd_from_3points(z1, z2, z3, w1, w2, w3)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_spread_twist</span><span class="params">(x, y)</span>:</span></span><br><span class="line">    z1, z2, z3 = complex(<span class="number">0.3</span> * x, <span class="number">0.3</span> * y), complex(<span class="number">0.6</span> * x, <span class="number">0.8</span> * y), complex(<span class="number">0.7</span> * x, <span class="number">0.3</span> * y)</span><br><span class="line">    w1, w2, w3 = complex(<span class="number">0.2</span> * x, <span class="number">0.3</span> * y), complex(<span class="number">0.6</span> * x, <span class="number">0.9</span> * y), complex(<span class="number">0.8</span> * x, <span class="number">0.2</span> * y)</span><br><span class="line">    <span class="keyword">return</span> get_abcd_from_3points(z1, z2, z3, w1, w2, w3)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_counter_clockwise_twist</span><span class="params">(x, y)</span>:</span></span><br><span class="line">    z1, z2, z3 = complex(<span class="number">1</span>, <span class="number">0.5</span> * y), complex(<span class="number">0.5</span> * x, <span class="number">0.8</span> * y), complex(<span class="number">0.6</span> * x, <span class="number">0.5</span> * y)</span><br><span class="line">    w1 = complex(<span class="number">0.5</span> * x, y - <span class="number">1</span>)</span><br><span class="line">    w2 = complex(<span class="number">0.5</span> * x + <span class="number">0.4</span> * y, <span class="number">0.5</span> * y)</span><br><span class="line">    w3 = complex(<span class="number">0.5</span> * x, <span class="number">0.5</span> * y - <span class="number">0.1</span> * x)</span><br><span class="line">    <span class="keyword">return</span> get_abcd_from_3points(z1, z2, z3, w1, w2, w3)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_counter_clockwise_half_twist</span><span class="params">(x, y)</span>:</span></span><br><span class="line">    z1, z2, z3 = complex(<span class="number">1</span>, <span class="number">0.5</span> * y), complex(<span class="number">0.5</span> * x, <span class="number">0.8</span> * y), complex(<span class="number">0.6</span> * x, <span class="number">0.5</span> * y)</span><br><span class="line">    w1 = complex(<span class="number">0.5</span> * x, y - <span class="number">1</span>)</span><br><span class="line">    w2 = complex(<span class="number">0.5</span> * x + <span class="number">0.3</span> * m.sin(<span class="number">0.4</span> * PI) * y, <span class="number">0.5</span> * y + <span class="number">0.3</span> * m.cos(<span class="number">0.4</span> * PI) * y)</span><br><span class="line">    w3 = complex(<span class="number">0.5</span> * x + <span class="number">0.1</span> * m.cos(<span class="number">0.1</span> * PI) * x, <span class="number">0.5</span> * y - <span class="number">0.1</span> * m.sin(<span class="number">0.1</span> * PI) * x)</span><br><span class="line">    <span class="keyword">return</span> get_abcd_from_3points(z1, z2, z3, w1, w2, w3)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_inverse</span><span class="params">(x, y)</span>:</span></span><br><span class="line">    z1, z2, z3 = complex(<span class="number">0.3</span> * x, <span class="number">0.5</span> * y), complex(<span class="number">0.5</span> * x, <span class="number">0.9</span> * y), complex(x - <span class="number">1</span>, <span class="number">0.5</span> * y)</span><br><span class="line">    w1, w2, w3 = complex(x - <span class="number">1</span>, <span class="number">0.5</span> * y), complex(<span class="number">0.5</span> * x, <span class="number">0.1</span> * y), complex(<span class="number">1</span>, <span class="number">0.5</span> * y)</span><br><span class="line">    <span class="keyword">return</span> get_abcd_from_3points(z1, z2, z3, w1, w2, w3)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_inverse_spread</span><span class="params">(x, y)</span>:</span></span><br><span class="line">    z1, z2, z3 = complex(<span class="number">0.1</span> * x, <span class="number">0.5</span> * y), complex(<span class="number">0.5</span> * x, <span class="number">0.8</span> * y), complex(<span class="number">0.9</span> * x, <span class="number">0.5</span> * y)</span><br><span class="line">    w1, w2, w3 = complex(x - <span class="number">1</span>, <span class="number">0.5</span> * y), complex(<span class="number">0.5</span> * x, <span class="number">0.1</span> * y), complex(<span class="number">1</span>, <span class="number">0.5</span> * y)</span><br><span class="line">    <span class="keyword">return</span> get_abcd_from_3points(z1, z2, z3, w1, w2, w3)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_in_location_for_out_location</span><span class="params">(pts_out, a, b, c, d)</span>:</span></span><br><span class="line">    <span class="comment"># pts_out shape 2 x (num pixels)</span></span><br><span class="line">    A = np.array([[a.real], [a.imag]])</span><br><span class="line">    B = np.array([[b.real], [b.imag]])</span><br><span class="line">    C = np.array([[c.real, -c.imag], [c.imag, c.real]])</span><br><span class="line">    D = np.array([[d.real, -d.imag], [d.imag, d.real]])</span><br><span class="line">    pts_in = np.empty_like(pts_out)</span><br><span class="line">    W = pts_out  <span class="comment"># shape 2 x</span></span><br><span class="line">    DW = D @ W</span><br><span class="line">    CW = C @ W</span><br><span class="line">    B_DW = B - DW</span><br><span class="line">    CW_A = CW - A</span><br><span class="line">    CW_A_2 = (CW_A ** <span class="number">2</span>).sum(axis=<span class="number">0</span>)</span><br><span class="line">    O1 = (B_DW * CW_A).sum(axis=<span class="number">0</span>) / CW_A_2</span><br><span class="line">    B_DW_T = <span class="number">-1</span> * B_DW[<span class="number">0</span>, :]</span><br><span class="line">    B_DW[<span class="number">0</span>, :] = B_DW[<span class="number">1</span>, :]</span><br><span class="line">    B_DW[<span class="number">1</span>, :] = B_DW_T</span><br><span class="line">    O2 = (B_DW * CW_A).sum(axis=<span class="number">0</span>) / CW_A_2</span><br><span class="line">    pts_in[<span class="number">0</span>, :] = O1</span><br><span class="line">    pts_in[<span class="number">1</span>, :] = O2</span><br><span class="line">    <span class="keyword">return</span> pts_in</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_out_location_for_in_location</span><span class="params">(pts_in, a, b, c, d)</span>:</span></span><br><span class="line">    <span class="comment"># pts_in shape 2 x (num pixels)</span></span><br><span class="line">    A = np.array([[a.real, -a.imag], [a.imag, a.real]])</span><br><span class="line">    B = np.array([[b.real], [b.imag]])</span><br><span class="line">    C = np.array([[c.real, -c.imag], [c.imag, c.real]])</span><br><span class="line">    D = np.array([[d.real], [d.imag]])</span><br><span class="line">    pts_out = np.empty_like(pts_in)</span><br><span class="line">    Z = pts_in  <span class="comment"># shape 2 x</span></span><br><span class="line">    AZ = A @ Z</span><br><span class="line">    CZ = C @ Z</span><br><span class="line">    AZ_P_B = AZ + B</span><br><span class="line">    CZ_P_D = CZ + D</span><br><span class="line">    CZ_P_D_2 = (CZ_P_D ** <span class="number">2</span>).sum(axis=<span class="number">0</span>)</span><br><span class="line">    O1 = (AZ_P_B * CZ_P_D).sum(axis=<span class="number">0</span>) / CZ_P_D_2</span><br><span class="line">    AZ_P_B_T = <span class="number">-1</span> * AZ_P_B[<span class="number">0</span>, :]</span><br><span class="line">    AZ_P_B[<span class="number">0</span>, :] = AZ_P_B[<span class="number">1</span>, :]</span><br><span class="line">    AZ_P_B[<span class="number">1</span>, :] = AZ_P_B_T</span><br><span class="line">    O2 = (AZ_P_B * CZ_P_D).sum(axis=<span class="number">0</span>) / CZ_P_D_2</span><br><span class="line">    pts_out[<span class="number">0</span>, :] = O1</span><br><span class="line">    pts_out[<span class="number">1</span>, :] = O2</span><br><span class="line">    <span class="keyword">return</span> pts_out</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 双线性插值矩阵运算，减少计算量</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bilinear</span><span class="params">(pts_in, pts_out, s_im, o_min, o_max)</span>:</span></span><br><span class="line">    in_size = s_im.shape[:<span class="number">-1</span>]</span><br><span class="line">    i_max = pts_in.max(axis=<span class="number">1</span>)</span><br><span class="line">    i_min = pts_in.min(axis=<span class="number">1</span>)</span><br><span class="line">    X, Y = (pts_in[<span class="number">0</span>, :] - i_min[<span class="number">0</span>]).reshape((pts_in.shape[<span class="number">1</span>], <span class="number">1</span>)), (pts_in[<span class="number">1</span>, :] - i_min[<span class="number">1</span>]).reshape(</span><br><span class="line">        (pts_in.shape[<span class="number">1</span>], <span class="number">1</span>))</span><br><span class="line">    p_h = max(<span class="number">2</span>, -i_max[<span class="number">0</span>] + i_min[<span class="number">0</span>] + in_size[<span class="number">0</span>])</span><br><span class="line">    p_w = max(<span class="number">2</span>, -i_max[<span class="number">1</span>] + i_min[<span class="number">1</span>] + in_size[<span class="number">1</span>])</span><br><span class="line">    p = max(p_h, p_w)</span><br><span class="line">    n_im = np.zeros((int(i_max[<span class="number">0</span>] - i_min[<span class="number">0</span>] + p), int(i_max[<span class="number">1</span>] - i_min[<span class="number">1</span>] + p), <span class="number">3</span>))</span><br><span class="line">    n_im[int(-i_min[<span class="number">0</span>]):int(-i_min[<span class="number">0</span>] + in_size[<span class="number">0</span>]), int(-i_min[<span class="number">1</span>]):int(-i_min[<span class="number">1</span>] + in_size[<span class="number">1</span>])] = s_im</span><br><span class="line">    t_left_X, t_left_Y = np.floor(X).astype(np.int16), np.floor(Y).astype(np.int16)</span><br><span class="line">    P1 = (t_left_X + <span class="number">1</span> - X) * n_im[t_left_X, t_left_Y, :].reshape(pts_in.shape[<span class="number">1</span>], <span class="number">3</span>) + (X - t_left_X) * n_im[</span><br><span class="line">                                                                                                         t_left_X + <span class="number">1</span>,</span><br><span class="line">                                                                                                         t_left_Y,</span><br><span class="line">                                                                                                         :].reshape(</span><br><span class="line">        pts_in.shape[<span class="number">1</span>], <span class="number">3</span>)</span><br><span class="line">    P2 = (t_left_X + <span class="number">1</span> - X) * n_im[t_left_X, t_left_Y + <span class="number">1</span>, :].reshape(pts_in.shape[<span class="number">1</span>], <span class="number">3</span>) + (X - t_left_X) * n_im[</span><br><span class="line">                                                                                                             t_left_X + <span class="number">1</span>,</span><br><span class="line">                                                                                                             t_left_Y + <span class="number">1</span>,</span><br><span class="line">                                                                                                             :].reshape(</span><br><span class="line">        pts_in.shape[<span class="number">1</span>], <span class="number">3</span>)</span><br><span class="line">    V = (t_left_Y + <span class="number">1</span> - Y) * P1 + (Y - t_left_Y) * P2</span><br><span class="line">    o_im = V.reshape((o_max[<span class="number">0</span>] - o_min[<span class="number">0</span>], o_max[<span class="number">1</span>] - o_min[<span class="number">1</span>], <span class="number">3</span>))</span><br><span class="line">    <span class="keyword">return</span> o_im</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Receives an np.matrix as the respresentation of the mobius transformation</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">apply_SL2C_elt_to_image</span><span class="params">(src_image, transformation_type)</span>:</span></span><br><span class="line">    s_im = np.atleast_3d(src_image)</span><br><span class="line">    in_size = s_im.shape[:<span class="number">-1</span>]</span><br><span class="line">    a, b, c, d = transformation_type(in_size[<span class="number">0</span>], in_size[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line">    pts_in = np.indices(in_size).reshape((<span class="number">2</span>, <span class="number">-1</span>))  <span class="comment"># results in a 2 x (num pixels) array of indices</span></span><br><span class="line">    pts_out = get_out_location_for_in_location(pts_in, a, b, c, d)</span><br><span class="line">    o_max = pts_out.max(axis=<span class="number">1</span>)</span><br><span class="line">    o_min = pts_out.min(axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    pts_out = np.indices(((o_max - o_min)[<span class="number">0</span>], (o_max - o_min)[<span class="number">1</span>])).reshape(</span><br><span class="line">        (<span class="number">2</span>, <span class="number">-1</span>))  <span class="comment"># results in a 2 x (num pixels) array of indices</span></span><br><span class="line">    pts_out = pts_out + np.array([[o_min[<span class="number">0</span>]], [o_min[<span class="number">1</span>]]])</span><br><span class="line"></span><br><span class="line">    pts_in = get_in_location_for_out_location(pts_out, a, b, c, d)</span><br><span class="line"></span><br><span class="line">    o_im = bilinear(pts_in, pts_out, s_im, o_min, o_max)</span><br><span class="line">    <span class="keyword">return</span> o_im</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    FUNCLIST = [_clockwise_twist, _clockwise_half_twist, _spread, _spread_twist, _counter_clockwise_twist,</span><br><span class="line">                _counter_clockwise_half_twist, _inverse, _inverse_spread]</span><br><span class="line">    source_image = np.array(cv2.imread(<span class="string">'20160222_081102_1281_361.jpg'</span>), dtype=np.float32)</span><br><span class="line">    print(source_image.shape)</span><br><span class="line">    <span class="keyword">for</span> ii, transformation_type <span class="keyword">in</span> enumerate(FUNCLIST):</span><br><span class="line">        out_image = apply_SL2C_elt_to_image(source_image, transformation_type)</span><br><span class="line">        np.clip(out_image, <span class="number">0</span>, <span class="number">255</span>, out_image)</span><br><span class="line">        cv2.imwrite(str(ii) + <span class="string">'.png'</span>, out_image)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>• <a href="https://github.com/hudingding/Mobius-transformations" target="_blank" rel="external nofollow noopener noreferrer">Mobius-transformations</a></p>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/Pytorch%20%E5%9B%BE%E7%89%87%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA/">
+              #数据增强
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/Depthwise-STFT%E5%8D%B7%E7%A7%AF%E5%A4%8D%E7%8E%B0.html" target="_self">Depthwise-STFT卷积复现</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/%E5%8D%B7%E7%A7%AF(convolution)%E5%92%8C%E4%BA%92%E7%9B%B8%E5%85%B3(cross-correlation).html" target="_self">卷积(convolution)和互相关(cross-correlation)</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

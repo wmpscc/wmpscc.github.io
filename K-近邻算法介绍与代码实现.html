@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>K-近邻算法介绍与代码实现 | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="机器学习,Demo,KNN,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>K-近邻算法介绍与代码实现</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-01-22
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">
+            机器学习
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="K-近邻算法介绍与代码实现.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <p>声明：如需转载请先联系我。</p>
+<blockquote>
+<p>最近学习了 k 近邻算法，在这里进行了总结。</p>
+</blockquote>
+<h1 id="KNN-介绍"><a href="#KNN-介绍" class="headerlink" title="KNN 介绍"></a>KNN 介绍</h1><p>k 近邻法(k-nearest neighbors)是由 Cover 和 Hart 于 1968 年提出的，它是懒惰学习(lazy learning)的著名代表。<br>它的工作机制比较简单：</p>
+<ul>
+<li>给定一个测试样本</li>
+<li>计算它到训练样本的距离</li>
+<li>取离测试样本最近的<code>k</code>个训练样本</li>
+<li>“投票法”选出在这 k 个样本中出现最多的类别，就是预测的结果</li>
+</ul>
+<blockquote>
+<p>距离衡量的标准有很多，常见的有：$L_p$距离、切比雪夫距离、马氏距离、巴氏距离、余弦值等。</p>
+</blockquote>
+<p>什么意思呢？先来看这张图</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579695558315-03d31abb-b69d-4116-b4d2-30f6f9e5d096.png#align=left&display=inline&height=378&originHeight=378&originWidth=650&size=0&status=done&style=none&width=650" alt=""></p>
+<p>我们对应上面的流程来说</p>
+<ul>
+<li>1.给定了红色和蓝色的训练样本，绿色为测试样本</li>
+<li>2.计算绿色点到其他点的距离</li>
+<li>3.选取离绿点最近的 k 个点</li>
+<li>4.选取 k 个点中，同种颜色最多的类。例如：k=1 时，k 个点全是蓝色，那预测结果就是 Class 1；k=3 时，k 个点中两个红色一个蓝色，那预测结果就是 Class 2</li>
+</ul>
+<h2 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h2><p>这里用<code>欧氏距离</code>作为距离的衡量标准，用鸢尾花数据集举例说明。<br>鸢尾花数据集有三个类别，每个类有 150 个样本，每个样本有 4 个特征。<br>先来回顾一下欧氏距离的定义(摘自维基百科)：</p>
+<blockquote>
+<p>在欧几里得空间中，点 x = (x1,…,xn) 和 y = (y1,…,yn) 之间的欧氏距离为</p>
+$d(x,y):={\sqrt  {(x_{1}-y_{1}){2}+\cdots +(x_{n}-y_{n})^{2}}}={\sqrt  {\sum _{{i=1}}{2}}}$
+</blockquote>
+<blockquote>
+<p>向量 ${\displaystyle {\vec {x}}}$的自然长度，即该点到原点的距离为</p>
+$|{\vec  {x}}|_{2}={\sqrt  {|x_{1}|^{2}+\cdots +|x_{n}|^{2}}}$
+</blockquote>
+<p>它是一个纯数值。在欧几里得度量下，两点之间线段最短。<br>现在给出六个训练样本，分为三类，每个样本有 4 个特征，编号为 7 的<code>名称</code>是我们要预测的。</p>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>花萼长度(cm)</th>
+<th>花萼宽度(cm)</th>
+<th>花瓣长度(cm)</th>
+<th>花瓣宽度(cm)</th>
+<th>名称</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>4.9</td>
+<td>3.1</td>
+<td>1.5</td>
+<td>0.1</td>
+<td>Iris setosa</td>
+</tr>
+<tr>
+<td>2</td>
+<td>5.4</td>
+<td>3.7</td>
+<td>1.5</td>
+<td>0.2</td>
+<td>Iris setosa</td>
+</tr>
+<tr>
+<td>3</td>
+<td>5.2</td>
+<td>2.7</td>
+<td>3.9</td>
+<td>1.4</td>
+<td>Iris versicolor</td>
+</tr>
+<tr>
+<td>4</td>
+<td>5.0</td>
+<td>2.0</td>
+<td>3.5</td>
+<td>1.0</td>
+<td>Iris versicolor</td>
+</tr>
+<tr>
+<td>5</td>
+<td>6.3</td>
+<td>2.7</td>
+<td>4.9</td>
+<td>1.8</td>
+<td>Iris virginica</td>
+</tr>
+<tr>
+<td>6</td>
+<td>6.7</td>
+<td>3.3</td>
+<td>5.7</td>
+<td>2.1</td>
+<td>Iris virginica</td>
+</tr>
+<tr>
+<td>7</td>
+<td>5.5</td>
+<td>2.5</td>
+<td>4.0</td>
+<td>1.3</td>
+<td>?</td>
+</tr>
+</tbody></table>
+<p>按照之前说的步骤，我们来计算测试样本到各个训练样本的距离。例如到第一个样本的距离:</p>
+$d_{1}=\sqrt{(4.9 - 5.5)^2 + (3.1 - 2.5)^2 + (1.5 - 4.0)^2 + (0.1 - 1.3)^2} = 2.9$
+
+<p>写一个函数来执行这个操作吧</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calc_distance</span><span class="params">(iA,iB)</span>:</span></span><br><span class="line">   temp = np.subtract(iA, iB)      <span class="comment"># 对应元素相减</span></span><br><span class="line">   temp = np.power(temp, <span class="number">2</span>)        <span class="comment"># 元素分别平方</span></span><br><span class="line">   distance = np.sqrt(temp.sum())  <span class="comment"># 先求和再开方</span></span><br><span class="line">   <span class="keyword">return</span> distance</span><br><span class="line"></span><br><span class="line">testSample = np.array([<span class="number">5.5</span>, <span class="number">2.5</span>, <span class="number">4.0</span>, <span class="number">1.3</span>])</span><br><span class="line">print(<span class="string">"Distance to 1:"</span>, calc_distance(np.array([<span class="number">4.9</span>, <span class="number">3.1</span>, <span class="number">1.5</span>, <span class="number">0.1</span>]), testSample))</span><br><span class="line">print(<span class="string">"Distance to 2:"</span>, calc_distance(np.array([<span class="number">5.4</span>, <span class="number">3.7</span>, <span class="number">1.5</span>, <span class="number">0.2</span>]), testSample))</span><br><span class="line">print(<span class="string">"Distance to 3:"</span>, calc_distance(np.array([<span class="number">5.2</span>, <span class="number">2.7</span>, <span class="number">3.9</span>, <span class="number">1.4</span>]), testSample))</span><br><span class="line">print(<span class="string">"Distance to 4:"</span>, calc_distance(np.array([<span class="number">5.0</span>, <span class="number">2.0</span>, <span class="number">3.5</span>, <span class="number">1.0</span>]), testSample))</span><br><span class="line">print(<span class="string">"Distance to 5:"</span>, calc_distance(np.array([<span class="number">6.3</span>, <span class="number">2.7</span>, <span class="number">4.9</span>, <span class="number">1.8</span>]), testSample))</span><br><span class="line">print(<span class="string">"Distance to 6:"</span>, calc_distance(np.array([<span class="number">6.7</span>, <span class="number">3.3</span>, <span class="number">5.7</span>, <span class="number">2.1</span>]), testSample))</span><br></pre></td></tr></table></figure>
+
+<p>Distance to 1: 2.9</p>
+<p>Distance to 2: 2.98496231132</p>
+<p>Distance to 3: 0.387298334621</p>
+<p>Distance to 4: 0.916515138991</p>
+<p>Distance to 5: 1.31909059583</p>
+<p>Distance to 6: 2.36854385647</p>
+<p>如果我们把 k 定为 3，那么离测试样本最近 3 个依次是：</p>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>名称</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>3</td>
+<td>Iris versicolor</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Iris versicolor</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Iris virginica</td>
+</tr>
+</tbody></table>
+<p>显然测试样本属于<code>Iris versicolor</code>类的“票数”多一点，事实上它的确属于这个类。</p>
+<h2 id="优-缺点"><a href="#优-缺点" class="headerlink" title="优/缺点"></a>优/缺点</h2><p>这里参考了<a href="https://blog.csdn.net/ch1209498273/article/details/78440276" target="_blank" rel="external nofollow noopener noreferrer">CSDN 芦金宇博客上的总结</a></p>
+<p><strong>优点</strong></p>
+<ul>
+<li>简单好用，容易理解，精度高，理论成熟，既可以用来做分类也可以用来做回归；</li>
+<li>可用于数值型数据和离散型数据；</li>
+<li>训练时间复杂度为 O(n)；无数据输入假定；</li>
+<li>对异常值不敏感。</li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>计算复杂性高；空间复杂性高；</li>
+<li>样本不平衡问题（即有些类别的样本数量很多，而其它样本的数量很少）；</li>
+<li>一般数值很大的时候不用这个，计算量太大。但是单个样本又不能太少，否则容易发生误分。</li>
+<li>最大的缺点是无法给出数据的内在含义。</li>
+</ul>
+<p>补充一点：由于它属于懒惰学习，因此需要大量的空间来存储训练实例，在预测时它还需要与已知所有实例进行比较，增大了计算量。</p>
+<p><strong>这里介绍一下，当样本不平衡时的影响。</strong></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579695558308-180a1324-a9a8-44bc-be2e-ed911285a8f7.png#align=left&display=inline&height=464&originHeight=464&originWidth=522&size=0&status=done&style=none&width=522" alt=""></p>
+<p>从直观上可以看出 X 应该属于$\omega_{1}$，这是理所应当的。对于 Y 看起来应该属于$\omega_{1}$，但事实上在 k 范围内，更多的点属于$\omega_{2}$，这就造成了错误分类。</p>
+<h2 id="一个结论"><a href="#一个结论" class="headerlink" title="一个结论"></a>一个结论</h2><p>在周志华编著的《机器学习》中证明了最近邻学习器的泛化错误率不超过贝叶斯最优分类器的错误率的两倍，在原书的 226 页，这里就不摘抄了。</p>
+<h1 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h1><p>知道 KNN 的原理后，应该可以很轻易的写出代码了，这里介绍一下在距离计算上的优化，在结尾给上完整代码(代码比较乱，知道思想就好)。</p>
+<p>函数的输入：<code>train_X</code>、<code>test_X</code>是 numpy array，假设它们的 shape 分别为(n, 4)、(m, 4)；要求输出的是它们两点间的距离矩阵，shape 为(n, m)。</p>
+<p>不就是计算两点之间的距离，再存起来吗，直接暴力上啊︿(￣︶￣)︿，于是就有了下面的</p>
+<h3 id="双循环暴力实现"><a href="#双循环暴力实现" class="headerlink" title="双循环暴力实现"></a>双循环暴力实现</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">euclideanDistance_two_loops</span><span class="params">(train_X, test_X)</span>:</span></span><br><span class="line">   num_test = test_X.shape[<span class="number">0</span>]</span><br><span class="line">   num_train = train_X.shape[<span class="number">0</span>]</span><br><span class="line">   dists = np.zeros((num_test, num_train))</span><br><span class="line">   <span class="keyword">for</span> i <span class="keyword">in</span> range(num_test):</span><br><span class="line">       <span class="keyword">for</span> j <span class="keyword">in</span> range(num_train):</span><br><span class="line">           test_line = test_X[i]</span><br><span class="line">           train_line = train_X[j]</span><br><span class="line">           temp = np.subtract(test_line, train_line)</span><br><span class="line">           temp = np.power(temp, <span class="number">2</span>)</span><br><span class="line">           dists[i][j] = np.sqrt(temp.sum())</span><br><span class="line">   <span class="keyword">return</span> dists</span><br></pre></td></tr></table></figure>
+
+<p>不知道你有没有想过，这里的样本数只有 100 多个，所以时间上感觉没有等太久，但是当样本量非常大的时候呢，双循环计算的弊端就显露出来了。解决方案是把它转换为两个矩阵之间的运算，这样就能避免使用循环了。</p>
+<h2 id="转化为矩阵运算实现"><a href="#转化为矩阵运算实现" class="headerlink" title="转化为矩阵运算实现"></a>转化为矩阵运算实现</h2><h3 id="L2-Distance"><a href="#L2-Distance" class="headerlink" title="L2 Distance"></a>L2 Distance</h3><p>此处参考<a href="https://blog.csdn.net/frankzd/article/details/80251042" target="_blank" rel="external nofollow noopener noreferrer">CSDNfrankzd 的博客</a></p>
+<p>记测试集矩阵 P 的大小为$M_D$，训练集矩阵 C 的大小为$N_D$（测试集中共有 M 个点，每个点为 D 维特征向量。训练集中共有 N 个点，每个点为 D 维特征向量）</p>
+<p>记$P_{i}$是 P 的第 i 行$P_i = [ P_{i1}\quad P_{i2} \cdots P_{iD}]$，记$C_{j}$是 C 的第 j 行$C_j = [ C_{j1} C_{j2} \cdots \quad C_{jD}]$</p>
+<ul>
+<li>首先计算 Pi 和 Cj 之间的距离 dist(i,j)</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/gif/478234/1579695558318-5d8094df-f64d-4058-a85b-b6b82587074f.gif#align=left&display=inline&height=104&originHeight=104&originWidth=729&size=0&status=done&style=none&width=729" alt=""></p>
+<ul>
+<li>我们可以推广到距离矩阵的第 i 行的计算公式</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579695558365-d2009455-cf7f-4346-80c1-71d63c9504d6.png#align=left&display=inline&height=69&originHeight=69&originWidth=734&size=0&status=done&style=none&width=734" alt=""></p>
+<ul>
+<li>继续将公式推广为整个距离矩阵(也就是完全平方公式)</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579695558329-385b17f6-e3ec-49af-aa50-9191007c1918.png#align=left&display=inline&height=110&originHeight=110&originWidth=688&size=0&status=done&style=none&width=688" alt=""></p>
+<p>知道距离矩阵怎么算出来的之后，在代码上只需要套公式带入就能实现了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">euclideanDistance_no_loops</span><span class="params">(train_X, test_X)</span>:</span></span><br><span class="line">   num_test = test_X.shape[<span class="number">0</span>]</span><br><span class="line">   num_train = train_X.shape[<span class="number">0</span>]</span><br><span class="line">   sum_train = np.power(train_X, <span class="number">2</span>)</span><br><span class="line">   sum_train = sum_train.sum(axis=<span class="number">1</span>)</span><br><span class="line">   sum_train = sum_train * np.ones((num_test, num_train))</span><br><span class="line">   sum_test = np.power(test_X, <span class="number">2</span>)</span><br><span class="line">   sum_test = sum_test.sum(axis=<span class="number">1</span>)</span><br><span class="line">   sum_test = sum_test * np.ones((<span class="number">1</span>, sum_train.shape[<span class="number">0</span>]))</span><br><span class="line">   sum_test = sum_test.T</span><br><span class="line">   sum = sum_train + sum_test - <span class="number">2</span> * np.dot(test_X, train_X.T)</span><br><span class="line">   dists = np.sqrt(sum)</span><br><span class="line">   <span class="keyword">return</span> dists</span><br></pre></td></tr></table></figure>
+
+<p>是不是很简单，这里两种方法我们衡量两点间距离的标准是<code>欧氏距离</code>。如果想用其他的标准呢，比如$L_{1}$距离该怎么实现呢，这里我参照上面推导公式的思想得出了计算$L_{1}$距离的矩阵运算。</p>
+<h3 id="L1-Distance"><a href="#L1-Distance" class="headerlink" title="L1 Distance"></a>L1 Distance</h3><p>记测试集矩阵 P 的大小为$M_D$，训练集矩阵 C 的大小为$N_D$（测试集中共有 M 个点，每个点为 D 维特征向量。训练集中共有 N 个点，每个点为 D 维特征向量）</p>
+<p>记$P_{i}$是 P 的第 i 行$P_i = [ P_{i1}\quad P_{i2} \cdots P_{iD}]$，记$C_{j}$是 C 的第 j 行$C_j = [ C_{j1} C_{j2} \cdots \quad C_{jD}]$</p>
+<ul>
+<li>首先计算 Pi 和 Cj 之间的距离 dist(i,j)</li>
+</ul>
+$d(P_{i}, C_{j}) = |P_{i1} - C_{j1}| + |P_{i2} - C_{j2}| + \cdots + |P_{iD} - C_{jD}|$
+
+<ul>
+<li>我们可以推广到距离矩阵的第 i 行的计算公式</li>
+</ul>
+$dist[i] = \left | [P_{i}\quad P_{i} \cdots P_{i}] - [C_{1}\quad C_{2}\cdots C_{N}] \right|=[|P_{i} - C_{1}|\quad |P_{i} - C_{2}| \cdots |P_{i} - C_{N}|]$
+
+<ul>
+<li>继续将公式推广为整个距离矩阵</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579695558356-4d28e94a-b147-4935-a8a4-3130d80282ab.png#align=left&display=inline&height=101&originHeight=101&originWidth=775&size=0&status=done&style=none&width=775" alt=""></p>
+<p>其中$P_i = [ P_{i1}\quad P_{i2} \cdots P_{iD}]$、$C_j = [ C_{j1} C_{j2} \cdots \quad C_{jD}]$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">l1_distance_no_loops</span><span class="params">(train_X, test_X)</span>:</span></span><br><span class="line">   num_test = test_X.shape[<span class="number">0</span>]</span><br><span class="line">   num_train = train_X.shape[<span class="number">0</span>]</span><br><span class="line">   test = np.tile(test_X, (num_train, <span class="number">1</span>, <span class="number">1</span>))</span><br><span class="line">   train = np.tile(train_X, (num_test, <span class="number">1</span>, <span class="number">1</span>))</span><br><span class="line">   train = np.transpose(train, axes=(<span class="number">1</span>, <span class="number">0</span>, <span class="number">2</span>))</span><br><span class="line">   sum = np.subtract(test, train)</span><br><span class="line">   sum = np.abs(sum)</span><br><span class="line">   sum = np.sum(sum, axis=<span class="number">2</span>)</span><br><span class="line">   dists = sum.T</span><br><span class="line">   <span class="keyword">return</span> dists</span><br></pre></td></tr></table></figure>
+
+<p>由于测试集样本数量有限，两种距离衡量标准下的准确率分别是 0.94 和 0.98。</p>
+<h2 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h2><ul>
+<li><a href="https://github.com/wmpscc/ML-DL/blob/master/kNN/README.md" target="_blank" rel="external nofollow noopener noreferrer">查看完整代码</a>。</li>
+<li><a href="https://github.com/wmpscc/ML-DL" target="_blank" rel="external nofollow noopener noreferrer">持续更新更多算法请关注此项目</a></li>
+</ul>
+<h3 id="近期文章"><a href="#近期文章" class="headerlink" title="近期文章"></a>近期文章</h3><ul>
+<li><a href="%E8%82%A5%E5%AE%85%EF%BC%9F%E4%B8%8D%E5%AD%98%E5%9C%A8%E7%9A%84%EF%BC%81%E8%A7%86%E8%A7%89&%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0&%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E5%A4%A7%E7%A4%BC%E5%8C%85%E6%9D%A5%E4%B8%80%E6%89%93%EF%BC%9F">肥宅？不存在的！视觉&amp;机器学习&amp;数学建模大礼包来一打？</a></li>
+<li><a href="KMeans%E7%AE%97%E6%B3%95%E4%B8%8E%E4%BA%A4%E9%80%9A%E4%BA%8B%E6%95%85%E7%90%86%E8%B5%94%E5%AE%A1%E6%A0%B8%E9%A2%84%E6%B5%8B">KMeans 算法与交通事故理赔审核预测</a></li>
+<li><a href="https://mp.weixin.qq.com/s/C6vUuALuO_RP95sx2QIjlw" target="_blank" rel="external nofollow noopener noreferrer">数据挖掘之配置科学计算环境</a></li>
+<li><a href="https://mp.weixin.qq.com/s/0pYra-JRZvlDlz_AYysCEw" target="_blank" rel="external nofollow noopener noreferrer">Python 快速入门之与 C 语言异同</a></li>
+<li><a href="https://mp.weixin.qq.com/s/VkzFs0LBo9Oif07z0p74Mw" target="_blank" rel="external nofollow noopener noreferrer">一文教会你使用 Matplotlib 绘图</a></li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695558345-64135961-ad49-4d01-86a6-f6053e7d7ae5.jpeg#align=left&display=inline&height=640&originHeight=640&originWidth=1080&size=0&status=done&style=none&width=1080" alt=""></p>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/K-%E8%BF%91%E9%82%BB%E7%AE%97%E6%B3%95%E4%BB%8B%E7%BB%8D%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/Demo/">
+              #Demo
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/KNN/">
+              #KNN
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/Python%E5%9F%BA%E7%A1%80%E4%B8%8E%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95.html" target="_self">Python基础与科学计算常用方法</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/TensorFlow%202.0%E9%AB%98%E6%95%88%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97.html" target="_self">TensorFlow 2.0高效开发指南</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>高级特征工程II | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="数据科学,总结,kaggle,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>高级特征工程II</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-01-22
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6/">
+            数据科学
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="高级特征工程II.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <p>以下是 Coursera 上的<a href="https://www.coursera.org/learn/competitive-data-science/home/week/3" target="_blank" rel="external nofollow noopener noreferrer">How to Win a Data Science Competition: Learn from Top Kagglers</a>课程笔记。</p>
+<h1 id="Statistics-and-distance-based-features"><a href="#Statistics-and-distance-based-features" class="headerlink" title="Statistics and distance based features"></a>Statistics and distance based features</h1><p>该部分专注于此高级特征工程：计算由另一个分组的一个特征的各种统计数据和从给定点的邻域分析得到的特征。</p>
+<blockquote>
+<p>groupby and nearest neighbor methods</p>
+</blockquote>
+<h4 id="例子：这里有一些-CTR-任务的数据"><a href="#例子：这里有一些-CTR-任务的数据" class="headerlink" title="例子：这里有一些 CTR 任务的数据"></a>例子：这里有一些 CTR 任务的数据</h4><p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696231752-37606a57-454a-4deb-8877-3f053a076e51.png#align=left&display=inline&height=443&originHeight=443&originWidth=719&size=0&status=done&style=none&width=719" alt=""></p>
+<blockquote>
+<p>我们可以暗示广告有 页面上的最低价格将吸引大部分注意力。 页面上的其他广告不会很有吸引力。 计算与这种含义相关的特征非常容易。 我们可以为每个广告的每个用户和网页添加最低和最高价格。 在这种情况下，具有最低价格的广告的位置也可以使用。</p>
+</blockquote>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696231767-b6194091-60c0-4caa-ae50-672ca3f24044.png#align=left&display=inline&height=481&originHeight=481&originWidth=833&size=0&status=done&style=none&width=833" alt=""></p>
+<p>代码实现<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696231762-ca5c17e8-4625-4506-8899-a6f6de1c5851.png#align=left&display=inline&height=337&originHeight=337&originWidth=771&size=0&status=done&style=none&width=771" alt=""></p>
+<ul>
+<li>More feature</li>
+<li>How many pages user visited</li>
+<li>Standard deviation of prices</li>
+<li>Most visited page</li>
+<li>Many, many more</li>
+</ul>
+<p>如果没有特征可以像这样使用 groupby 呢？可以使用最近邻点</p>
+<h3 id="Neighbors"><a href="#Neighbors" class="headerlink" title="Neighbors"></a>Neighbors</h3><ul>
+<li>Explicit group is not needed</li>
+<li>More flexible</li>
+<li>Much harder to implement</li>
+</ul>
+<p><strong>Examples</strong></p>
+<ul>
+<li>Number of houses in 500m, 1000m,..</li>
+<li>Average price per square meter in 500m, 1000m,..</li>
+<li>Number of schools/supermarkets/parking lots in 500m, 1000m,..</li>
+<li>Distance to colsest subway station</li>
+</ul>
+<p>讲师在<code>Springleaf</code>比赛中使用了它。</p>
+<h4 id="KNN-features-in-springleaf"><a href="#KNN-features-in-springleaf" class="headerlink" title="KNN features in springleaf"></a>KNN features in springleaf</h4><ul>
+<li>Mean encode all the variables</li>
+<li>For every point, find 2000 nearst neighbors using Bray-Curtis metric</li>
+</ul>
+$$\frac{\sum{|u_i - v_i|}}{\sum{|u_i + v_i|}}$$
+
+<ul>
+<li>Calculate various features from those 2000 neighbors</li>
+</ul>
+<p><strong>Evaluate</strong></p>
+<ul>
+<li>Mean target of neatrest 5,10,15,500,2000, neighbors</li>
+<li>Mean distance to 10 closest neighbors</li>
+<li>Mean distance to 10 closest neighbors with target 1</li>
+<li>Mean distance to 10 closest neighbors with target 0</li>
+</ul>
+<h1 id="Matrix-factorizations-for-feature-extraction"><a href="#Matrix-factorizations-for-feature-extraction" class="headerlink" title="Matrix factorizations for feature extraction"></a>Matrix factorizations for feature extraction</h1><ul>
+<li><strong>Example of feature fusion</strong></li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696232085-f652c9bb-289d-46c7-a5a4-2d6f545fb0b6.png#align=left&display=inline&height=477&originHeight=477&originWidth=696&size=0&status=done&style=none&width=696" alt=""></p>
+<h4 id="Notes-about-Matrix-Fatorization"><a href="#Notes-about-Matrix-Fatorization" class="headerlink" title="Notes about Matrix Fatorization"></a>Notes about Matrix Fatorization</h4><ul>
+<li>Can be apply only for some columns</li>
+<li>Can provide additional diversity</li>
+<li>Good for ensembles</li>
+<li>It is <strong>lossy</strong> transformation.Its’ efficirncy depends on:</li>
+<li>Particular task</li>
+<li>Number of latent factors<ul>
+<li>Usually 5-100</li>
+</ul>
+</li>
+</ul>
+<h4 id="Implementtation"><a href="#Implementtation" class="headerlink" title="Implementtation"></a>Implementtation</h4><ul>
+<li>Serveral MF methods you can find in sklearn</li>
+<li>SVD and PCA</li>
+<li>Standart tools for Matrix Fatorization</li>
+<li>TruncatedSVD</li>
+<li>Works with sparse matrices</li>
+<li>Non-negative Matrix Fatorization(NMF)</li>
+<li>Ensures that all latent fators are non-negative</li>
+<li>Good for counts-like data</li>
+</ul>
+<h4 id="NMF-for-tree-based-methods"><a href="#NMF-for-tree-based-methods" class="headerlink" title="NMF for tree-based methods"></a>NMF for tree-based methods</h4><blockquote>
+<p><code>non-negative matrix factorization</code>简称 NMF，它以一种使数据更适合决策树的方式转换数据。<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696232140-259c7a8a-4f01-4c59-a1e8-1a8e3dd7c344.png#align=left&display=inline&height=394&originHeight=394&originWidth=742&size=0&status=done&style=none&width=742" alt=""></p>
+</blockquote>
+<p>可以看出，NMF 变换数据形成平行于轴的线。</p>
+<h4 id="因子分解"><a href="#因子分解" class="headerlink" title="因子分解"></a>因子分解</h4><p>可以使用与线性模型的技巧来分解矩阵。<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696231797-27122c6f-bba0-4e54-b881-c9e073630a81.png#align=left&display=inline&height=395&originHeight=395&originWidth=739&size=0&status=done&style=none&width=739" alt=""></p>
+<h3 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h3><ul>
+<li>Matrix Factorization is a very general approach for dimensionality reduction and feature extraction</li>
+<li>It can be applied for transforming categorical features into real-valued</li>
+<li>Many of tricks trick suitable for linear models can be useful for MF</li>
+</ul>
+<h2 id="Feature-interactions"><a href="#Feature-interactions" class="headerlink" title="Feature interactions"></a>Feature interactions</h2><p>特征值的所有组合</p>
+<ul>
+<li><strong>Example:banner selection</strong></li>
+</ul>
+<p>假设我们正在构建一个预测模型，在网站上显示的最佳广告横幅。</p>
+<table>
+<thead>
+<tr>
+<th align="center">…</th>
+<th align="center">category_ad</th>
+<th align="center">category_site</th>
+<th align="center">…</th>
+<th align="center">is_clicked</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">…</td>
+<td align="center">auto_part</td>
+<td align="center">game_news</td>
+<td align="center">…</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">…</td>
+<td align="center">music_tickets</td>
+<td align="center">music_news</td>
+<td align="center">..</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">…</td>
+<td align="center">mobile_phones</td>
+<td align="center">auto_blog</td>
+<td align="center">…</td>
+<td align="center">0</td>
+</tr>
+</tbody></table>
+<p>将广告横幅本身的类别和横幅将显示的网站类别，进行组合将构成一个非常强的特征。</p>
+<p>| … |    ad_site    |    …     | is_clicked |<br>| :-: | :———–: | :——–: | :——–: | — |<br>| … |   auto_part   | game_news  |    …     | 0   |<br>| … | music_tickets | music_news |     ..     | 1   |<br>| … | mobile_phones | auto_blog  |    …     | 0   |</p>
+<p>构建这两个特征的组合特征<code>ad_site</code></p>
+<p>从技术角度来看， 有两种方法可以构建这种交互。</p>
+<ul>
+<li><strong>Example of interactions</strong></li>
+</ul>
+<p><strong>方法 1</strong><br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696232026-adf48873-ee4e-4f1a-8a3f-c93361c31003.png#align=left&display=inline&height=217&originHeight=217&originWidth=724&size=0&status=done&style=none&width=724" alt=""></p>
+<p><strong>方法 2</strong><br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696232081-a8309a60-2ea5-4f1f-aa82-751961114c43.png#align=left&display=inline&height=518&originHeight=518&originWidth=651&size=0&status=done&style=none&width=651" alt=""></p>
+<ul>
+<li><strong>相似的想法也可用于数值变量</strong></li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696231798-79fa6674-b47c-45f9-be7e-89ad0fefda34.png#align=left&display=inline&height=244&originHeight=244&originWidth=326&size=0&status=done&style=none&width=326" alt=""></p>
+<p>事实上，这不限于乘法操作，还可以是其他的</p>
+<ul>
+<li>Multiplication</li>
+<li>Sum</li>
+<li>Diff</li>
+<li>Division</li>
+<li>..</li>
+</ul>
+<h3 id="Practival-Notes"><a href="#Practival-Notes" class="headerlink" title="Practival Notes"></a><strong>Practival Notes</strong></h3><ul>
+<li>We have a lot of possible interactions -N*N for N features.</li>
+<li>a. Even more if use several types in interactions</li>
+<li>Need ti reduce it’s number</li>
+<li>a. Dimensionality reduction</li>
+<li>b. Feature selection</li>
+</ul>
+<p>通过这种方法生成了大量的特征，可以使用特征选择或降维的方法减少特征。以下用特征选择举例说明<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696231811-30b3f5cc-8872-4d12-b179-e670ee27458e.png#align=left&display=inline&height=435&originHeight=435&originWidth=744&size=0&status=done&style=none&width=744" alt=""></p>
+<h3 id="Interactions’-order"><a href="#Interactions’-order" class="headerlink" title="Interactions’ order"></a>Interactions’ order</h3><ul>
+<li>We looked at 2nd order interactions.</li>
+<li>Such approach can be generalized for higher orders.</li>
+<li>It is hard to do generation and selection automatically.</li>
+<li>Manual building of high-order interactions is some kind of art.</li>
+</ul>
+<h3 id="Extract-features-from-DT"><a href="#Extract-features-from-DT" class="headerlink" title="Extract features from DT"></a>Extract features from DT</h3><p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696232080-992ac805-329a-4ad8-858b-e99344b7c946.png#align=left&display=inline&height=477&originHeight=477&originWidth=477&size=0&status=done&style=none&width=477" alt=""></p>
+<blockquote>
+<p>看一下决策树。 让我们将每个叶子映射成二进制特征。 对象叶子的索引可以用作新分类特征的值。 如果我们不使用单个树而是使用它们的整体。 例如，随机森林， 那么这种操作可以应用于每个条目。 这是一种提取高阶交互的强大方法。</p>
+</blockquote>
+<ul>
+<li><strong>How to use it</strong></li>
+</ul>
+<p>In sklearn:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tree_model.apply()</span><br></pre></td></tr></table></figure>
+
+<p>In xgboost:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">booster.predict(pred_leaf=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="Conclusion-1"><a href="#Conclusion-1" class="headerlink" title="Conclusion"></a>Conclusion</h3><ul>
+<li>We looked at ways to build an interaction of categorical attributes</li>
+<li>Extended this approach to real-valued features</li>
+<li>Learn how to extract features via decision trees</li>
+</ul>
+<h2 id="t-SNE"><a href="#t-SNE" class="headerlink" title="t-SNE"></a>t-SNE</h2><p>用于探索数据分析。可以被视为从数据中获取特征的方法。</p>
+<h3 id="Practical-Notes"><a href="#Practical-Notes" class="headerlink" title="Practical Notes"></a>Practical Notes</h3><ul>
+<li>Result heavily depends on hyperparameters(perplexity)</li>
+<li>Good practice is to use several projections with different perplexities(5-100)</li>
+<li>Due to stochastic nature, tSNE provides different projections even for the same data\hyperparams</li>
+<li>Train and test should be projected together</li>
+<li>tSNE runs for a long time with a big number of features</li>
+<li>it is common to do dimensionality reduction before projection.</li>
+<li>Implementation of tSNE can be found in sklearn library.</li>
+<li>But personally I perfer you use stand-alone implementation python package tsne due to its’ faster speed.</li>
+</ul>
+<h3 id="Conclusion-2"><a href="#Conclusion-2" class="headerlink" title="Conclusion"></a>Conclusion</h3><ul>
+<li>tSNE is a great tool for visualization</li>
+<li>It can be used as feature as well</li>
+<li>Be careful with interpretation of results</li>
+<li>Try different perplexities</li>
+</ul>
+<h4 id="矩阵分解："><a href="#矩阵分解：" class="headerlink" title="矩阵分解："></a>矩阵分解：</h4><ul>
+<li><a href="http://scikit-learn.org/stable/modules/decomposition.html" target="_blank" rel="external nofollow noopener noreferrer">矩阵分解方法概述（sklearn）</a></li>
+</ul>
+<h4 id="T-SNOW："><a href="#T-SNOW：" class="headerlink" title="T-SNOW："></a>T-SNOW：</h4><ul>
+<li><a href="https://github.com/DmitryUlyanov/Multicore-TSNE" target="_blank" rel="external nofollow noopener noreferrer">多核 t-SNE 实现</a></li>
+<li><a href="http://scikit-learn.org/stable/auto_examples/manifold/plot_compare_methods.html" target="_blank" rel="external nofollow noopener noreferrer">流形学习方法的比较（sklearn)</a></li>
+<li><a href="https://distill.pub/2016/misread-tsne/" target="_blank" rel="external nofollow noopener noreferrer">如何有效使用 t-SNE（distill.pub 博客）</a></li>
+<li><a href="https://lvdmaaten.github.io/tsne/" target="_blank" rel="external nofollow noopener noreferrer">tSNE 主页（Laurens van der Maaten）</a></li>
+<li><a href="http://scikit-learn.org/stable/auto_examples/manifold/plot_t_sne_perplexity.html#sphx-glr-auto-examples-manifold-plot-t-sne-perplexity-py" target="_blank" rel="external nofollow noopener noreferrer">示例：具有不同困惑的 tSNE（sklearn）</a></li>
+</ul>
+<h4 id="互动："><a href="#互动：" class="headerlink" title="互动："></a>互动：</h4><ul>
+<li><a href="https://research.fb.com/publications/practical-lessons-from-predicting-clicks-on-ads-at-facebook/" target="_blank" rel="external nofollow noopener noreferrer">Facebook Research 的论文关于从树中提取分类特征</a></li>
+<li><a href="http://scikit-learn.org/stable/auto_examples/ensemble/plot_feature_transformation.html" target="_blank" rel="external nofollow noopener noreferrer">示例：使用树集合进行要素转换（sklearn）</a></li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579696231800-fbd39893-b010-418a-8937-9f78a7f989d5.jpeg#align=left&display=inline&height=640&originHeight=640&originWidth=1080&size=0&status=done&style=none&width=1080" alt=""></p>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/%E9%AB%98%E7%BA%A7%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8BII.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/%E6%80%BB%E7%BB%93/">
+              #总结
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/kaggle/">
+              #kaggle
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/%E9%AB%98%E7%BA%A7%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8BI.html" target="_self">高级特征工程I</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/%E9%AB%98%E7%BA%A7%E8%B0%83%E5%8F%82%E6%8A%80%E5%B7%A7.html" target="_self">高级调参技巧</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

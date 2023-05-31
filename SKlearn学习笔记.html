@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>SKlearn学习笔记 | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="数据科学,sklearn,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>SKlearn学习笔记</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-01-23
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6/">
+            数据科学
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="SKlearn学习笔记.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <p>本文为我在学习中记录的函数，并加以拓展。</p>
+<h2 id="SKlearn-方法"><a href="#SKlearn-方法" class="headerlink" title="SKlearn 方法"></a>SKlearn 方法</h2><h3 id="train-test-split-将数组或矩阵分解为随机序列的训练和测试子集-1"><a href="#train-test-split-将数组或矩阵分解为随机序列的训练和测试子集-1" class="headerlink" title="train_test_split() 将数组或矩阵分解为随机序列的训练和测试子集"></a>train_test_split() 将数组或矩阵分解为随机序列的训练和测试子集</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.model_selection import train_test_split</span><br><span class="line"></span><br><span class="line">train_set, test_set &#x3D; train_test_split(housing, test_size&#x3D;0.2, random_state&#x3D;42)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>random_state 参数相当于设置随机数种子</li>
+<li>stratify 如果不是“null”，则将数据以分层方式拆分，将其用作类标签。</li>
+</ul>
+<h3 id="StratifiedShuffleSplit-将数据分为多对-train-test-集并随机打乱-1"><a href="#StratifiedShuffleSplit-将数据分为多对-train-test-集并随机打乱-1" class="headerlink" title="StratifiedShuffleSplit() 将数据分为多对 train/test 集并随机打乱"></a>StratifiedShuffleSplit() 将数据分为多对 train/test 集并随机打乱</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from  sklearn.model_selection import StratifiedShuffleSplit</span><br><span class="line">StratifiedShuffleSplit(n_splits&#x3D;10,test_size&#x3D;None,train_size&#x3D;None, random_state&#x3D;None)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>n_splits 是将训练数据分成 train/test 对的组数，可根据需要进行设置，默认为 10</li>
+<li>参数 test_size 和 train_size 是用来设置 train/test 对中 train 和 test 所占的比例</li>
+<li>参数 random_state 相当于随机数种子</li>
+</ul>
+<h3 id="CategoricalEncoder-类-将-array-使用-onehot-或-ordinal-编码"><a href="#CategoricalEncoder-类-将-array-使用-onehot-或-ordinal-编码" class="headerlink" title="CategoricalEncoder 类 将 array 使用 onehot 或 ordinal 编码"></a>CategoricalEncoder 类 将 array 使用 onehot 或 ordinal 编码</h3><p>返回一个 sparse array，可以使用<code>toarray()</code>转换为 dense array，或者指定编码类型为<code>onehot-dense</code>来得到 dense matrix。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.preprocessing import CategoricalEncoder</span><br><span class="line"></span><br><span class="line">cat_encoder &#x3D; CategoricalEncoder()</span><br><span class="line">housing_cat_reshaped &#x3D; housing_cat.values.reshape(-1, 1)</span><br><span class="line">housing_cat_1hot &#x3D; cat_encoder.fit_transform(housing_cat_reshaped)</span><br><span class="line">housing_cat_1hot</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>encoding : str, ‘onehot’, ‘onehot-dense’ or ‘ordinal’，指定编码类型，默认为 onehot。</li>
+<li>categories : ‘auto’ or a list of lists/arrays of values.</li>
+<li>dtype : number type, default np.float64</li>
+<li>handle_unknown : ‘error’ (default) or ‘ignore’</li>
+</ul>
+<h3 id="MinMaxScaler-MinMax-scaling-归一化"><a href="#MinMaxScaler-MinMax-scaling-归一化" class="headerlink" title="MinMaxScaler() MinMax scaling 归一化"></a>MinMaxScaler() MinMax scaling 归一化</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; from sklearn.preprocessing import MinMaxScaler</span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line">&gt;&gt;&gt; data &#x3D; [[-1, 2], [-0.5, 6], [0, 10], [1, 18]]</span><br><span class="line">&gt;&gt;&gt; scaler &#x3D; MinMaxScaler()</span><br><span class="line">&gt;&gt;&gt; print(scaler.fit(data))</span><br><span class="line">MinMaxScaler(copy&#x3D;True, feature_range&#x3D;(0, 1))</span><br><span class="line">&gt;&gt;&gt; print(scaler.data_max_)</span><br><span class="line">[  1.  18.]</span><br><span class="line">&gt;&gt;&gt; print(scaler.transform(data))</span><br><span class="line">[[ 0.    0.  ]</span><br><span class="line"> [ 0.25  0.25]</span><br><span class="line"> [ 0.5   0.5 ]</span><br><span class="line"> [ 1.    1.  ]]</span><br><span class="line">&gt;&gt;&gt; print(scaler.transform([[2, 2]]))</span><br><span class="line">[[ 1.5  0. ]]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>feature_range : tuple (min, max), default=(0, 1)，归一化后值的范围</li>
+<li>copy : boolean, optional, default True，是否复制数据在新的数据上归一化</li>
+</ul>
+<h3 id="StandardScaler-0-均值标准化"><a href="#StandardScaler-0-均值标准化" class="headerlink" title="StandardScaler() 0 均值标准化"></a>StandardScaler() 0 均值标准化</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; from sklearn.preprocessing import StandardScaler</span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line">&gt;&gt;&gt; data &#x3D; [[0, 0], [0, 0], [1, 1], [1, 1]]</span><br><span class="line">&gt;&gt;&gt; scaler &#x3D; StandardScaler()</span><br><span class="line">&gt;&gt;&gt; print(scaler.fit(data))</span><br><span class="line">StandardScaler(copy&#x3D;True, with_mean&#x3D;True, with_std&#x3D;True)</span><br><span class="line">&gt;&gt;&gt; print(scaler.mean_)</span><br><span class="line">[ 0.5  0.5]</span><br><span class="line">&gt;&gt;&gt; print(scaler.transform(data))</span><br><span class="line">[[-1. -1.]</span><br><span class="line"> [-1. -1.]</span><br><span class="line"> [ 1.  1.]</span><br><span class="line"> [ 1.  1.]]</span><br><span class="line">&gt;&gt;&gt; print(scaler.transform([[2, 2]]))</span><br><span class="line">[[ 3.  3.]]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>copy : boolean, optional, default True，是否复制数据在新的数据上执行</li>
+<li>with_mean : boolean, True by default，若为 True 则在缩放前将数据居中。但在稀疏矩阵上是行不通的。</li>
+<li>with_std : boolean, True by default，若为 True，则将数据放缩到单位方差或等效于单位标准差</li>
+</ul>
+<h3 id="mean-squared-error-均方误差（MSE-and-to-RMSE）"><a href="#mean-squared-error-均方误差（MSE-and-to-RMSE）" class="headerlink" title="mean_squared_error() 均方误差（MSE and to RMSE）"></a>mean_squared_error() 均方误差（MSE and to RMSE）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.metrics import mean_squared_error</span><br><span class="line"></span><br><span class="line">housing_predictions &#x3D; lin_reg.predict(housing_prepared)</span><br><span class="line">lin_mse &#x3D; mean_squared_error(housing_labels, housing_predictions)</span><br><span class="line">lin_rmse &#x3D; np.sqrt(lin_mse)</span><br><span class="line">lin_rmse</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>y_true : array-like of shape = (n_samples) or (n_samples, n_outputs) 真实值</li>
+<li>y_pred : array-like of shape = (n_samples) or (n_samples, n_outputs) 预测值</li>
+</ul>
+<p>返回： loss : float or ndarray of floats</p>
+<h3 id="mean-absolute-error-平均绝对误差（MAE）"><a href="#mean-absolute-error-平均绝对误差（MAE）" class="headerlink" title="mean_absolute_error() 平均绝对误差（MAE）"></a>mean_absolute_error() 平均绝对误差（MAE）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.metrics import mean_absolute_error</span><br><span class="line"></span><br><span class="line">lin_mae &#x3D; mean_absolute_error(housing_labels, housing_predictions)</span><br><span class="line">lin_mae</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>y_true : array-like of shape = (n_samples) or (n_samples, n_outputs) 真实值</li>
+<li>y_pred : array-like of shape = (n_samples) or (n_samples, n_outputs) 预测值</li>
+</ul>
+<p>返回：loss : float or ndarray of floats</p>
+<h3 id="LinearRegression-线性回归模型"><a href="#LinearRegression-线性回归模型" class="headerlink" title="LinearRegression() 线性回归模型"></a>LinearRegression() 线性回归模型</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.linear_model import LinearRegression</span><br><span class="line"></span><br><span class="line">lin_reg &#x3D; LinearRegression()</span><br><span class="line">lin_reg.fit(housing_prepared, housing_labels)</span><br><span class="line"># Out:LinearRegression(copy_X&#x3D;True, fit_intercept&#x3D;True, n_jobs&#x3D;1, normalize&#x3D;False)</span><br><span class="line"></span><br><span class="line"># let&#39;s try the full pipeline on a few training instances</span><br><span class="line">some_data &#x3D; housing.iloc[:5]</span><br><span class="line">some_labels &#x3D; housing_labels.iloc[:5]</span><br><span class="line">some_data_prepared &#x3D; full_pipeline.transform(some_data)</span><br><span class="line"></span><br><span class="line">print(&quot;Predictions:&quot;, lin_reg.predict(some_data_prepared))</span><br><span class="line"># Out:Predictions: [ 210644.60459286  317768.80697211  210956.43331178   59218.98886849  189747.55849879]</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>Methods</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>fit(X, y[, sample_weight])</td>
+<td>Fit linear model.</td>
+</tr>
+<tr>
+<td>get_params([deep])</td>
+<td>Get parameters for this estimator.</td>
+</tr>
+<tr>
+<td>predict(X)</td>
+<td>Predict using the linear model</td>
+</tr>
+<tr>
+<td>score(X, y[, sample_weight])</td>
+<td>Returns the coefficient of determination R^2 of the prediction.</td>
+</tr>
+<tr>
+<td>set_params(**params)</td>
+<td>Set the parameters of this estimator.</td>
+</tr>
+</tbody></table>
+<h3 id="DecisionTreeRegressor-决策树模型"><a href="#DecisionTreeRegressor-决策树模型" class="headerlink" title="DecisionTreeRegressor() 决策树模型"></a>DecisionTreeRegressor() 决策树模型</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.tree import DecisionTreeRegressor</span><br><span class="line"></span><br><span class="line">tree_reg &#x3D; DecisionTreeRegressor(random_state&#x3D;42)</span><br><span class="line">tree_reg.fit(housing_prepared, housing_labels)</span><br><span class="line"># Out:</span><br><span class="line"># DecisionTreeRegressor(criterion&#x3D;&#39;mse&#39;, max_depth&#x3D;None, max_features&#x3D;None,</span><br><span class="line">#            max_leaf_nodes&#x3D;None, min_impurity_decrease&#x3D;0.0,</span><br><span class="line">#            min_impurity_split&#x3D;None, min_samples_leaf&#x3D;1,</span><br><span class="line">#            min_samples_split&#x3D;2, min_weight_fraction_leaf&#x3D;0.0,</span><br><span class="line">#            presort&#x3D;False, random_state&#x3D;42, splitter&#x3D;&#39;best&#39;)</span><br><span class="line"></span><br><span class="line">housing_predictions &#x3D; tree_reg.predict(housing_prepared)</span><br><span class="line"># 计算RMSE</span><br><span class="line">tree_mse &#x3D; mean_squared_error(housing_labels, housing_predictions)</span><br><span class="line">tree_rmse &#x3D; np.sqrt(tree_mse)</span><br><span class="line">tree_rmse</span><br><span class="line"># Out: 0.0</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>Methods</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>apply(X[, check_input])</td>
+<td>Returns the index of the leaf that each sample is predicted as.</td>
+</tr>
+<tr>
+<td>decision_path(X[, check_input])</td>
+<td>Return the decision path in the tree</td>
+</tr>
+<tr>
+<td>fit(X, y[, sample_weight, check_input, …])</td>
+<td>Build a decision tree regressor from the training set (X, y).</td>
+</tr>
+<tr>
+<td>get_params([deep])</td>
+<td>Get parameters for this estimator.</td>
+</tr>
+<tr>
+<td>predict(X[, check_input])</td>
+<td>Predict class or regression value for X.</td>
+</tr>
+<tr>
+<td>score(X, y[, sample_weight])</td>
+<td>Returns the coefficient of determination R^2 of the prediction.</td>
+</tr>
+<tr>
+<td>set_params(**params)</td>
+<td>Set the parameters of this estimator.</td>
+</tr>
+</tbody></table>
+<h3 id="RandomForestRegressor-随机森林回归"><a href="#RandomForestRegressor-随机森林回归" class="headerlink" title="RandomForestRegressor() 随机森林回归"></a>RandomForestRegressor() 随机森林回归</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.ensemble import RandomForestRegressor</span><br><span class="line"></span><br><span class="line">forest_reg &#x3D; RandomForestRegressor(random_state&#x3D;42)</span><br><span class="line">forest_reg.fit(housing_prepared, housing_labels)</span><br><span class="line"></span><br><span class="line">housing_predictions &#x3D; forest_reg.predict(housing_prepared)</span><br><span class="line">forest_mse &#x3D; mean_squared_error(housing_labels, housing_predictions)</span><br><span class="line">forest_rmse &#x3D; np.sqrt(forest_mse)</span><br><span class="line">forest_rmse</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>Methods</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>apply(X)</td>
+<td>Apply trees in the forest to X, return leaf indices.</td>
+</tr>
+<tr>
+<td>decision_path(X)</td>
+<td>Return the decision path in the forest</td>
+</tr>
+<tr>
+<td>fit(X, y[, sample_weight])</td>
+<td>Build a forest of trees from the training set (X, y).</td>
+</tr>
+<tr>
+<td>get_params([deep])</td>
+<td>Get parameters for this estimator.</td>
+</tr>
+<tr>
+<td>predict(X)</td>
+<td>Predict regression target for X.</td>
+</tr>
+<tr>
+<td>score(X, y[, sample_weight])</td>
+<td>Returns the coefficient of determination R^2 of the prediction.</td>
+</tr>
+<tr>
+<td>set_params(**params)</td>
+<td>Set the parameters of this estimator.</td>
+</tr>
+</tbody></table>
+<h3 id="cross-val-score-K-fold-交叉验证"><a href="#cross-val-score-K-fold-交叉验证" class="headerlink" title="cross_val_score() K-fold 交叉验证"></a>cross_val_score() K-fold 交叉验证</h3><p>它的期望是一个效用函数越大越好，所以它的评分函数是一个<code>负值</code>。这就是为什么在计算开平方时取相反数（-scores）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.model_selection import cross_val_score</span><br><span class="line"></span><br><span class="line">scores &#x3D; cross_val_score(tree_reg, housing_prepared, housing_labels,</span><br><span class="line">                         scoring&#x3D;&quot;neg_mean_squared_error&quot;, cv&#x3D;10)</span><br><span class="line">tree_rmse_scores &#x3D; np.sqrt(-scores)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>estimator : estimator object implementing ‘fit’ 用于拟合数据的对象，此处使用的是决策树 tree_reg。</li>
+<li>X : array-like 要拟合的数据，可以是 list 或 array。</li>
+<li>y : array-like, optional, default: None 监督学习下尝试预测的目标值</li>
+<li>scoring : string, callable or None, optional, default: None 一个字符串，参见模型评估文档。</li>
+<li>cv : int, cross-validation generator or an iterable, optional，决定交叉验证拆分策略，K-fold</li>
+</ul>
+<h3 id="joblib-保存模型"><a href="#joblib-保存模型" class="headerlink" title="joblib 保存模型"></a>joblib 保存模型</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.externals import joblib</span><br><span class="line"></span><br><span class="line">joblib.dump(my_model, &quot;my_model.pkl&quot;)</span><br><span class="line"># and later...</span><br><span class="line">my_model_loaded &#x3D; joblib.load(&quot;my_model.pkl&quot;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="SVR-ε-SVM-回归"><a href="#SVR-ε-SVM-回归" class="headerlink" title="SVR() ε-SVM 回归"></a>SVR() ε-SVM 回归</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.svm import SVR</span><br><span class="line"></span><br><span class="line">svm_reg &#x3D; SVR(kernel&#x3D;&quot;linear&quot;)</span><br><span class="line">svm_reg.fit(housing_prepared, housing_labels)</span><br><span class="line">housing_predictions &#x3D; svm_reg.predict(housing_prepared)</span><br><span class="line">svm_mse &#x3D; mean_squared_error(housing_labels, housing_predictions)</span><br><span class="line">svm_rmse &#x3D; np.sqrt(svm_mse)</span><br><span class="line">svm_rmse</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>C : float, optional (default=1.0)，误差项惩罚参数</li>
+<li>kernel : string, optional (default=’rbf’)， 必须是‘linear’, ‘poly’, ‘rbf’, ‘sigmoid’, ‘precomputed’ 或者提供一个函数，如果是提供了函数则将它用来预先计算核心矩阵。<table>
+<thead>
+<tr>
+<th>Methods</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>fit(X, y[, sample_weight])</td>
+<td>Fit the SVM model according to the given training data.</td>
+</tr>
+<tr>
+<td>get_params([deep])</td>
+<td>Get parameters for this estimator.</td>
+</tr>
+<tr>
+<td>predict(X)</td>
+<td>Perform regression on samples in X.</td>
+</tr>
+<tr>
+<td>score(X, y[, sample_weight])</td>
+<td>Returns the coefficient of determination R^2 of the prediction.</td>
+</tr>
+<tr>
+<td>set_params(**params)</td>
+<td>Set the parameters of this estimator.</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<h3 id="GridSearchCV-对估算器指定参数值进行详尽搜索"><a href="#GridSearchCV-对估算器指定参数值进行详尽搜索" class="headerlink" title="GridSearchCV() 对估算器指定参数值进行详尽搜索"></a>GridSearchCV() 对估算器指定参数值进行详尽搜索</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.model_selection import GridSearchCV</span><br><span class="line"></span><br><span class="line">param_grid &#x3D; [</span><br><span class="line">    # try 12 (3×4) combinations of hyperparameters</span><br><span class="line">    &#123;&#39;n_estimators&#39;: [3, 10, 30], &#39;max_features&#39;: [2, 4, 6, 8]&#125;,</span><br><span class="line">    # then try 6 (2×3) combinations with bootstrap set as False</span><br><span class="line">    &#123;&#39;bootstrap&#39;: [False], &#39;n_estimators&#39;: [3, 10], &#39;max_features&#39;: [2, 3, 4]&#125;,</span><br><span class="line">  ]</span><br><span class="line"></span><br><span class="line">forest_reg &#x3D; RandomForestRegressor(random_state&#x3D;42)</span><br><span class="line"># train across 5 folds, that&#39;s a total of (12+6)*5&#x3D;90 rounds of training</span><br><span class="line">grid_search &#x3D; GridSearchCV(forest_reg, param_grid, cv&#x3D;5,</span><br><span class="line">                           scoring&#x3D;&#39;neg_mean_squared_error&#39;)</span><br><span class="line">grid_search.fit(housing_prepared, housing_labels)</span><br><span class="line"></span><br><span class="line">grid_search.best_params_</span><br><span class="line"># Out:&#123;&#39;max_features&#39;: 8, &#39;n_estimators&#39;: 30&#125;</span><br><span class="line"></span><br><span class="line">grid_search.best_estimator_</span><br><span class="line"># Out:</span><br><span class="line"># RandomForestRegressor(bootstrap&#x3D;True, criterion&#x3D;&#39;mse&#39;, max_depth&#x3D;None,</span><br><span class="line">#            max_features&#x3D;8, max_leaf_nodes&#x3D;None, min_impurity_decrease&#x3D;0.0,</span><br><span class="line">#            min_impurity_split&#x3D;None, min_samples_leaf&#x3D;1,</span><br><span class="line">#            min_samples_split&#x3D;2, min_weight_fraction_leaf&#x3D;0.0,</span><br><span class="line">#            n_estimators&#x3D;30, n_jobs&#x3D;1, oob_score&#x3D;False, random_state&#x3D;42,</span><br><span class="line">#            verbose&#x3D;0, warm_start&#x3D;False)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>estimator : estimator object.每个估算器需要提供一个<code>score</code>函数或填写<code>scoring</code>参数。</li>
+<li>param_grid : dict or list of dictionaries，键作为参数名称，list 作为参数的字典。或存有这样的字典的列表。</li>
+<li>scoring : string, callable, list/tuple, dict or None, default: None，</li>
+<li>cv : int, cross-validation generator or an iterable, optional，如果是整数，则代表 KFold</li>
+<li>refit : boolean, or string, default=True，应用已找到的最好的参数到整个数据集上。<table>
+<thead>
+<tr>
+<th>Methods</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>decision_function(X)</td>
+<td>Call decision_function on the estimator with the best found parameters.</td>
+</tr>
+<tr>
+<td>fit(X[, y, groups])</td>
+<td>Run fit with all sets of parameters.</td>
+</tr>
+<tr>
+<td>get_params([deep])</td>
+<td>Get parameters for this estimator.</td>
+</tr>
+<tr>
+<td>inverse_transform(Xt)</td>
+<td>Call inverse_transform on the estimator with the best found params.</td>
+</tr>
+<tr>
+<td>predict(X)</td>
+<td>Call predict on the estimator with the best found parameters.</td>
+</tr>
+<tr>
+<td>predict_log_proba(X)</td>
+<td>Call predict_log_proba on the estimator with the best found parameters.</td>
+</tr>
+<tr>
+<td>predict_proba(X)</td>
+<td>Call predict_proba on the estimator with the best found parameters.</td>
+</tr>
+<tr>
+<td>score(X[, y])</td>
+<td>Returns the score on the given data, if the estimator has been refit.</td>
+</tr>
+<tr>
+<td>set_params(**params)</td>
+<td>Set the parameters of this estimator.</td>
+</tr>
+<tr>
+<td>transform(X)</td>
+<td>Call transform on the estimator with the best found parameters.</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<h3 id="RandomizedSearchCV"><a href="#RandomizedSearchCV" class="headerlink" title="RandomizedSearchCV()"></a>RandomizedSearchCV()</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.model_selection import RandomizedSearchCV</span><br><span class="line">from scipy.stats import randint</span><br><span class="line"></span><br><span class="line">param_distribs &#x3D; &#123;</span><br><span class="line">        &#39;n_estimators&#39;: randint(low&#x3D;1, high&#x3D;200),</span><br><span class="line">        &#39;max_features&#39;: randint(low&#x3D;1, high&#x3D;8),</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">forest_reg &#x3D; RandomForestRegressor(random_state&#x3D;42)</span><br><span class="line">rnd_search &#x3D; RandomizedSearchCV(forest_reg, param_distributions&#x3D;param_distribs,</span><br><span class="line">                                n_iter&#x3D;10, cv&#x3D;5, scoring&#x3D;&#39;neg_mean_squared_error&#39;, random_state&#x3D;42)</span><br><span class="line">rnd_search.fit(housing_prepared, housing_labels)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>estimator : estimator object.指定估算器对象。</li>
+<li>param_distributions : dict，给定以参数名为键，list 为参数的字典。或提供一个分布，分布必须提供一个<code>rvs</code>方法进行采样，例如来自 scipy.stats.distributions 的方法。</li>
+<li>n_iter : int, default=10，采样参数设置数量。</li>
+<li>scoring : string, callable, list/tuple, dict or None, default: None</li>
+<li>cv : int, cross-validation generator or an iterable, optional</li>
+<li>refit : boolean, or string default=True</li>
+<li>random_state : int, RandomState instance or None, optional, default=None</li>
+</ul>
+<h3 id="Imputer-处理丢失值"><a href="#Imputer-处理丢失值" class="headerlink" title="Imputer() 处理丢失值"></a>Imputer() 处理丢失值</h3><p>各属性必须是数值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.preprocessing import Imputer</span><br><span class="line"># 指定用何值替换丢失的值，此处为中位数</span><br><span class="line">imputer &#x3D; Imputer(strategy&#x3D;&quot;median&quot;)</span><br><span class="line"></span><br><span class="line"># 使实例适应数据</span><br><span class="line">imputer.fit(housing_num)</span><br><span class="line"></span><br><span class="line"># 结果在statistics_ 变量中</span><br><span class="line">imputer.statistics_</span><br><span class="line"></span><br><span class="line"># 替换</span><br><span class="line">X &#x3D; imputer.transform(housing_num)</span><br><span class="line">housing_tr &#x3D; pd.DataFrame(X, columns&#x3D;housing_num.columns,</span><br><span class="line">                          index &#x3D; list(housing.index.values))</span><br><span class="line"></span><br><span class="line"># 预览</span><br><span class="line">housing_tr.loc[sample_incomplete_rows.index.values]</span><br></pre></td></tr></table></figure>
+
+<h3 id="fetch-mldata-下载常用的数据集"><a href="#fetch-mldata-下载常用的数据集" class="headerlink" title="fetch_mldata() 下载常用的数据集"></a>fetch_mldata() 下载常用的数据集</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 例如下载MNIST数据集</span><br><span class="line">from sklearn.datasets import fetch_mldata</span><br><span class="line">mnist &#x3D; fetch_mldata(&#39;MNIST original&#39;)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>dataname : str；mldata.org 上的数据集的名称，原始名称会自动转换为 mldata.org 网址。</li>
+</ul>
+<h3 id="cross-val-predict-交叉预测"><a href="#cross-val-predict-交叉预测" class="headerlink" title="cross_val_predict() 交叉预测"></a>cross_val_predict() 交叉预测</h3><p>为每个输入数据点生成交叉验证的估计值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.model_selection import cross_val_predict</span><br><span class="line"></span><br><span class="line">y_train_pred &#x3D; cross_val_predict(sgd_clf, X_train, y_train_5, cv&#x3D;3)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>estimator : estimator object implementing ‘fit’ and ‘predict’</li>
+<li>X : array-like</li>
+<li>y : array-like, optional, default: None</li>
+<li>cv : int, cross-validation generator or an iterable, optional</li>
+</ul>
+<p>通过交叉验证得到 F1 分数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">y_scores &#x3D; cross_val_predict(sgd_clf, X_train, y_train_5, cv&#x3D;3,</span><br><span class="line">                             method&#x3D;&quot;decision_function&quot;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="confusion-matrix-计算混淆矩阵"><a href="#confusion-matrix-计算混淆矩阵" class="headerlink" title="confusion_matrix() 计算混淆矩阵"></a>confusion_matrix() 计算混淆矩阵</h3><p>计算混淆矩阵来评估分类的准确性</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.metrics import confusion_matrix</span><br><span class="line"></span><br><span class="line">confusion_matrix(y_train_5, y_train_pred)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>y_true : array, shape = [n_samples]; 正确的目标值</li>
+<li>y_pred : array, shape = [n_samples]； 分类器返回的目标估计值</li>
+<li>labels : array, shape = [n_classes], optional；索引矩阵的标签列表。</li>
+<li>sample_weight : array-like of shape = [n_samples], optional； 样品权重</li>
+</ul>
+<h3 id="f1-score-计算-F1-分数"><a href="#f1-score-计算-F1-分数" class="headerlink" title="f1_score() 计算 F1 分数"></a>f1_score() 计算 F1 分数</h3><p>F1 可以被解读为 <code>precision</code> 与 <code>recall</code> 的加权平均数，要得使 F1 得到高分，则必须使 <code>precision</code> 和 <code>recall</code> 高。</p>
+<ul>
+<li>F1 score 计算公式</li>
+</ul>
+<p><code>F1 = 2 * (precision * recall) / (precision + recall)</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.metrics import f1_score</span><br><span class="line">f1_score(y_train_5, y_train_pred)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>y_true : 1d array-like, or label indicator array / sparse matrix； 真实的目标值</li>
+<li>y_pred : 1d array-like, or label indicator array / sparse matrix； 分类器返回的目标估计值</li>
+<li>average : string, [None, ‘binary’ (default), ‘micro’, ‘macro’, ‘samples’, ‘weighted’]; 这个参数需要 multiclass/multilabel 的目标。如果为空，每个类的分数被返回。否则，将执行下面的平均操作。<table>
+<thead>
+<tr>
+<th>keys</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>‘binary’</td>
+<td>Only report results for the class specified by pos<em>label. This is applicable only if targets (y</em>{true,pred}) are binary.</td>
+</tr>
+<tr>
+<td>‘micro’</td>
+<td>Calculate metrics globally by counting the total true positives, false negatives and false positives.</td>
+</tr>
+<tr>
+<td>‘macro’</td>
+<td>Calculate metrics for each label, and find their unweighted mean. This does not take label imbalance into account.</td>
+</tr>
+<tr>
+<td>‘weighted’</td>
+<td>Calculate metrics for each label, and find their average, weighted by support (the number of true instances for each label). This alters ‘macro’ to account for label imbalance; it can result in an F-score that is not between precision and recall.</td>
+</tr>
+<tr>
+<td>‘samples’</td>
+<td>Calculate metrics for each instance, and find their average (only meaningful for multilabel classification where this differs from accuracy_score).</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<h3 id="decision-function-返回每个实例的-F1-分数-方便使用阈值"><a href="#decision-function-返回每个实例的-F1-分数-方便使用阈值" class="headerlink" title="decision_function() 返回每个实例的 F1 分数(方便使用阈值)"></a>decision_function() 返回每个实例的 F1 分数(方便使用阈值)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">y_scores &#x3D; sgd_clf.decision_function([some_digit])</span><br><span class="line"></span><br><span class="line">threshold &#x3D; 0   # 设定阈值</span><br><span class="line">y_some_digit_pred &#x3D; (y_scores &gt; threshold)</span><br><span class="line"></span><br><span class="line">threshold &#x3D; 200000    # 设定阈值</span><br><span class="line">y_some_digit_pred &#x3D; (y_scores &gt; threshold)</span><br></pre></td></tr></table></figure>
+
+<p>通过交叉验证得到分数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">y_scores &#x3D; cross_val_predict(sgd_clf, X_train, y_train_5, cv&#x3D;3,</span><br><span class="line">                             method&#x3D;&quot;decision_function&quot;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="precision-recall-curve-针对不同的概率阈值计算"><a href="#precision-recall-curve-针对不同的概率阈值计算" class="headerlink" title="precision_recall_curve() 针对不同的概率阈值计算"></a>precision_recall_curve() 针对不同的概率阈值计算</h3><p>precision ratio <code>tp / (tp + fp)</code>; recall ratio <code>tp / (tp + fn)</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.metrics import precision_recall_curve</span><br><span class="line"></span><br><span class="line">precisions, recalls, thresholds &#x3D; precision_recall_curve(y_train_5, y_scores)</span><br></pre></td></tr></table></figure>
+
+<h6 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h6><ul>
+<li>y_true : array, shape = [n_samples]; 在{-1, 1} or {0, 1}范围内，目标的二进制分类。</li>
+<li>probas_pred : array, shape = [n_samples]； 估计概率或决策函数。</li>
+</ul>
+<h6 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h6><ul>
+<li>precision : array, shape = [n_thresholds + 1]</li>
+<li>recall : array, shape = [n_thresholds + 1]</li>
+<li>thresholds : array, shape = [n_thresholds &lt;= len(np.unique(probas_pred))]</li>
+</ul>
+<h3 id="precision-score"><a href="#precision-score" class="headerlink" title="precision_score()"></a>precision_score()</h3><p>The precision is the ratio <code>tp / (tp + fp)</code>.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">precision_score(y_train_5, y_train_pred_90)</span><br></pre></td></tr></table></figure>
+
+<h6 id="参数-1"><a href="#参数-1" class="headerlink" title="参数"></a>参数</h6><ul>
+<li><p>y_true : 1d array-like, or label indicator array / sparse matrix; 正确的目标实际值。</p>
+</li>
+<li><p>y_pred : 1d array-like, or label indicator array / sparse matrix; 由分类器返回的目标估计值<br>返回值</p>
+</li>
+<li><p>precision : float (if average is not None) or array of float, shape = [n_unique_labels]</p>
+</li>
+</ul>
+<h3 id="recall-score"><a href="#recall-score" class="headerlink" title="recall_score()"></a>recall_score()</h3><p>The recall is the ratio <code>tp / (tp + fn)</code>.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">recall_score(y_train_5, y_train_pred_90)</span><br></pre></td></tr></table></figure>
+
+<h6 id="参数-2"><a href="#参数-2" class="headerlink" title="参数"></a>参数</h6><ul>
+<li>y_true : 1d array-like, or label indicator array / sparse matrix; 正确的目标实际值</li>
+<li>y_pred : 1d array-like, or label indicator array / sparse matrix; 由分类器返回的目标估计值</li>
+</ul>
+<h6 id="返回值-1"><a href="#返回值-1" class="headerlink" title="返回值"></a>返回值</h6><ul>
+<li>recall : float (if average is not None) or array of float, shape = [n_unique_labels]</li>
+</ul>
+<h3 id="roc-curve-计算-ROC"><a href="#roc-curve-计算-ROC" class="headerlink" title="roc_curve() 计算 ROC"></a>roc_curve() 计算 ROC</h3><p>注意：此实现仅限于二进制分类任务。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.metrics import roc_curve</span><br><span class="line"></span><br><span class="line">fpr, tpr, thresholds &#x3D; roc_curve(y_train_5, y_scores)</span><br></pre></td></tr></table></figure>
+
+<h6 id="参数-3"><a href="#参数-3" class="headerlink" title="参数"></a>参数</h6><ul>
+<li>y_true : array, shape = [n_samples]; 范围为{0, 1}或{-1, 1}的真实二元标签。如果标签不是二进制的，应明确给出 pos_label 参数。</li>
+<li>y_score : array, shape = [n_samples]; 由一些分类器的”decision_function”返回，目标分数可以是<code>positive class</code>的概率估计、<code>confidence values</code>或非阈值化决策的量度。</li>
+<li>pos_label : int or str, default=None; 标签被认为是 positive，其他的则被认为是 negative。</li>
+</ul>
+<h6 id="返回值-2"><a href="#返回值-2" class="headerlink" title="返回值"></a>返回值</h6><ul>
+<li>fpr : array, shape = [&gt;2]</li>
+<li>tpr : array, shape = [&gt;2]</li>
+<li>thresholds : array, shape = [n_thresholds]</li>
+</ul>
+<h3 id="roc-auc-score-从预测分数计算-ROC-AUC"><a href="#roc-auc-score-从预测分数计算-ROC-AUC" class="headerlink" title="roc_auc_score() 从预测分数计算 ROC AUC"></a>roc_auc_score() 从预测分数计算 ROC AUC</h3><p>注意：此实现仅限于二进制分类任务或标签指示符格式的多标签分类任务。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.metrics import roc_auc_score</span><br><span class="line"></span><br><span class="line">roc_auc_score(y_train_5, y_scores)</span><br></pre></td></tr></table></figure>
+
+<h6 id="参数-4"><a href="#参数-4" class="headerlink" title="参数"></a>参数</h6><ul>
+<li>y_true : array, shape = [n_samples] or [n_samples, n_classes]; 二进制标签指示符中的真实二进制标签</li>
+<li>y_score : array, shape = [n_samples] or [n_samples, n_classes]; 由一些分类器的”decision_function”返回，目标分数可以是<code>positive class</code>的概率估计、<code>confidence values</code>或非阈值化决策的量度。</li>
+</ul>
+<h6 id="返回值-3"><a href="#返回值-3" class="headerlink" title="返回值"></a>返回值</h6><ul>
+<li>auc : float</li>
+</ul>
+<h3 id="classes-数组-array"><a href="#classes-数组-array" class="headerlink" title="~classes_   数组(array)"></a>~classes_   数组(array)</h3><p>分类器训练的目标分类，列表存储在它的 classes_属性中，顺序由值决定。例如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sgd_clf.classes_</span><br><span class="line"># array([ 0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.,  9.])</span><br><span class="line"></span><br><span class="line">sgd_clf.classes_[5]</span><br><span class="line"># 5.0</span><br></pre></td></tr></table></figure>
+
+<h3 id="强制-SKlearn-使用-OvO-策略或-OvA-策略"><a href="#强制-SKlearn-使用-OvO-策略或-OvA-策略" class="headerlink" title="强制 SKlearn 使用 OvO 策略或 OvA 策略"></a>强制 SKlearn 使用 OvO 策略或 OvA 策略</h3><p>Sklearn 对于使用二进制分类器训练出多项分类器会自动使用 OvA 策略，除了 SVM 分类器使用 OvO 策略。</p>
+<p>如果想让 SKlearn 使用 <code>one-versus-one</code> 或 <code>one-versus-all</code>，可以使用 <code>OneVsOneCLassifier</code> 或 <code>OneVsRestClassifier</code>类。</p>
+<p>以强制使用 OvO 策略为例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.multiclass import OneVsOneClassifier</span><br><span class="line">ovo_clf &#x3D; OneVsOneClassifier(SGDClassifier(random_state&#x3D;42))</span><br><span class="line">ovo_clf.fit(X_train, y_train)</span><br><span class="line">ovo_clf.predict([some_digit])</span><br><span class="line"># Out:</span><br><span class="line"># array([ 5.])</span><br></pre></td></tr></table></figure>
+
+<h3 id="KNeighborsClassifier-KNN-分类器"><a href="#KNeighborsClassifier-KNN-分类器" class="headerlink" title="KNeighborsClassifier() KNN 分类器"></a>KNeighborsClassifier() KNN 分类器</h3><p>Classifier implementing the k-nearest neighbors vote.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.neighbors import KNeighborsClassifier</span><br><span class="line">knn_clf &#x3D; KNeighborsClassifier(n_jobs&#x3D;-1, weights&#x3D;&#39;distance&#39;, n_neighbors&#x3D;4)</span><br><span class="line">knn_clf.fit(X_train, y_train)</span><br><span class="line"></span><br><span class="line">y_knn_pred &#x3D; knn_clf.predict(X_test)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>n_jobs : int, optional (default = 1); 运行 neighbors search 并行作业的数量。如果为<code>-1</code>，则作业数设置为 CPU 核心数。不影响<code>fit</code>方法</p>
+</li>
+<li><p>weights : str or callable, optional (default = ‘uniform’); 用于预测的权重函数，可能的值如下</p>
+<table>
+<thead>
+<tr>
+<th>keys</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>‘uniform’</td>
+<td>uniform weights. All points in each neighborhood are weighted equally.</td>
+</tr>
+<tr>
+<td>‘distance’</td>
+<td>weight points by the inverse of their distance. in this case, closer neighbors of a query point will have a greater influence than neighbors which are further away.</td>
+</tr>
+<tr>
+<td>[callable]</td>
+<td>a user-defined function which accepts an array of distances, and returns an array of the same shape containing the weights.</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>n_neighbors : int, optional (default = 5); 相邻膈俞，默认使用<code>kneighbors</code>查询。</p>
+</li>
+</ul>
+<h3 id="DummyClassifier-使用简单规则来预测的分类器"><a href="#DummyClassifier-使用简单规则来预测的分类器" class="headerlink" title="DummyClassifier() 使用简单规则来预测的分类器"></a>DummyClassifier() 使用简单规则来预测的分类器</h3><p>这个分类器作为一个简单的基线比较其他（真正的）分类器是有用的。不要用它来解决真正的问题。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 纯随机分类器</span><br><span class="line">from sklearn.dummy import DummyClassifier</span><br><span class="line">dmy_clf &#x3D; DummyClassifier()</span><br><span class="line">y_probas_dmy &#x3D; cross_val_predict(dmy_clf, X_train, y_train_5, cv&#x3D;3, method&#x3D;&quot;predict_proba&quot;)</span><br><span class="line">y_scores_dmy &#x3D; y_probas_dmy[:, 1]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>strategy : str, default=”stratified”; 用来产生预测的策略。在 0.17 版本中，现在支持事先使用参数的先验拟合策略。</p>
+<table>
+<thead>
+<tr>
+<th>keys</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>“stratified”</td>
+<td>generates predictions by respecting the training set’s class distribution.</td>
+</tr>
+<tr>
+<td>“most_frequent”</td>
+<td>always predicts the most frequent label in the training set.</td>
+</tr>
+<tr>
+<td>“prior”</td>
+<td>always predicts the class that maximizes the class prior (like “most_frequent”) and predict_proba returns the class prior.</td>
+</tr>
+<tr>
+<td>“uniform”</td>
+<td>generates predictions uniformly at random.</td>
+</tr>
+<tr>
+<td>“constant”</td>
+<td>always predicts a constant label that is provided by the user. This is useful for metrics that evaluate a non-majority class</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>random_state : int, RandomState instance or None, optional, default=None</p>
+</li>
+<li><p>constant : int or str or array of shape = [n_outputs]; 作为<code>constant</code>策略的显式常量，该参数仅在<code>constant</code>策略中有用。</p>
+<table>
+<thead>
+<tr>
+<th>Methods</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>fit(X, y[, sample_weight])</td>
+<td>Fit the random classifier.</td>
+</tr>
+<tr>
+<td>get_params([deep])</td>
+<td>Get parameters for this estimator.</td>
+</tr>
+<tr>
+<td>predict(X)</td>
+<td>Perform classification on test vectors X.</td>
+</tr>
+<tr>
+<td>predict_log_proba(X)</td>
+<td>Return log probability estimates for the test vectors X.</td>
+</tr>
+<tr>
+<td>predict_proba(X)</td>
+<td>Return probability estimates for the test vectors X.</td>
+</tr>
+<tr>
+<td>score(X, y[, sample_weight])</td>
+<td>Returns the mean accuracy on the given test data and labels.</td>
+</tr>
+<tr>
+<td>set_params(**params)</td>
+<td>Set the parameters of this estimator.</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<h3 id="accuracy-score-精度分类评分"><a href="#accuracy-score-精度分类评分" class="headerlink" title="accuracy_score() 精度分类评分"></a>accuracy_score() 精度分类评分</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.metrics import accuracy_score</span><br><span class="line">accuracy_score(y_test, y_knn_pred)</span><br></pre></td></tr></table></figure>
+
+<h6 id="参数-5"><a href="#参数-5" class="headerlink" title="参数"></a>参数</h6><ul>
+<li>y_true : 1d array-like, or label indicator array / sparse matrix</li>
+<li>y_pred : 1d array-like, or label indicator array / sparse matrix</li>
+<li>normalize : bool, optional (default=True); 如果为 False，则返回正确分类的样本数。否则，返回正确分类样本的一小部分。</li>
+<li>sample_weight : array-like of shape = [n_samples], optional; 样本权重</li>
+</ul>
+<h6 id="返回值-4"><a href="#返回值-4" class="headerlink" title="返回值"></a>返回值</h6><ul>
+<li>score : float； 如果 normalize == True，则返回正确分类的样本（float），否则返回正确分类的样本数量（int）。</li>
+</ul>
+<h3 id="SGDRegressor-SGD-回归"><a href="#SGDRegressor-SGD-回归" class="headerlink" title="SGDRegressor() SGD 回归"></a>SGDRegressor() SGD 回归</h3><p>线性模型通过使 SGD 正则化的经验损失最小化来拟合；SGD 代表随机梯度下降</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.linear_model import SGDRegressor</span><br><span class="line">sgd_reg &#x3D; SGDRegressor(n_iter&#x3D;50, penalty&#x3D;None, eta0&#x3D;0.1, random_state&#x3D;42)</span><br><span class="line">sgd_reg.fit(X, y.ravel())</span><br></pre></td></tr></table></figure>
+
+<h6 id="参数-6"><a href="#参数-6" class="headerlink" title="参数"></a>参数</h6><ul>
+<li>n_iter : int, optional；训练数据的通过次数（又称 epochs）。默认为 None。已弃用，将在 0.21 中删除。</li>
+<li>max_iter : int, optional；训练数据的最大通过次数（也称为 epochs）。替换<code>n_iter</code>参数。</li>
+<li>penalty : str, ‘none’, ‘l2’, ‘l1’, or ‘elasticnet’；penalty 术语也叫正则化，默认为<code>l1</code>。</li>
+<li>eta0 : double, optional；始学习率，默认为 0.01。</li>
+<li>warm_start : bool, optional；设置为 True 时，重新使用先前调用<code>fit()</code>的解决方案以初始化，否则，只需擦除以前的解决方案。</li>
+<li>random_state : int, RandomState instance or None, optional (default=None)；随机种子。</li>
+</ul>
+<h6 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h6><table>
+<thead>
+<tr>
+<th>keys</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>coef_ : array, shape (n_features,)</td>
+<td>Weights assigned to the features.</td>
+</tr>
+<tr>
+<td>intercept_ : array, shape (1,)</td>
+<td>The intercept term.</td>
+</tr>
+<tr>
+<td>average<em>coef</em> : array, shape (n_features,)</td>
+<td>Averaged weights assigned to the features.</td>
+</tr>
+<tr>
+<td>average<em>intercept</em> : array, shape (1,)</td>
+<td>The averaged intercept term.</td>
+</tr>
+<tr>
+<td>n<em>iter</em> : int</td>
+<td>The actual number of iterations to reach the stopping criterion.</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>Methods</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>densify()</td>
+<td>Convert coefficient matrix to dense array format.</td>
+</tr>
+<tr>
+<td>fit(X, y[, coef_init, intercept_init, …])</td>
+<td>Fit linear model with Stochastic Gradient Descent.</td>
+</tr>
+<tr>
+<td>get_params([deep])</td>
+<td>Get parameters for this estimator.</td>
+</tr>
+<tr>
+<td>partial_fit(X, y[, sample_weight])</td>
+<td>Fit linear model with Stochastic Gradient Descent.</td>
+</tr>
+<tr>
+<td>predict(X)</td>
+<td>Predict using the linear model</td>
+</tr>
+<tr>
+<td>score(X, y[, sample_weight])</td>
+<td>Returns the coefficient of determination R^2 of the prediction.</td>
+</tr>
+<tr>
+<td>set_params(*args, **kwargs)</td>
+<td></td>
+</tr>
+<tr>
+<td>sparsify()</td>
+<td>Convert coefficient matrix to sparse format.</td>
+</tr>
+</tbody></table>
+<h3 id="PolynomialFeatures-生成多项式和交互特征"><a href="#PolynomialFeatures-生成多项式和交互特征" class="headerlink" title="PolynomialFeatures() 生成多项式和交互特征"></a>PolynomialFeatures() 生成多项式和交互特征</h3><p>生成一个新的特征矩阵，该特征矩阵由度数小于或等于指定度的特征的所有多项式组合组成。 例如，如果输入样本是二维的并且形式为[a，b]，则 2 次多项式特征是[1，a，b，a ^ 2，ab，b ^ 2]。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.preprocessing import PolynomialFeatures</span><br><span class="line">poly_features &#x3D; PolynomialFeatures(degree&#x3D;2, include_bias&#x3D;False)</span><br><span class="line">X_poly &#x3D; poly_features.fit_transform(X)</span><br><span class="line">X[0]</span><br><span class="line"># array([-0.75275929])</span><br></pre></td></tr></table></figure>
+
+<h6 id="参数-7"><a href="#参数-7" class="headerlink" title="参数"></a>参数</h6><ul>
+<li>degree : integer；多项式特征度数，默认值为 2。</li>
+<li>include_bias : boolean；如果为 True（默认值），则包含一个偏置列，即所有多项式幂为 0（作为线性模型的截距项）。</li>
+<li>interaction_only : boolean, default = False；如果为 True，则只产生相互特征。</li>
+</ul>
+<h6 id="属性-1"><a href="#属性-1" class="headerlink" title="属性"></a>属性</h6><table>
+<thead>
+<tr>
+<th>keys</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>powers_ : array, shape (n_output_features, n_input_features)</td>
+<td>powers_[i, j] is the exponent of the jth input in the ith output.</td>
+</tr>
+<tr>
+<td>n<em>input_features</em> : int</td>
+<td>The total number of input features.</td>
+</tr>
+<tr>
+<td>n<em>output_features</em> : int</td>
+<td>The total number of polynomial output features. The number of output features is computed by iterating over all suitably sized combinations of input features.</td>
+</tr>
+</tbody></table>
+<h3 id="Ridge-具有-L2-正则化的线性最小二乘"><a href="#Ridge-具有-L2-正则化的线性最小二乘" class="headerlink" title="Ridge() 具有 L2 正则化的线性最小二乘"></a>Ridge() 具有 L2 正则化的线性最小二乘</h3><p>这个模型解决一个使用最小二乘<code>loss</code>函数，使用<code>l2-norm</code>正则函数的回归模型。这个估计器内置了对多变量回归的支持（例如：y 是一个形状为[n_samples, n_targets]二维数组）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.linear_model import Ridge</span><br><span class="line">ridge_reg &#x3D; Ridge(alpha&#x3D;1, solver&#x3D;&quot;cholesky&quot;, random_state&#x3D;42)</span><br><span class="line">ridge_reg.fit(X, y)</span><br><span class="line">ridge_reg.predict([[1.5]])</span><br><span class="line"># array([[ 1.55071465]])</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ridge_reg &#x3D; Ridge(alpha&#x3D;1, solver&#x3D;&quot;sag&quot;, random_state&#x3D;42)</span><br><span class="line">ridge_reg.fit(X, y)</span><br><span class="line">ridge_reg.predict([[1.5]])</span><br><span class="line"># array([[ 1.5507201]])</span><br></pre></td></tr></table></figure>
+
+<h6 id="参数-8"><a href="#参数-8" class="headerlink" title="参数"></a>参数</h6><ul>
+<li>alpha : {float, array-like}, shape (n_targets)；正则化强度，必须为正的 float 类型。</li>
+<li>random_state : int, RandomState instance or None, optional, default None</li>
+<li>fit_intercept : boolean；是否计算此模型的截距。如果设置为 false，则计算中将不使用截距（例如，数据预期已居中）。</li>
+<li>solver : {‘auto’, ‘svd’, ‘cholesky’, ‘lsqr’, ‘sparse_cg’, ‘sag’, ‘saga’}；用于计算例程的求解器。详细介绍：<table>
+<thead>
+<tr>
+<th>keys</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>‘auto’</td>
+<td>chooses the solver automatically based on the type of data.</td>
+</tr>
+<tr>
+<td>‘svd’</td>
+<td>uses a Singular Value Decomposition of X to compute the Ridge coefficients. More stable for singular matrices than ‘cholesky’.</td>
+</tr>
+<tr>
+<td>‘cholesky’</td>
+<td>uses the standard scipy.linalg.solve function to obtain a closed-form solution.</td>
+</tr>
+<tr>
+<td>‘sparse_cg’</td>
+<td>uses the conjugate gradient solver as found in scipy.sparse.linalg.cg. As an iterative algorithm, this solver is more appropriate than ‘cholesky’ for large-scale data (possibility to set tol and max_iter).</td>
+</tr>
+<tr>
+<td>‘lsqr’</td>
+<td>uses the dedicated regularized least-squares routine scipy.sparse.linalg.lsqr. It is the fastest but may not be available in old scipy versions. It also uses an iterative procedure.</td>
+</tr>
+<tr>
+<td>‘sag’</td>
+<td>uses a Stochastic Average Gradient descent, and ‘saga’ uses its improved, unbiased version named SAGA. Both methods also use an iterative procedure, and are often faster than other solvers when both n_samples and n_features are large. Note that ‘sag’ and ‘saga’ fast convergence is only guaranteed on features with approximately the same scale. You can preprocess the data with a scaler from sklearn.preprocessing.</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<h6 id="属性-2"><a href="#属性-2" class="headerlink" title="属性"></a>属性</h6><table>
+<thead>
+<tr>
+<th>keys</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>coef_ : array, shape (n_features,) or (n_targets, n_features)</td>
+<td>Weight vector(s).</td>
+</tr>
+<tr>
+<td>intercept_ : float array, shape = (n_targets,)</td>
+<td>Independent term in decision function. Set to 0.0 if fit_intercept = False.</td>
+</tr>
+<tr>
+<td>n<em>iter</em> : array or None, shape (n_targets,)</td>
+<td>Actual number of iterations for each target. Available only for sag and lsqr solvers. Other solvers will return None.New in version 0.17.</td>
+</tr>
+</tbody></table>
+<h3 id="Lasso-用-L1-预先正则化的线性模型"><a href="#Lasso-用-L1-预先正则化的线性模型" class="headerlink" title="Lasso()   用 L1 预先正则化的线性模型"></a>Lasso()   用 L1 预先正则化的线性模型</h3><p>Lasso 优化目标<br><code>(1 / (2 * n_samples)) * ||y - Xw||^2_2 + alpha * ||w||_1</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.linear_model import Lasso</span><br><span class="line">lasso_reg &#x3D; Lasso(alpha&#x3D;0.1)</span><br><span class="line">lasso_reg.fit(X, y)</span><br><span class="line">lasso_reg.predict([[1.5]])</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>alpha : float, optional；乘以 L1 项的常数。</li>
+<li>fit_intercept : boolean；是否计算这个模型的截距，如果设置为 False，则不会计算截距（例如数据已居中）。</li>
+<li>random_state : int, RandomState instance or None, optional, default None</li>
+</ul>
+<h3 id="ElasticNet-结合-L1、L2-作为预先正则化的线性回归"><a href="#ElasticNet-结合-L1、L2-作为预先正则化的线性回归" class="headerlink" title="ElasticNet()   结合 L1、L2 作为预先正则化的线性回归"></a>ElasticNet()   结合 L1、L2 作为预先正则化的线性回归</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.linear_model import ElasticNet</span><br><span class="line">elastic_net &#x3D; ElasticNet(alpha&#x3D;0.1, l1_ratio&#x3D;0.5, random_state&#x3D;42)</span><br><span class="line">elastic_net.fit(X, y)</span><br><span class="line">elastic_net.predict([[1.5]])</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>alpha : float, optional；乘以惩罚项的常数。</li>
+<li>l1_ratio : float；ElasticNet 混合参数。</li>
+<li>random_state : int, RandomState instance or None, optional, default None</li>
+</ul>
+<h3 id="clone-用相同的参数构造一个新的估计器。"><a href="#clone-用相同的参数构造一个新的估计器。" class="headerlink" title="clone()   用相同的参数构造一个新的估计器。"></a>clone()   用相同的参数构造一个新的估计器。</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.base import clone</span><br><span class="line">sgd_reg &#x3D; SGDRegressor(n_iter&#x3D;1, warm_start&#x3D;True, penalty&#x3D;None,</span><br><span class="line">                       learning_rate&#x3D;&quot;constant&quot;, eta0&#x3D;0.0005, random_state&#x3D;42)</span><br><span class="line"></span><br><span class="line">minimum_val_error &#x3D; float(&quot;inf&quot;)</span><br><span class="line">best_epoch &#x3D; None</span><br><span class="line">best_model &#x3D; None</span><br><span class="line">for epoch in range(1000):</span><br><span class="line">    sgd_reg.fit(X_train_poly_scaled, y_train)  # continues where it left off</span><br><span class="line">    y_val_predict &#x3D; sgd_reg.predict(X_val_poly_scaled)</span><br><span class="line">    val_error &#x3D; mean_squared_error(y_val_predict, y_val)</span><br><span class="line">    if val_error &lt; minimum_val_error:</span><br><span class="line">        minimum_val_error &#x3D; val_error</span><br><span class="line">        best_epoch &#x3D; epoch</span><br><span class="line">        best_model &#x3D; clone(sgd_reg)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>estimator : estimator object, or list, tuple or set of objects；要复制的估计器对象</li>
+</ul>
+<h3 id="datasets-下载常用的数据集"><a href="#datasets-下载常用的数据集" class="headerlink" title="datasets()   下载常用的数据集"></a>datasets()   下载常用的数据集</h3><p><a href="http://scikit-learn.org/stable/datasets/index.html" target="_blank" rel="external nofollow noopener noreferrer">details</a></p>
+<p>下载鸢尾花数据集</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from sklearn import datasets</span><br><span class="line">iris &#x3D; datasets.load_iris()</span><br></pre></td></tr></table></figure>
+
+<h3 id="LogisticRegression-Logistic-回归"><a href="#LogisticRegression-Logistic-回归" class="headerlink" title="LogisticRegression() Logistic 回归"></a>LogisticRegression() Logistic 回归</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.linear_model import LogisticRegression</span><br><span class="line">log_reg &#x3D; LogisticRegression(random_state&#x3D;42)</span><br><span class="line">log_reg.fit(X, y)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>penalty : str, ‘l1’ or ‘l2’, default: ‘l2’</li>
+<li>dual : bool, default: False；Dual 或原始公式，Dual 公式只适用于使用 L2 惩罚的线性求解器，当 n_samples &gt; n_features 优先使用 dual=False。</li>
+<li>tol : float, default: 1e-4；对停止的容忍标准。</li>
+<li>C : float, default: 1.0； 正则化强度的反转，必须是一个正值，就像在支持向量机中一样，较小的值指定更强的正则化。</li>
+</ul>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/SKlearn%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/sklearn/">
+              #sklearn
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/Pandas%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html" target="_self">Pandas学习笔记</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9CI.html" target="_self">数据预处理常用操作I</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

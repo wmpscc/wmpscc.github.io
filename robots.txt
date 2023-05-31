@@ -1,0 +1,8 @@
+User-agent: * Allow: /
+Allow: /archives/
+Disallow: /friends/
+
+
+Sitemap: http://ishero.net/sitemap.xml
+Sitemap: http://ishero.net/baidu_urls.txt
+

@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>科学计算环境配置教程 | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="数据科学,环境配置,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>科学计算环境配置教程</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-01-22
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6/">
+            数据科学
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="科学计算环境配置教程.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <h1 id="科学计算环境配置教程"><a href="#科学计算环境配置教程" class="headerlink" title="科学计算环境配置教程"></a>科学计算环境配置教程</h1><p>你本次需要安装，(最好用有线网下载)。</p>
+<ul>
+<li>Anaconda</li>
+<li>spyder</li>
+<li>jupyter notebook</li>
+<li>Sklearn</li>
+<li>XgBoost</li>
+<li>LightGBM</li>
+<li>CatBoost</li>
+<li>Keras</li>
+<li>TensorFlow</li>
+</ul>
+<blockquote>
+<p>文末有介绍如何在实验室的文件服务器上，下载所需要的安装包。</p>
+</blockquote>
+<h1 id="1-Anaconda-安装"><a href="#1-Anaconda-安装" class="headerlink" title="1.Anaconda 安装"></a>1.Anaconda 安装</h1><blockquote>
+<p>如果你已经装了 Anaconda，并且在使用过程中没有出现奇怪的问题，可以跳过安装步骤。<br>否则，建议你把原来的卸载掉，按照这个步骤重新安装！！！</p>
+</blockquote>
+<h3 id="1-1-安装"><a href="#1-1-安装" class="headerlink" title="1.1 安装"></a>1.1 安装</h3><p>首先在清华镜像站下载安装包：<a href="https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/" target="_blank" rel="external nofollow noopener noreferrer">https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/</a></p>
+<ol>
+<li>选择 Anaconda3-5.0.1 版本下载（经踩坑发现，5.2 和 5.3 版本在创建环境时存在 bug；所以不要在意后面图片写的是 5.3 版本的，事实上我在 5.0 版本上才安装成功）</li>
+</ol>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695990667-7c10cf66-da92-43ed-a7ed-acef5ba06192.jpeg#align=left&display=inline&height=184&originHeight=184&originWidth=1035&size=0&status=done&style=none&width=1035" alt=""></p>
+<ol start="2">
+<li>运行安装包，改变安装目录，将其放到非系统盘</li>
+</ol>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695990650-f6e895e4-a48d-4407-abc1-c8eba379049e.jpeg#align=left&display=inline&height=388&originHeight=388&originWidth=498&size=0&status=done&style=none&width=498" alt=""></p>
+<ol start="3">
+<li>将两个选项都勾上，安装</li>
+</ol>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695990662-f7ae579e-1346-4b5a-b316-7bf84d25f655.jpeg#align=left&display=inline&height=388&originHeight=388&originWidth=498&size=0&status=done&style=none&width=498" alt=""></p>
+<ol start="4">
+<li>这里选择跳过</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">![4.jpg](https:&#x2F;&#x2F;upload-images.jianshu.io&#x2F;upload_images&#x2F;7007489-4af3e97327194fff.jpg?imageMogr2&#x2F;auto-orient&#x2F;strip%7CimageView2&#x2F;2&#x2F;w&#x2F;1240)</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-更换-conda-镜像源"><a href="#1-2-更换-conda-镜像源" class="headerlink" title="1.2 更换 conda 镜像源"></a>1.2 更换 conda 镜像源</h3><p>anaconda 默认的镜像源在国外，访问速度非常慢。所以这里我们首先将它改为国内的清华镜像站。</p>
+<ol>
+<li>按下 win+R 快捷键，在运行窗口输入 cmd</li>
+</ol>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695990838-fb5481bb-d1c0-4605-b1b9-9b72b5253dab.jpeg#align=left&display=inline&height=272&originHeight=272&originWidth=456&size=0&status=done&style=none&width=456" alt=""></p>
+<ol start="2">
+<li>在 cmd 中，依次输入以下三行命令。（逐条复制上去）</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">conda config --add channels https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;anaconda&#x2F;pkgs&#x2F;free&#x2F;</span><br><span class="line">conda config --add channels https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;anaconda&#x2F;pkgs&#x2F;main&#x2F;</span><br><span class="line">conda config --set show_channel_urls yes</span><br></pre></td></tr></table></figure>
+
+<p>像这样就完成了<br><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695990718-d509c6eb-80ae-4b6e-8783-8da52a784f15.jpeg#align=left&display=inline&height=157&originHeight=157&originWidth=1240&size=0&status=done&style=none&width=1240" alt=""></p>
+<h3 id="1-3-更换-pip-源"><a href="#1-3-更换-pip-源" class="headerlink" title="1.3 更换 pip 源"></a>1.3 更换 pip 源</h3><p>默认 pip 源也在国外，这里换成国内豆瓣提供的 pip 源：</p>
+<ul>
+<li><ol>
+<li>在 C:\Users\【你的用户名】 目录下新建一个名为<code>pip</code>的文件夹</li>
+</ol>
+</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695990857-de66fa4b-2af9-480f-ad24-bb91e0d60503.jpeg#align=left&display=inline&height=185&originHeight=185&originWidth=396&size=0&status=done&style=none&width=396" alt=""></p>
+<ul>
+<li><ol>
+<li>在<code>pip</code>目录下创建<code>pip.txt</code>文件，并将文件后缀名改为<code>ini</code></li>
+</ol>
+</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695991134-abc18f7d-70d4-4893-9001-6cc03ed21fa8.jpeg#align=left&display=inline&height=140&originHeight=140&originWidth=608&size=0&status=done&style=none&width=608" alt=""></p>
+<p>将以下内容写入文件，并保存</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[global]</span><br><span class="line">timeout &#x3D; 60</span><br><span class="line">index-url &#x3D; https:&#x2F;&#x2F;pypi.doubanio.com&#x2F;simple</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><ol>
+<li>完成</li>
+</ol>
+</li>
+</ul>
+<h1 id="2-环境安装"><a href="#2-环境安装" class="headerlink" title="2 环境安装"></a>2 环境安装</h1><h2 id="2-0-Anaconda"><a href="#2-0-Anaconda" class="headerlink" title="2.0 Anaconda"></a>2.0 Anaconda</h2><blockquote>
+<p>anaconda 5.0 默认 Python 版本为 3.6.3，目前已经支持 TensorFlow 了，这意味着你可以跳过这一步。<br>但是，保险起见，我们还是使用 Python3.5 环境，因为这个版本的 Python，有更多的科学计算包兼容它。</p>
+</blockquote>
+<ul>
+<li><ol>
+<li>在开始菜单中启动它。（启动较慢，需等待）</li>
+</ol>
+</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695990932-dcac0a9d-f892-4d58-806e-039694f4ec73.jpeg#align=left&display=inline&height=283&originHeight=283&originWidth=336&size=0&status=done&style=none&width=336" alt=""></p>
+<ul>
+<li><ol>
+<li>创建一个名为<code>py35</code>的 python 3.5 环境</li>
+</ol>
+</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695990688-aaee447a-217a-4de5-877b-c073a1514559.jpeg#align=left&display=inline&height=478&originHeight=478&originWidth=310&size=0&status=done&style=none&width=310" alt=""></p>
+<ul>
+<li><ol>
+<li>接下来安装所要的包</li>
+</ol>
+</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695990713-0d5057ad-ac99-4dce-b0b7-9b4417128b7a.jpeg#align=left&display=inline&height=624&originHeight=624&originWidth=1240&size=0&status=done&style=none&width=1240" alt=""></p>
+<p>注意将<code>Applications on</code>切换到新建的<code>py35</code>环境，把箭头所指的都装上。</p>
+<p>以上步骤，如果你打不开界面，或者安装时报错，可以在命令行中进行操作。在 cmd 中依次执行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">conda create -n py35 python&#x3D;3.5</span><br><span class="line">activate py35</span><br><span class="line">conda install spyder</span><br><span class="line">conda install jupyter</span><br><span class="line">conda install glueviz</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><ol>
+<li>安装完成后启动这个 jupyter notebook</li>
+</ol>
+</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695990928-7e9cc955-e8d9-4f69-9638-573aaba140e0.jpeg#align=left&display=inline&height=324&originHeight=324&originWidth=252&size=0&status=done&style=none&width=252" alt=""></p>
+<ul>
+<li><ol>
+<li>在浏览器打开这个地址</li>
+</ol>
+</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695990719-bf37262c-87e9-406e-8231-fdd1324242b6.jpeg#align=left&display=inline&height=292&originHeight=292&originWidth=1240&size=0&status=done&style=none&width=1240" alt=""></p>
+<ul>
+<li><ol>
+<li>在右上角，新建一个 ipython 文件</li>
+</ol>
+</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695991033-be000581-3579-457b-877b-1923442cfd8e.jpeg#align=left&display=inline&height=277&originHeight=277&originWidth=352&size=0&status=done&style=none&width=352" alt=""></p>
+<ul>
+<li><ol>
+<li>确保这段代码能够正常运行，即安装成功</li>
+</ol>
+</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695990733-095268af-ce76-478c-80bc-80fdaecb5e8c.jpeg#align=left&display=inline&height=203&originHeight=203&originWidth=505&size=0&status=done&style=none&width=505" alt=""><br>如果没有报错，则说明上面步骤没有问题。</p>
+<h2 id="2-1-安装-scikit-learn"><a href="#2-1-安装-scikit-learn" class="headerlink" title="2.1 安装 scikit-learn"></a>2.1 安装 scikit-learn</h2><p>在 cmd 中输入以下命令，激活刚刚创建的<code>py35</code>环境</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">activate py35</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695990964-e6077a58-10dc-4290-8894-95374cf159c4.jpeg#align=left&display=inline&height=96&originHeight=96&originWidth=419&size=0&status=done&style=none&width=419" alt=""></p>
+<blockquote>
+<p>注意：在 cmd 中使用命令操作所创建的环境之前，都需要指定一个环境，并激活它。<br>使用（<code>activate</code> + 环境名称）激活环境</p>
+</blockquote>
+<h4 id="一共两步"><a href="#一共两步" class="headerlink" title="一共两步"></a><strong>一共两步</strong></h4><ol>
+<li>输入<code>activate py35</code>，激活环境</li>
+<li>输入</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install scikit-learn</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695990974-e4f77765-7dd5-4172-8916-38d5f3c504ca.jpeg#align=left&display=inline&height=47&originHeight=47&originWidth=593&size=0&status=done&style=none&width=593" alt=""></p>
+<p>运行这段代码，如果没有报错则说明安装成功</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestClassifier</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-2-安装-XGBOOST"><a href="#2-2-安装-XGBOOST" class="headerlink" title="2.2 安装 XGBOOST"></a>2.2 安装 XGBOOST</h2><p>输入以下命令：安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install xgboost</span><br></pre></td></tr></table></figure>
+
+<p>检查是否安装成功</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> xgboost <span class="keyword">as</span> xgb</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-3-安装-LightGBM"><a href="#2-3-安装-LightGBM" class="headerlink" title="2.3 安装 LightGBM"></a>2.3 安装 LightGBM</h2><p>输入以下命令：安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install lightgbm</span><br></pre></td></tr></table></figure>
+
+<p>检查是否安装成功</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> lightgbm <span class="keyword">as</span> lgb</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-4-安装-CatBoost"><a href="#2-4-安装-CatBoost" class="headerlink" title="2.4 安装 CatBoost"></a>2.4 安装 CatBoost</h2><p>输入以下命令：安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install catboost</span><br></pre></td></tr></table></figure>
+
+<p>检查是否安装成功</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> catboost <span class="keyword">import</span> CatBoostClassifier</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-5-安装-TensorFlow-CPU-版"><a href="#2-5-安装-TensorFlow-CPU-版" class="headerlink" title="2.5 安装 TensorFlow CPU 版"></a>2.5 安装 TensorFlow CPU 版</h2><p>如果你没有显卡，或者你的显卡不是 Nvidia 的，请安装 CPU 版。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install tensorflow</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-6-安装-TensorFlow-GPU-版"><a href="#2-6-安装-TensorFlow-GPU-版" class="headerlink" title="2.6 安装 TensorFlow GPU 版"></a>2.6 安装 TensorFlow GPU 版</h2><p>如果你的显卡是 NVIDIA 的，建议安装 GPU 版，它支持 cuda 加速，可以十倍提高精算性能。</p>
+<p>在安装 GPU 版的 tensorflow 之前，你需要安装 CUDA Toolkit 和 cuDNN</p>
+<blockquote>
+<p>注意：在进行以下步骤之前，请再次确认，你的显卡是 NVIDIA 的显卡，并且显卡驱动版本为<code>384.x</code>或以上。</p>
+</blockquote>
+<p>最新 release 版本的 tensorflow 需要以下工具包。安装时，一定要注意版本号对不对！！</p>
+<ul>
+<li><a href="https://developer.nvidia.com/cuda-zone" target="_blank" rel="external nofollow noopener noreferrer">CUDA® Toolkit</a> —TensorFlow supports CUDA 9.0.</li>
+<li><a href="https://developer.nvidia.com/cudnn" target="_blank" rel="external nofollow noopener noreferrer">cuDNN SDK</a> (&gt;= 7.2)</li>
+</ul>
+<p>这两个安装包已经上传到了群文件，请直接下载安装。（安装包是 win10 的，其他系统自行下载）</p>
+<h3 id="CUDA"><a href="#CUDA" class="headerlink" title="CUDA"></a>CUDA</h3><p>运行<code>cuda_9.0.176_win10.exe</code>文件</p>
+<ol>
+<li>首先选择一个临时文件夹，在安装结束后可以将其删除</li>
+</ol>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695990754-a91f7e74-ace2-46ee-b8fb-0d0b2a9cef06.jpeg#align=left&display=inline&height=232&originHeight=232&originWidth=514&size=0&status=done&style=none&width=514" alt=""></p>
+<ol start="2">
+<li>选择 Custom 安装！！</li>
+</ol>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695990840-ade1cbf6-5ce7-4a1a-9886-4be7313e17cf.jpeg#align=left&display=inline&height=438&originHeight=438&originWidth=593&size=0&status=done&style=none&width=593" alt=""></p>
+<ol start="3">
+<li>建议将这三个文件夹放在同一目录下(方便后面查找)</li>
+</ol>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695990769-caf7ed4c-4b2f-48fa-a07a-20c448239c7a.jpeg#align=left&display=inline&height=438&originHeight=438&originWidth=593&size=0&status=done&style=none&width=593" alt=""> 3. 一路 next，安装完成</p>
+<h3 id="cuDNN"><a href="#cuDNN" class="headerlink" title="cuDNN"></a>cuDNN</h3><ol>
+<li>解压<code>cudnn-9.0-windows10-x64-v7.4.1.5.zip</code></li>
+<li>复制解压出来的文件</li>
+</ol>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695990764-6cd96406-b773-4f6a-be18-8868acf28c6d.jpeg#align=left&display=inline&height=181&originHeight=181&originWidth=748&size=0&status=done&style=none&width=748" alt=""></p>
+<ol>
+<li>将其复制到<code>cuda/development</code>目录</li>
+</ol>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695990774-fa5e901a-26f1-47fd-a196-0b827ea99fe2.jpeg#align=left&display=inline&height=347&originHeight=347&originWidth=793&size=0&status=done&style=none&width=793" alt=""></p>
+<ol>
+<li>在环境变量中添加以下路径</li>
+</ol>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695990993-34cd2c71-bf73-402a-a1a6-a064d6020438.jpeg#align=left&display=inline&height=582&originHeight=582&originWidth=1240&size=0&status=done&style=none&width=1240" alt=""></p>
+<p>注意将目录改成自己的</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695990876-6134ac75-a549-4e36-9dcf-768a4b0a4445.jpeg#align=left&display=inline&height=115&originHeight=115&originWidth=417&size=0&status=done&style=none&width=417" alt=""><br>安装 tensorflow-gpu</p>
+<ol>
+<li>激活环境后，在 cmd 输入以下命令进行安装：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install tensorflow-gpu</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>运行以下代码，检测是否安装成功</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line">hello = tf.constant(<span class="string">'Hello, TensorFlow!'</span>)</span><br><span class="line">sess = tf.Session()</span><br><span class="line">print(sess.run(hello))</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-7-Keras-安装"><a href="#2-7-Keras-安装" class="headerlink" title="2.7 Keras 安装"></a>2.7 Keras 安装</h2><blockquote>
+<p>注意：Keras 一定要在装好 TensorFlow 之后安装。</p>
+</blockquote>
+<p>输入以下命令：安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install Keras</span><br></pre></td></tr></table></figure>
+
+<p>运行以下代码，检测是否安装成功</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dense</span><br></pre></td></tr></table></figure>
+
+<h3 id="恭喜你，终于把环境配好了"><a href="#恭喜你，终于把环境配好了" class="headerlink" title="- 恭喜你，终于把环境配好了~"></a>- <strong>恭喜你，终于把环境配好了~</strong></h3><h1 id="文件下载"><a href="#文件下载" class="headerlink" title="文件下载"></a>文件下载</h1><ul>
+<li>Anaconda 安装包</li>
+<li>CUDA 安装包</li>
+<li>cuDNN 文件</li>
+</ul>
+<p>以上文件均已上传到实验室文件服务器。</p>
+<p>使用有线网，在地址栏输入<code>\\file.kenvix.com\File\科学计算环境安装</code>，即可下载。</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695990799-432b1218-01af-425e-9a3f-f8e8187779f5.jpeg#align=left&display=inline&height=156&originHeight=156&originWidth=848&size=0&status=done&style=none&width=848" alt=""></p>
+<p>###最后介绍一下 jupyter notebnook 快捷键</p>
+<p>快捷键有很多，这里介绍最常用的几个</p>
+<ul>
+<li>Shift-Enter : 运行本单元，选中下个单元</li>
+<li>Ctrl-Enter : 运行本单元</li>
+<li>Alt-Enter : 运行本单元，在其下插入新单元</li>
+<li>Shift-Tab : 输出帮助信息，部分函数、类、方法等会显示其定义原型，如果在其后加 ? 再运行会显示更加详细的帮助</li>
+<li>Tab : 代码补全</li>
+<li>ESC : 进入命令模式</li>
+<li>A : 命令模式下使用，向上增加单元</li>
+<li>B : 命令模式下使用，向下增加单元</li>
+</ul>
+<blockquote>
+<p>随安装教程发布的还有 Python 入门的 jupyter notebook 文件，<br>请用 jupyter notebook 打开，并弄懂里面的代码。</p>
+</blockquote>
+<ul>
+<li>欢迎关注我的公众号，一起学习！</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695990780-37c9193a-3d2d-41c1-b55d-2ad469c6da46.jpeg#align=left&display=inline&height=640&originHeight=640&originWidth=1080&size=0&status=done&style=none&width=1080" alt=""></p>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">
+              #环境配置
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%85%AC%E5%BC%8F%E6%8E%A8%E5%AF%BC%E4%B8%8E%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0.html" target="_self">《机器学习》线性模型公式推导与算法实现</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/%E9%A1%B6%E7%BA%A7Kagglers%E7%9A%84%E5%BF%83%E5%BE%97%E5%92%8C%E6%8A%80%E5%B7%A7.html" target="_self">顶级Kagglers的心得和技巧</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

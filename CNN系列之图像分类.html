@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>CNN系列之图像分类 | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="深度学习,cnn,classification,总结,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>CNN系列之图像分类</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-01-23
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">
+            深度学习
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="CNN系列之图像分类.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <h2 id="LeNet-1"><a href="#LeNet-1" class="headerlink" title="LeNet"></a>LeNet</h2><p>LeNet 是一种典型的卷积神经网络的结构，由 Yann LeCun 发明。它的网路结构如下图：<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579761487010-3d433b90-6d69-4cd2-8bf2-46fbf6023462.png#align=left&display=inline&height=222&name=LeNet-5-structure.png&originHeight=222&originWidth=871&size=44770&status=done&style=none&width=871" alt="LeNet-5-structure.png"></p>
+<p>代码实现参考下图结构：<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579761494017-74196e8d-a15a-4c20-9d98-427523c82888.png#align=left&display=inline&height=454&name=f3xo7y48br.png&originHeight=454&originWidth=1057&size=50836&status=done&style=none&width=1057" alt="f3xo7y48br.png"><br>LeNet-5 网络是针对灰度图进行训练的，输入图像大小为<code>32*32*1</code></p>
+<h2 id="AlexNet"><a href="#AlexNet" class="headerlink" title="AlexNet"></a>AlexNet</h2><p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579761453258-461b5a23-f871-4eb9-bd31-dfea5c7fbeef.png#align=left&display=inline&height=496&originHeight=496&originWidth=899&size=0&status=done&style=none&width=899" alt=""></p>
+<ul>
+<li><strong>1.贡献</strong>：ILSVRC2012 冠军，展现出了深度 CNN 在图像任务上的惊人表现，掀起 CNN 研究的热潮，是如今深度学习和 AI 迅猛发展的重要原因。ImageNet 比赛为一直研究神经网络的 Hinton 提供了施展平台，AlexNet 就是由 hinton 和他的两位学生发表的，在 AlexNet 之前，深度学习已经沉寂了很久。</li>
+<li><strong>2.网络结构</strong>：如下图所示，8 层网络，参数大约有 60 million，使用了 relu 函数，头两个全连接层使用了 0.5 的 dropout。使用了 LRN 和重叠的池化，现在 LRN 都不用了，一般用 BN 作 Normalization。当时使用了多 GPU 训练。</li>
+<li><strong>3.预处理</strong>：先 down-sample 成最短边为 256 的图像，然后剪出中间的 256x256 图像，再减均值做归一化（over training set）。 <strong>训练时，做数据增强</strong>，对每张图像，随机提取出 227x227 以及水平镜像版本的图像。除了数据增强，还使用了 PCA 对 RGB 像素降维的方式来缓和过拟合问题。</li>
+<li><strong>4.预测</strong>：对每张图像提取出 5 张（四个角落以及中间）以及水平镜像版本，总共 10 张，平均 10 个预测作为最终预测。</li>
+<li><strong>5.超参数</strong>：SGD，学习率 0.01，batch size 是 128，momentum 为 0.9，weight decay 为 0.0005（论文有个权重更新公式），每当 validation error 不再下降时，学习率除以 10。权重初始化用（0，0.01）的高斯分布，二四五卷积层和全连接层的 bias 初始化为 1（给 relu 提供正值利于加速前期训练），其余 bias 初始化为 0。</li>
+<li>AlexNet Architecture</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579761518340-e4d9e61e-0876-4dd0-8876-aca1a55137aa.png#align=left&display=inline&height=1109&name=architecture.png&originHeight=1109&originWidth=1075&size=225442&status=done&style=none&width=1075" alt="architecture.png"></p>
+<ul>
+<li>AlexNet 每层的超参数及参数数量</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579761453080-e885ac08-fe15-4d92-8119-9023e101daf2.png#align=left&display=inline&height=435&originHeight=870&originWidth=875&size=0&status=done&style=none&width=438" alt=""></p>
+<h2 id="VGG16"><a href="#VGG16" class="headerlink" title="VGG16"></a>VGG16</h2><p><a href="https://arxiv.org/pdf/1409.1556.pdf" target="_blank" rel="external nofollow noopener noreferrer">VGGNet</a>是由牛津大学计算机视觉组和 Google DeepMind 项目的研究员共同研发的卷积神经网络模型，包含 VGG16 和 VGG19 两种模型，其网络模型如图所示。<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579761454091-b4e32034-9254-4ab3-b4d4-a721efbc941b.png#align=left&display=inline&height=1254&originHeight=1254&originWidth=3071&size=0&status=done&style=none&width=3071" alt=""><br>从网络模型可以看出，VGG16 相比 AlexNet 类的模型具有较深的深度，通过反复堆叠<code>3*3</code>的卷积层和<code>2*2</code>的池化层，VGG16 构建了较深层次的网络结构，整个网络的卷积核使用了一致的<code>3*3</code>的尺寸，最大池化层尺寸也一致为<code>2*2</code>。与 AlexNet 主要有以下不同：</p>
+<ul>
+<li>Vgg16 有 16 层网络，AlexNet 只有 8 层；</li>
+<li>在训练和测试时使用了多尺度做数据增强。</li>
+</ul>
+<h3 id="1-感受野"><a href="#1-感受野" class="headerlink" title="1.感受野"></a>1.感受野</h3><p>对于给定的感受野，采用堆积的小卷积核优于采用大的卷积核,因为可以增加网络深度来保证学习更复杂的模式,而且代价还比较小(参数更少)。</p>
+<p>VGG 中，使用 3 个 3x3 卷积核来代替 7x7 卷积核,使用了 2 个 3x3 卷积核来代替 5*5 卷积核,这样做的主要目的是在保证具有相同感受野的条件下,提升了网络的深度,在一定程度上提升了神经网络的效果。</p>
+<p>此外 VGG 使用相同大小的卷积核，还利于模块化设计，方便代码实现。</p>
+<h3 id="2-模型参数"><a href="#2-模型参数" class="headerlink" title="2.模型参数"></a>2.模型参数</h3><p>VGG 层之间高和宽减半、通道数翻倍的设计使得多数卷积层都有相同的模型参数尺寸和计算复杂度。由于每个卷积层的窗口大小一样，所以每层的模型参数尺寸和计算复杂度与输入高、输入宽。输入通道数和输出通道数的乘积成正比。</p>
+<h2 id="NIN"><a href="#NIN" class="headerlink" title="NIN"></a>NIN</h2><p>全称<a href="https://arxiv.org/abs/1312.4400" target="_blank" rel="external nofollow noopener noreferrer">Network in network</a>，顾名思义，该网络的目的就是用某种方式堆叠小的网络。<br><img src="https://cdn.nlark.com/yuque/0/2020/svg/478234/1579761453691-360a0f25-ba0b-4803-a0e6-c2c8d206dc2c.svg#align=left&display=inline&height=775&originHeight=775&originWidth=977&size=0&status=done&style=none&width=977" alt=""><br>左图展示了 AlexNet 和 VGG 的网络结构，右图展示了 NiN 的网络结构。</p>
+<h3 id="1-局部块"><a href="#1-局部块" class="headerlink" title="1.局部块"></a>1.局部块</h3><p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579761548874-697b9731-6f0f-48a5-8f4d-22e5198d78aa.png#align=left&display=inline&height=334&name=nin.png&originHeight=334&originWidth=442&size=23330&status=done&style=none&width=442" alt="nin.png"></p>
+<p>左图是 AlexNet 和 VGG 的网络结构局部,右图是 NiN 的网络结构局部</p>
+<p>NiN 块是 NiN 中的基础块。它由一个卷积层加两个充当全连接层的卷积层串联而成。其中第一个卷积层的超参数可以自行设置,而而第二和第三个卷积层的超参数一般是固定的。</p>
+<p>如果要堆叠小模型，那么就无法避免全连接层，而将卷积结果的特征图转为全连接的维度转换，将耗费大量的资源。而使用 1x1 的卷积层正好可以完成这一替换。1x1 的卷积层，可以看成全连接层，其中空间维度（高和宽）上的每个元素相当于样本，通道相当于特征。因此，NIN 使用 1x1 卷积层来替代全连接层，从而使空间信息能够自然传递到后面的层。</p>
+<h3 id="2-替代-FC，使用全局平均池化层求分类"><a href="#2-替代-FC，使用全局平均池化层求分类" class="headerlink" title="2.替代 FC，使用全局平均池化层求分类"></a>2.替代 FC，使用全局平均池化层求分类</h3><p>NiN 还有一个设计与 AlexNet 显著不不同:NiN 去掉了了 AlexNet 最后的 3 个全连接层,取而代之地,NiN 使用用了输出通道数等于标签类别数的 NiN 块,然后使用全局平均池化层对每个通道中所有元素求平均并直接用于分类。<br>这里的全局平均池化层即窗口形状等于输入空间维形状的平均池化层。<br>NiN 的这个设计的好处是可以显著减小模型参数尺寸,从而缓解过拟合。然而,该设计有时会造成获得有效模型的训练时间的增加。</p>
+<p><strong>NiN 的以上设计思想影响了后面一系列卷积神经网络的设计。</strong></p>
+<h2 id="GoogLeNet"><a href="#GoogLeNet" class="headerlink" title="GoogLeNet"></a>GoogLeNet</h2><p><a href="https://static.googleusercontent.com/media/research.google.com/zh-CN//pubs/archive/43022.pdf" target="_blank" rel="external nofollow noopener noreferrer">GoogleNet</a>是 2014 年 ImageNet 图像识别挑战赛中的冠军。这里介绍的是其第一个版本。网络结构如下：<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579761591966-65ccc522-bff1-438c-8109-6dc890a1205b.png#align=left&display=inline&height=584&name=net.png&originHeight=584&originWidth=1984&size=126452&status=done&style=none&width=1984" alt="net.png"></p>
+<h3 id="1-Inception-块"><a href="#1-Inception-块" class="headerlink" title="1.Inception 块"></a>1.Inception 块</h3><p><img src="https://cdn.nlark.com/yuque/0/2020/svg/478234/1579761600401-d7f99494-fe70-4ff7-910e-865d9848229b.svg#align=left&display=inline&height=193&name=inception.svg&originHeight=193&originWidth=632&size=82449&status=done&style=none&width=632" alt="inception.svg"><br>Inception 块结构</p>
+<p>该块采用四条线路提取不同空间尺度下的信息，其中 1x1 卷计层用来减少输入通道数或调整输出通道数，以降低模型复杂度。4 条线路都使用了合适的填充来使输入与输出的高和宽一致。</p>
+<h3 id="2-结构"><a href="#2-结构" class="headerlink" title="2.结构"></a>2.结构</h3><p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579761608316-e0b2c7b7-8098-4fe5-bf9d-5341edb87006.png#align=left&display=inline&height=845&name=arch.png&originHeight=845&originWidth=1233&size=227530&status=done&style=none&width=1233" alt="arch.png"></p>
+<h3 id="3-总结"><a href="#3-总结" class="headerlink" title="3.总结"></a>3.总结</h3><ul>
+<li>Inception 块相当于一个有 4 条线路的子网络。它通过不同窗口形状的卷积层和最大池化层来并行抽取信息,并使用 1x1 卷积层减少通道数从而而降低模型复杂度。</li>
+<li>GoogLeNet 将多个设计精细的 Inception 块和其他层串联起来。其中 Inception 块的通道数分配之比是在 ImageNet 数据集上通过大量的实验得来的。</li>
+<li>GoogLeNet 和它的后继者们一度是 ImageNet 上最高效的模型之一:在类似的测试精度下,它们的计算复杂度往往更低。</li>
+</ul>
+<h2 id="ResNet"><a href="#ResNet" class="headerlink" title="ResNet"></a>ResNet</h2><p><a href="https://arxiv.org/pdf/1512.03385.pdf" target="_blank" rel="external nofollow noopener noreferrer">ResNet</a>有效的解决了深度卷积神经网络难训练的问题。梯度可以认为是信息量，当模型能够完全抽取数据的特征时，梯度就为零了，即模型完全收敛时，模型的梯度变为零。梯度的大小可以认为是你的模型还差多少能够拟合到数据。当做反向传播时，是从顶层往回传递的。而此时，误差很容易被离输出层近的层吸收掉。所以当模型深度很深的情况下，接近输出层的层很可能已经抓取了数据的信息，而到输出层时，梯度已经变为 0.一旦梯度变为零，将会造成收敛变得很慢。</p>
+<p>ResNet 通过增加跨层的连接来解决梯度逐层回传时变小的问题。</p>
+<p>下面演示了一个跨层的连接。<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579761635432-f1eaa74d-623d-43a6-aa10-5899115add14.png#align=left&display=inline&height=497&name=1.png&originHeight=497&originWidth=320&size=18542&status=done&style=none&width=320" alt="1.png"><br>最底下那层的输入不仅仅是输出给中间层，而且其与中间层结果相加进入最上层。这样在梯度反传时，最上层梯度可以直接跳过中间层传到最下层，从而避免最下层梯度过小的情况。</p>
+<p>为什么叫做残差网络呢？我们可以将上面示意图里的结构拆成两个网络的和，一个一层，一个两层，最下面层是共享的。<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579761655697-1f075440-4386-4e71-91cd-1fa21c23faa2.png#align=left&display=inline&height=419&name=2.png&originHeight=419&originWidth=426&size=16024&status=done&style=none&width=426" alt="2.png"><br>在训练过程中，左边网络因为更简单所以更容易训练，这个小网络没有拟合到的不封，称为残差，则被右边的网络抓取住。<br>所以直观上来说，即使加深网络，跨层连接仍然可以使得底层网络可以充分的训练，从而不会让训练更难。</p>
+<h3 id="1-Residual-块"><a href="#1-Residual-块" class="headerlink" title="1.Residual 块"></a>1.Residual 块</h3><p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579761645826-960cb3ed-e404-43d7-8550-c9c5c5f78009.png#align=left&display=inline&height=293&name=3.png&originHeight=293&originWidth=456&size=29878&status=done&style=none&width=456" alt="3.png"><br>残差块里首先有 2 个有相同输出通道数的卷积层。每个卷积层后接一个批量归一化层和 ReLU 激活函数。</p>
+<p>ResNet 则使用 4 个由残差块组成的模块,每个模块使用若干个同样输出通道数的残差块。第一个模块的通道数同输入通道数一致。由于之前已经使用了步幅为 2 的最大池化层,所以无须减小高和宽。之后的每个模块在第一个残差块里里里将上一个模块的通道数翻倍,并将高和宽减半。</p>
+<h3 id="2-模型结构"><a href="#2-模型结构" class="headerlink" title="2.模型结构"></a>2.模型结构</h3><p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579761664338-91707504-93b9-4697-bf91-69f5e900a353.png#align=left&display=inline&height=468&name=4.png&originHeight=468&originWidth=1252&size=129027&status=done&style=none&width=1252" alt="4.png"></p>
+<h3 id="3-复杂度对比"><a href="#3-复杂度对比" class="headerlink" title="3.复杂度对比"></a>3.复杂度对比</h3><p><img src="https://cdn.nlark.com/yuque/0/2020/svg/478234/1579761670992-db479655-b113-42d9-90ef-7ac8bde055d1.svg#align=left&display=inline&height=301&name=functionclasses.svg&originHeight=301&originWidth=792&size=96127&status=done&style=none&width=792" alt="functionclasses.svg"><br>左：非嵌套函数类。实际上，随着复杂度的增加，距离可能会增加。右：使用嵌套函数类不会发生这种情况。¶</p>
+<ul>
+<li>网络变宽是平方复杂度，容易过拟合。而变深是线性复杂度，效果更好。</li>
+</ul>
+<h3 id="4-总结"><a href="#4-总结" class="headerlink" title="4.总结"></a>4.总结</h3><ul>
+<li>残差块通过跨层的数据通道从而能够训练出有效的深度神经网网络。</li>
+<li>ResNet 深刻影响了后来的深度神经网络的设计。</li>
+</ul>
+<h1 id="DenseNet"><a href="#DenseNet" class="headerlink" title="DenseNet"></a>DenseNet</h1><p><a href="https://arxiv.org/pdf/1608.06993.pdf" target="_blank" rel="external nofollow noopener noreferrer">DenseNet</a>与 ResNet 区别主要在于它将 ResNet 的残差块中的相加变为了 channel 的连结。<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579761685334-fff989a7-e1a5-420b-b8d3-83713d4f7b6c.png#align=left&display=inline&height=398&name=1.png&originHeight=398&originWidth=786&size=24543&status=done&style=none&width=786" alt="1.png"><br>DenseNet 的主要构建模块是稠密块(dense block)和过渡层(transition layer)。前者定义了输入和输出是如何连结的,后者则用来控制通道数,使之不不过大。</p>
+<h3 id="1-稠密快"><a href="#1-稠密快" class="headerlink" title="1.稠密快"></a>1.稠密快</h3><p>DenseNet 使用了 ResNet 改良版的“BN-&gt;relu-&gt;conv”结构，它组成了基本的卷积块 conv_block。</p>
+<p>稠密块由多个 conv_block 组成,每块使用相同的输出通道数。但在前向计算时,我们将每块的输入和输出在通道维上连结。</p>
+<h3 id="2-过渡层"><a href="#2-过渡层" class="headerlink" title="2.过渡层"></a>2.过渡层</h3><p>由于每个稠密块都会带来通道数的增加,使用用过多则会带来过于复杂的模型。过渡层用来控制模型复杂度。它通过卷积层来减小通道数,并使用步幅为 2 的平均池化层减半高和宽,从而进一步降低模型复杂度。</p>
+<h3 id="3-模型结构"><a href="#3-模型结构" class="headerlink" title="3.模型结构"></a>3.模型结构</h3><p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579761692585-8da5ff9a-b48c-4a5e-b038-64c3c10c6791.png#align=left&display=inline&height=493&name=2.png&originHeight=493&originWidth=1005&size=130413&status=done&style=none&width=1005" alt="2.png"></p>
+<h3 id="4-总结-1"><a href="#4-总结-1" class="headerlink" title="4.总结"></a>4.总结</h3><ul>
+<li>在跨层连接上,不同于 ResNet 中将输入与输出相加,DenseNet 在通道维上连结输入与输出。</li>
+<li>DenseNet 的主要构建模块是稠密块和过渡层。</li>
+</ul>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/CNN%E7%B3%BB%E5%88%97%E4%B9%8B%E5%9B%BE%E5%83%8F%E5%88%86%E7%B1%BB.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/cnn/">
+              #cnn
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/classification/">
+              #classification
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/%E6%80%BB%E7%BB%93/">
+              #总结
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/Jetson%20nano%E4%B8%8ERaspberry%20pi%204%20%E5%AE%89%E8%A3%85OpenVINO%20toolkit.html" target="_self">Jetson nano与Raspberry pi 4 安装OpenVINO toolkit</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/CNN%E7%B3%BB%E5%88%97%E4%B9%8B%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B.html" target="_self">CNN系列之目标检测</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

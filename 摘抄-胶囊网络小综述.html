@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>摘抄-胶囊网络小综述 | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="杂记,胶囊网络,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>摘抄-胶囊网络小综述</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-10-20
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%9D%82%E8%AE%B0/">
+            杂记
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="摘抄-胶囊网络小综述.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <h1 id="胶囊网络模型综述"><a href="#胶囊网络模型综述" class="headerlink" title="胶囊网络模型综述"></a><a href="">胶囊网络模型综述</a></h1><p><strong>摘要：</strong>现代计算机视觉任务要求高效解决图像识别、目标检测、目标分割、自然语言处理和语言翻译等任务。符号表示人工智能由于其硬编码规则无法解决这些复杂的问题，这也导致了深度学习模型的引入，例如卷积神经网络。然而卷积神经网络需要大量的训练数据，无法识别物体的姿态和变形。胶囊网络提供了一个有效的建模实体间局部到全局关系的方法，并可以学习视角不变表示。通过这种提升的表示学习，胶囊网络可以在多个领域下用更少的参数取得好的性能。这篇文章主要介绍了卷积神经网络的局限性，总结了胶囊网络模型的实现和现状。<br><strong>关键词：</strong>胶囊网络；动态路由；神经网络；胶囊网络应用；</p>
+<h1 id="Overview-of-Capsule-Network-Model"><a href="#Overview-of-Capsule-Network-Model" class="headerlink" title="Overview of Capsule Network Model"></a>Overview of Capsule Network Model</h1><p><strong>Abstract</strong>: Modern computer vision tasks require efficient solutions to tasks such as image recognition, target detection, target segmentation, natural language processing, and language translation. Symbols indicate that artificial intelligence cannot solve these complex problems due to its hard-coded rules, which has also led to the introduction of deep learning models, such as convolutional neural networks. However, convolutional neural networks require a lot of training data and cannot recognize the posture and deformation of objects. Capsule network provides an effective method of modeling local to global relationships between entities, and can learn perspective invariant representation. Through this improved representation learning, the capsule network can achieve good performance with fewer parameters in multiple fields. This article mainly introduces the limitations of convolutional neural networks, and summarizes the implementation and current situation of the capsule network model.<br><strong>Keyword</strong>: capsule network; dynamic routing; neural network; capsule network application;</p>
+<h2 id="1、引言"><a href="#1、引言" class="headerlink" title="1、引言"></a>1、引言</h2><p>深度学习和人工神经网络已经被证明在计算机视觉和自然语言处理等领域有很优异的表现，不过随着越来越多相关任务的提出，例如图像识别，物体检测，物体分割和语言翻译等，研究者们仍然需要更多有效的方法来解决其计算量和精度的问题。在已有的深度学习方法中，卷积神经网络 (Convolutional Neural Networks) 是应用最为广泛的一种模型。虽然卷积神经网络的提出取得了显著的成果并解决了许多问题，但是它在某些方面还是存在许多缺陷。卷积神经网络最大的缺陷就是它不能从整幅图像和部分图像识别出姿势，纹理和变化。<br>    胶囊网络（CapsNet）在 2017 年由图灵奖得主 Hinton 首次提出[1]。胶囊具有等变性并且输入输出都是向量形式的神经元而不是 CNN 模型中的标量值[2]。胶囊的这种特征表示形式可以允许它识别变化和不同视角。在胶囊网络中，每一个胶囊都由若干神经元组成，而这每个神经元的输出又代表着同一物体的不同属性。这就为识别物体提供了一个巨大的优势，即能通过识别一个物体的部分属性来识别整体。<br>    动态路由规则是胶囊网络取得更好识别效果的主要原因,也是胶囊网络模型的重要思想。目前主要从两个方面来提升胶囊网络的性能[3]:其一,通过提升所提取的胶囊的质量;其二,通过改进路由规则使得网络参数减少。优化路由法则更具一般性,通过数学方法改进动态路由规则,以减少计算开销,尽管可能会降低局部模型性能,但影响较小。</p>
+<h2 id="2、卷积神经网络"><a href="#2、卷积神经网络" class="headerlink" title="2、卷积神经网络"></a>2、卷积神经网络</h2><h3 id="2-1-卷积神经网络介绍"><a href="#2-1-卷积神经网络介绍" class="headerlink" title="2.1 卷积神经网络介绍"></a>2.1 卷积神经网络介绍</h3><p>人工神经网络（Artificial Neural Networks，ANN）是一种模拟生物神经系统的结构和行为，进行分布式并行信息处理的算法数学模型。ANN 通过调整内部神经元与神经元之间的权重关系，从而达到处理信息的目的。而卷积神经网络（Convolutional Neural Network，CNN）是一种前馈神经网络，它由若干卷积层和池化层组成，尤其在图像处理方面 CNN 的表现十分出色。<br>1962 年，Hubel 和 Wiesel 通过对猫脑视觉皮层的研究，首次提出了一种新的概念“感受野”，这对后来人工神经网络的发展有重要的启示作用。1998 年，LeCun 提出了卷积神经网络的经典网络模型 LeNet-5，并再次提高手写字符识别的正确率。CNN 的基本结构由输入层、卷积层（convolutional layer）、池化层（pooling layer）、全连接层及输出层构成。由于卷积层中输出特征图的每个神经元与其输入进行局部连接，并通过对应的连接权值与局部输入进行加权求和再加上偏置值，得到该神经元输入值，该过程等同于卷积过程，CNN 也由此而得名。图 1 展示了用于图像分类任务的卷积神经网络结构。<br> <img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1603192891070-acf27fd4-9758-40af-9d3c-bf93f5084439.png#align=left&display=inline&height=183&margin=%5Bobject%20Object%5D&name=image.png&originHeight=183&originWidth=554&size=80378&status=done&style=none&width=554" alt="image.png"></p>
+<p>图 1.用于分类任务的 CNN 模型结构</p>
+<h3 id="2-2-卷积神经网络的局限性"><a href="#2-2-卷积神经网络的局限性" class="headerlink" title="2.2 卷积神经网络的局限性"></a>2.2 卷积神经网络的局限性</h3><p>CNN 模型具有 4 个特点：局部连接、权值共享、池化操作及多层结构。CNN 能够通过多层非线性变换，从数据中自动学习特征，从而代替手工设计的特征，且深层的结构使它具有很强的表达能力和学习能力。<br>    但是 CNNs 也存在一些问题，主要是无法识别图像或部分图像的姿态、纹理和变形。换句话说，由于池化操作 CNN 是不变的，不是等变的，因此缺乏等价性。此外 CNN 中的池化操作也使得图像缺失了一些特征。因此需要大量的训练数据来弥补这一损失。与胶囊网络相比，它们的训练时间更长，部分原因是 CNNs 的深度较深，而胶囊网络是宽度较深，同时参数较少。CNNs 更容易受到对抗攻击，如像素扰动导致的错误分类。由于 CNN 具有最大池化层，所以图像重构比胶囊网络重构要求更高。</p>
+<h2 id="3、胶囊网络"><a href="#3、胶囊网络" class="headerlink" title="3、胶囊网络"></a>3、胶囊网络</h2><p>Hinton 和他的同事提出了胶囊网络[1]作为 CNNs 的替代品。胶囊是等变的，由神经元网络组成，神经元接受和输出向量，而不是 CNNs 的标量值。胶囊的这个特性允许它了解图像的特征，以及图像的变形和观察条件。在胶囊网络中，每个胶囊由一组神经元组成，每个神经元的输出代表同一特征的不同属性。这提供了通过首先识别其部分来识别整个实体的优点。一个胶囊的输入是来自 CNN 的输出(或特征)。这些特征根据所使用的胶囊类型进行处理。胶囊的输出由被胶囊编码的特征出现的概率和一组通常称为实例化参数的向量值组成。它的表示的是胶囊的特征存在的概率，以确保网络的不变性。实例化参数用来表示网络的等变性，表明其识别姿态、纹理和变形的能力。不变性是模型决定保持不变的属性，与任何输入变换无关。这种称为平移不变性的类型是 CNNs 所特有的。例如，如果 CNN 要检测一张脸，不管眼睛在什么位置，它仍然会检测到它是一张脸。而等变性保证了特征在人脸上的空间位置被考虑在内。因此，等变性不只是考虑眼睛在图像中的存在，而是考虑它在图像中的位置。等变性是 CapsNets 理想的属性。</p>
+<h3 id="3-1-Transforming-auto-encoders"><a href="#3-1-Transforming-auto-encoders" class="headerlink" title="3.1 Transforming auto-encoders"></a>3.1 Transforming auto-encoders</h3><p>第一个胶囊网络以《Transforming auto-encoders》为标题发表。它的建立是为了强调网络识别姿态的能力。其目的不是识别图像中的物体，而是接受图像及其姿态作为输入和输出相同姿态的图像。在第一个实现中，胶囊的输出向量由输出值组成，其中一个表示特征存在的概率，其余表示实例化参数。胶囊可以安排在不同的级别:低层 l 为初级胶囊和上层 l + 1 称为二次胶囊。低层胶囊从像素强度提取姿态参数，以便能够发起一个部分-整个层次。这种部分-整体的层次结构是胶囊网络的一个优点，通过对其部分的识别，可以得到对整体的识别。为此,低水平胶囊所代表的功能必须有正确的空间关系才能激活更高级别的胶囊在 l + 1 层。例如，让眼睛和嘴巴用较低水平的胶囊来表示，如果预测一致的话，每一个胶囊都可以预测代表一张脸的较高水平胶囊的姿势。<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1603192934178-e48f725e-280a-4458-a083-957cd3c3c4c1.png#align=left&display=inline&height=295&margin=%5Bobject%20Object%5D&name=image.png&originHeight=295&originWidth=430&size=131602&status=done&style=none&width=430" alt="image.png"><br>图 2.自编码胶囊结构</p>
+<h3 id="3-2-胶囊之间的动态路由"><a href="#3-2-胶囊之间的动态路由" class="headerlink" title="3.2 胶囊之间的动态路由"></a>3.2 胶囊之间的动态路由</h3><p>胶囊网络的下一个修改[6]将胶囊定义为一组神经元，其实例化参数由活动向量表示，向量的长度表示特征存在的可能性。与前一个实现相比的改进是，在本例中不需要将姿态数据作为输入。该网络由卷积层、主包层和类包层组成。主胶囊层是第一个胶囊层，接着是未指定数量的胶囊层，直到最后一个胶囊层也称为类胶囊层。卷积层对图像进行特征提取，输出信号送入主包膜层。在 l 层的每个胶囊 i(1 ≤ i ≤ N)有一个活动的向量 u_i∊ℝ 以实例化参数的形式对空间信息进行编码。第 i 个层的输出向量 u_i 送入所有下一层 l + 1 的胶囊。第 l+1 层的第 j 个胶囊将收到 u_i，并以相应的权值矩阵 W_ij 求积。得到的向量 u_j|i 是第 l 层的胶囊 i 对第 l+1 层胶囊 j 所表示的实体的变换。预测向量 PC，u_j|i 表示主胶囊 i 对胶囊 j 类的贡献。<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1603192948615-4d37d63f-0e6e-4bee-b041-f044c8a2a27f.png#align=left&display=inline&height=27&margin=%5Bobject%20Object%5D&name=image.png&originHeight=29&originWidth=97&size=2142&status=done&style=none&width=90" alt="image.png"><br>将预测向量与表示这些胶囊之间一致性的耦合系数相乘，得到单个主胶囊 i 对胶囊类 j 的预测，如果一致性高，则两个胶囊相互相关。这样耦合系数就会增大，反之耦合系数就会减小。计算所有这些对类胶囊 j 预测的单个主胶囊的加权和(sj)，以获得压缩函数(vj)的候选值。<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1603192966016-2f264c7c-cda5-4795-87b3-ca6fcd77566d.png#align=left&display=inline&height=46&margin=%5Bobject%20Object%5D&name=image.png&originHeight=46&originWidth=87&size=2810&status=done&style=none&width=87" alt="image.png">  <img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1603192970954-0f117549-53e2-435a-9314-a5ec46394409.png#align=left&display=inline&height=47&margin=%5Bobject%20Object%5D&name=image.png&originHeight=47&originWidth=100&size=3047&status=done&style=none&width=100" alt="image.png">  <img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1603192976780-3ce68bf0-71c7-4e57-a426-19591272e26a.png#align=left&display=inline&height=43&margin=%5Bobject%20Object%5D&name=image.png&originHeight=43&originWidth=100&size=4149&status=done&style=none&width=100" alt="image.png"><br>压缩函数确保从胶囊输出的长度在 0 和 1 之间，就像一种可能性。从一个包膜层的 vj 被路由到下一个包膜层，并以同样的方式处理。耦合系数 cij 保证了 l 级 i 的预测与 l+1 层 j 的预测相关联。在每次迭代中，cij 通过求 u^jji 和 vj 的点积来更新。图 3 展示了动态路由算法：<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1603193005996-222ca055-110f-4360-9999-476c3f660ea7.png#align=left&display=inline&height=168&margin=%5Bobject%20Object%5D&name=image.png&originHeight=240&originWidth=365&size=54955&status=done&style=none&width=255" alt="image.png"><br>图 3.动态路由算法</p>
+<h3 id="3-3-期望最大化路由的矩阵胶囊网络"><a href="#3-3-期望最大化路由的矩阵胶囊网络" class="headerlink" title="3.3 期望最大化路由的矩阵胶囊网络"></a>3.3 期望最大化路由的矩阵胶囊网络</h3><p>与使用向量输出相反，Hinton 等人提出用矩阵表示胶囊的输入和输出[7]。采用期望最大化算法代替协议动态路由[8]。这是必要的，为了减少胶囊之间的转换矩阵的大小，因为当使用向量时，它们可以由 n 个元素组成，而不是 n。动态路由是两个位姿向量之间的余弦，不能很好地工作。此外，用一个参数 a 代替向量的长度来表示一个被包囊表示的实体存在的概率。这有助于避免被认为“不客观和不合理”的压缩函数。EM 路由算法利用具有多层胶囊的胶囊网络来有效工作。</p>
+<h2 id="4、胶囊网络的应用"><a href="#4、胶囊网络的应用" class="headerlink" title="4、胶囊网络的应用"></a>4、胶囊网络的应用</h2><p>目前胶囊网络在小样本图像分类任务中已经有较好的应用。例如文献[9]通过改进动态路由和压缩函数的方式对 Hinton 等的胶囊网络模型进行改进搭建目标识别模型，在效率上比未改进的模型有了明显的提高。文献[10]通过限制路由的方法加快胶囊网络的训练速度,并用其通过小样本训练检测肺癌,取得了比卷积神经网络更好的效果。文献[11]利用胶囊网络完成对复杂路网交通拥堵情况的预测任务,同样取得比卷积网络更好的效果。文献[12]提出采用胶囊网络模型对脑瘤进行分类,同样取得了比卷积网络模型更好的效果。该应用采用了无监督的方式,利用 3 个全连接层将胶囊网络的输出重构为脑瘤图片,最小化输入图片与重构图片的差值来实现。<br>    胶囊网络在文本分类任务上也具有一定潜力，文献[13]提出了适用于文本分类的胶囊网络,该网络优化动态路由机制在网络中加入 Orphan 类别用于收集背景信息,同时优化路由参数的训练过程,使网络更适用于文本分类的应用环境。该网络与 PatchCapsNet 的多路并行结构类似,每一路网络使用不同大小的卷积步长以便提取全面的信息特征。该网络在 6 种不同的文本分类数据集上测试,其中 4 种表现优于卷积神经网络和循环神经网络。</p>
+<h2 id="5、结论"><a href="#5、结论" class="headerlink" title="5、结论"></a>5、结论</h2><p>机器视觉处理非结构化数据仍然是人工智能最重要的任务之一。深度学习的引入消除了终结了导致高维化的具有挑战性的特性工程任务。深度学习模型(如 CNNs)在这一领域表现良好，但它们需要大量的数据和计算能力来执行。胶囊被引入以消除 CNNs 面临的挑战。本文回顾了胶囊网络的发展现状，并对现有的结构和实现作了进一步的介绍。虽然胶囊网络的概念很强大，但还有很多东西需要学习和改进。学术界正利用 CapsNets 的成功和失败来建立更鲁棒的机器视觉算法。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>[1] Hinton G E , Krizhevsky A , Wang S D . Transforming Auto-Encoders[C]// Artificial Neural Networks &amp; Machine Learning-icann -international Conference on Artificial Neural Networks. Springer, Berlin, Heidelberg, 2012.<br>[2] Patrick M K , Adekoya A F , Mighty A A , et al. Capsule Networks – A survey[J]. 2019.<br>[3]杨巨成, 韩书杰, 毛磊,等. 胶囊网络模型综述[J]. 山东大学学报 (工学版), 2019, 49(6).<br>[4] Hubel D H , Wiesel T N . Receptive fields, binocular interaction and functional architecture in the cat’s visual cortex[J]. The Journal of Physiology, 1962, 160(1).<br>[5] Lecun Y , Bottou L . Gradient-based learning applied to document recognition[J]. Proceedings of the IEEE, 1998, 86(11):2278-2324.<br>[6] Sabour S , Frosst N , Hinton G E . Dynamic Routing Between Capsules[J]. 2017.<br>[7] G. Hinton, S. Sabour, N. Frosst.Matrix capsules with em routing.ICLR (2018), pp. 1-15<br>[8]M. Engelin.CapsNet Comprehension of Objects in Different Rotational Views A comparative study between capsule and convolutional networks.STOCKHOLM, SWEDEN (2018)<br>[9] 林少丹, 洪朝群, 陈雨雪. 结合胶囊网络和卷积神经网络的目标识别模型[J]. 电讯技术, 2019, 059(009):987-994.<br>[10] Mobiny A , Van Nguyen H . Fast CapsNet for Lung Cancer Screening[J]. 2018.<br>[11] Kim Y , Wang P , Zhu Y , et al. A Capsule Network for Traffic Speed Prediction in Complex Road Networks[J]. 2018.<br>[12] Afshar P , Mohammadi A , Plataniotis K N . Brain Tumor Type Classification via Capsule Networks[J]. 2018.<br>[13] Zhao W , Ye J , Yang M , et al. Investigating Capsule Networks with Dynamic Routing for Text Classification[J]. 2018.<br>[14] Sabour S , Frosst N , Hinton G E . Dynamic Routing Between Capsules[J]. 2017.</p>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/%E6%91%98%E6%8A%84-%E8%83%B6%E5%9B%8A%E7%BD%91%E7%BB%9C%E5%B0%8F%E7%BB%BC%E8%BF%B0.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/%E8%83%B6%E5%9B%8A%E7%BD%91%E7%BB%9C/">
+              #胶囊网络
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/Bag%20of%20Tricks%20for%20Image%20Classification.html" target="_self">Bag of Tricks for Image Classification</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/GAN%E5%88%9D%E8%AF%86.html" target="_self">GAN初识</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

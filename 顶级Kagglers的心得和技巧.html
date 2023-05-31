@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>顶级Kagglers的心得和技巧 | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="数据科学,总结,kaggle,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>顶级Kagglers的心得和技巧</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-01-22
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6/">
+            数据科学
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="顶级Kagglers的心得和技巧.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <p>这是一篇笔记，课程来自 Coursera 上的<code>How to Win a Data Science Competition: Learn from Top Kagglers</code></p>
+<blockquote>
+<p>本篇可以算是顶级 Kaggler 大佬们，经过上百场比赛总结的心得和技巧。对准备开始参加数据挖掘竞赛的新人们极其有用，可以为你节省不少时间。<br>大部分内容我已经通过意会翻译成中文了，限于小编我的视野，可能会出现些误解，有问题望指正。</p>
+</blockquote>
+<h1 id="Tips-and-tricks"><a href="#Tips-and-tricks" class="headerlink" title="Tips and tricks"></a>Tips and tricks</h1><p>如果觉得排版不适，可以下载 notebook 文件阅读。<br><a href="https://github.com/wmpscc/DataMiningNotesAndPractice" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/wmpscc/DataMiningNotesAndPractice</a></p>
+<h2 id="Practical-guide"><a href="#Practical-guide" class="headerlink" title="Practical guide"></a>Practical guide</h2><p>经验之谈，这将节省你大量时间。</p>
+<h3 id="Before-you-enter-a-competition"><a href="#Before-you-enter-a-competition" class="headerlink" title="Before you enter a competition"></a>Before you enter a competition</h3><p>当我们想参加比赛时，先确定你的目标和试着估计你的参与可以得到什么。</p>
+<ul>
+<li>你可能想了解有关这个问题的更多信息</li>
+<li>你可能希望熟悉新的软件工具包</li>
+<li>你可能想要尝试去获取奖牌</li>
+</ul>
+<p><strong>这些目标中的每一个都将影响您选择参加的竞赛。</strong></p>
+<p>如果您想了解更多有趣的问题，您可能希望在论坛上进行广泛讨论。例如，如果您对数据科学，医学应用感兴趣， 您可以尝试在 2017 年数据科学碗中预测肺癌。</p>
+<p>如果您想熟悉新的软件工具，您可能希望比赛有必要的教程。 例如，如果您想学习神经网络库。您可以选择任何具有自然保护特征，有监督学习的图像比赛。</p>
+<p>如果你想尝试得到奖牌，您可能想要检查参与者有多少次提交机会。 如果人们有超过一百个提交的点数，这可能是明显的问题或验证困难的明显标志。如果排在前列的人很少，这通常意味这应该有一个非平凡的方法来参加这场比赛，或者只有少数人发现了它。除此之外，你还需要关注一下排在前列团队的规模，如果他是一个人，那么你要是聚集一支优秀的团队，胜算会大一些。</p>
+<h3 id="After-you-enter-a-competition"><a href="#After-you-enter-a-competition" class="headerlink" title="After you enter a competition:"></a>After you enter a competition:</h3><ul>
+<li><strong>1.组织你的想法</strong></li>
+</ul>
+<p>一旦熟悉了数据，开始写下你以后想要尝试的方法。什么东西可以在这里工作？你可能采取什么方法。</p>
+<p>完成后，去论坛阅读帖子和话题高相关度的内容。强烈建议你参与论坛上的讨论，您可以在论坛上获得大量信息并结识新朋友。</p>
+<ul>
+<li><strong>2.挑选一些重要的、有前途的想法</strong></li>
+</ul>
+<p>在初始管道准备好之后，你提出了一些想法，你可能想要开始改进你的解决方案</p>
+<p>您可能希望将想法排序，将最重要和最有希望的首先实施。或者可以将它们归类到各自主题中，例如特征生成、验证、度量优化等。</p>
+<ul>
+<li><strong>3.尝试去理解为什么它会或不会工作</strong></li>
+</ul>
+<p>现在选择一个想法并实施它，尝试在途中获得一些简介。特别是，试着理解为什么某些东西有效或无效。从某种意义上讲，分析工作的能力和在你尝试自己的想法时得出的结论将使您走上正确的轨道，去揭示隐藏的数据模式和泄露。</p>
+<h3 id="After-you-enter-a-competition-Everything-is-a-hyperparameter"><a href="#After-you-enter-a-competition-Everything-is-a-hyperparameter" class="headerlink" title="After you enter a competition:Everything is a hyperparameter"></a>After you enter a competition:Everything is a hyperparameter</h3><p><strong>我喜欢按照这些原则对所有参数进行排序：</strong></p>
+<ul>
+<li>1.重要性<br>将参数从重要到不重要排序，这些可能取决于数据结构、目标、度量等等</li>
+<li>2.可行性<br>例如 Rate 参数很容易调整，但这可能永远需要调整</li>
+<li>3.理解<br>评价参数，我知道它在做什么或不知道。这里重要的是要了解每个参数在整个管道中的变化。</li>
+</ul>
+<p>注意：改变一个参数可能影响整个管道</p>
+<h3 id="Data-loading"><a href="#Data-loading" class="headerlink" title="Data loading"></a>Data loading</h3><p>一开始就对资源做一些优化，将节省大量时间和计算资源。</p>
+<ul>
+<li><strong>从经典的处理方法开始然后将 csv/txt 文件转为 hdf5/npy 文件以更快的加载</strong></li>
+</ul>
+<p>我通常从基本数据预处理开始，如标签，编码，标签恢复，使用额外的数据。然后，我将结果数据转储为 HDF5 或 npy 格式。<br>HDF5 是 Pandas 的数据帧，npy 存储非 bit 数组。运行试验通常需要大量重启内核，这将导致重新加载所有数据，加载 csv 文件可能需要几分钟，从 HDF5 或 npy 格式加载数据只需几秒钟即可完成。</p>
+<ul>
+<li><strong>将 64 位阵列转为 32 位，节省两倍内存</strong></li>
+</ul>
+<p>默认情况下，Pandas 以 64 位阵列存储数据，这在大多数情况下是不必要的。将所有内容向下转换为 32 位将节省两倍的内存</p>
+<ul>
+<li><strong>大数据集可以被分块处理</strong></li>
+</ul>
+<p>Pandas 支持即时的数据重新链接。因此，大多数数据集可以在没有大量内存的情况下处理。例如您可以简单的对训练集进行拆分来验证你的模型，而不是使用完整数据来做交叉验证。</p>
+<h3 id="Performance-evaluation"><a href="#Performance-evaluation" class="headerlink" title="Performance evaluation"></a>Performance evaluation</h3><ul>
+<li><strong>并不总是需要进行广泛的验证</strong></li>
+<li><strong>从最快的模型开始-LightGBM</strong></li>
+</ul>
+<p>我通常从 LightGBM 开始，找到一些相当不错的参数，并评估我的特征的性能。<br>不要从 SVM、随机森林、神经网络开始，你会浪费太多时间等待它们的训练。只有当我对特征工程感到满意时，才会转向去调整模型、采样和 stacking。<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696136396-a5681cb9-e14d-4a7b-bb2b-88a614135b8e.png#align=left&display=inline&height=755&originHeight=755&originWidth=943&size=0&status=done&style=none&width=943" alt=""></p>
+<h3 id="Fast-and-dirty-always-better"><a href="#Fast-and-dirty-always-better" class="headerlink" title="Fast and dirty always better"></a>Fast and dirty always better</h3><p>在某些方面，我将我的方法描述为“fast and dirty”，总是更好。</p>
+<ul>
+<li><strong>不要过于关注代码质量</strong></li>
+</ul>
+<p>关注真正重要的事——数据。做数据探索，尝试不同的特征。谷歌特定领域的知识。您的代码是次要的。创建不必要的类和个人框架可能只会让事情更难以改变，这会导致浪费你的时间，所以要保持简单合理。</p>
+<ul>
+<li><strong>把事情简单化：只保留重要的东西</strong></li>
+</ul>
+<p>不要跟踪每个小变化</p>
+<ul>
+<li><strong>如果你对计算资源感到不爽-那就去租一台服务器</strong></li>
+</ul>
+<p>最后，如果您对给定的计算资源感到非常不舒服，不要挣扎数周，只需租一台更大的服务器。</p>
+<h3 id="Initial-pipeline"><a href="#Initial-pipeline" class="headerlink" title="Initial pipeline"></a>Initial pipeline</h3><ul>
+<li><strong>从简单甚至原始的解决方案开始</strong></li>
+<li><strong>用完整的管道调试</strong></li>
+</ul>
+<p>这种解决方案的主要目的不是建立一个好的模型，而是从数据的最开始到我们将提交文件写成确定的格式，建立完整的调试管道。我建议你从构建初始管道开始，通常你可以在 kernel 中找到组织者提供的 baseline 解决方案。我建议你仔细阅读并自己写。</p>
+<ul>
+<li><strong>“从见到到复杂”</strong></li>
+</ul>
+<p>另外，我建议你在其他方面遵循从简单到复杂的方法。例如我更喜欢随机森林而不是 GBDT，至少随机森林工作得非常快，几乎不需要调整混合参数。</p>
+<h3 id="Best-Practices-from-Software-Development"><a href="#Best-Practices-from-Software-Development" class="headerlink" title="Best Practices from Software Development"></a>Best Practices from Software Development</h3><ul>
+<li><strong>使用好的变量名</strong></li>
+</ul>
+<p>无论你多么聪明，如果你的变量名起的不好，你肯定会对它感到困惑，这是迟早会发生的。</p>
+<ul>
+<li><strong>让你的研究可重复</strong></li>
+<li>固定所有随机种子</li>
+<li>准确记下功能的生成方式</li>
+<li>将代码存储在版本控制系统下，例如 git。<br>很多时候，你需要回退你的模型到两星期前做模型集成。</li>
+<li><strong>复用代码</strong></li>
+</ul>
+<p>在训练和测试阶段使用相同的代码非常重要。例如，为了保证它们以一致的方式训练，应该使用相同的代码准备和转换特征。这地方一般很难察觉到，所以最好小心点。我建议将可重用代码移动到单独的函数中，甚至是单独的模块。</p>
+<h3 id="Read-papers"><a href="#Read-papers" class="headerlink" title="Read papers"></a>Read papers</h3><ul>
+<li>这可以获取到 ML 相关的电子</li>
+<li>例如，如何去优化 AUC</li>
+<li>便于熟悉相关领域问题</li>
+<li>尤其对特征生成有用</li>
+</ul>
+<h3 id="My-pipeline"><a href="#My-pipeline" class="headerlink" title="My pipeline"></a>My pipeline</h3><ul>
+<li><strong>Read forums and examine kernels first</strong></li>
+<li>There are always discussions happening!</li>
+<li><strong>Start with EDA and a baseline</strong></li>
+<li>To make sure the data is loaded correctly</li>
+<li>To check if validation is stable</li>
+<li><strong>I ad features in bulks</strong></li>
+<li>At start I create all the features I can make up</li>
+<li>I evaluate many features at once(not “add one and evaluate”)</li>
+<li><strong>Hyperparameters optimization</strong></li>
+<li>First find the parameters to overfit train dataset</li>
+<li>And then try to trim model</li>
+</ul>
+<h3 id="Code-organization-keeping-it-clean"><a href="#Code-organization-keeping-it-clean" class="headerlink" title="Code organization:keeping it clean"></a>Code organization:keeping it clean</h3><ul>
+<li><strong>Very important to have reproducible results!</strong></li>
+<li>Keep important code clean</li>
+<li><strong>Long execution history leads to mistakes</strong></li>
+<li><strong>Your notebooks can become a total mess</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">s = qq.sum(<span class="number">1</span>)</span><br><span class="line">ss = s[:,<span class="number">3</span>]/qq.var()</span><br><span class="line">sss = ss[<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+
+<p>注意代码质量</p>
+<ul>
+<li><strong>One notebook per submission(and use git)</strong></li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696136375-1bb650cc-51a2-4741-a90d-5833d047d28a.png#align=left&display=inline&height=191&originHeight=191&originWidth=340&size=0&status=done&style=none&width=340" alt=""></p>
+<ul>
+<li><strong>Before creating a submission restart the kernel</strong></li>
+<li>Use “Restart and run all” button</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579696136387-209f44e0-ebde-424a-b891-1851ebcf423c.jpeg#align=left&display=inline&height=640&originHeight=640&originWidth=1080&size=0&status=done&style=none&width=1080" alt=""></p>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/%E9%A1%B6%E7%BA%A7Kagglers%E7%9A%84%E5%BF%83%E5%BE%97%E5%92%8C%E6%8A%80%E5%B7%A7.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/%E6%80%BB%E7%BB%93/">
+              #总结
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/kaggle/">
+              #kaggle
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/%E7%A7%91%E5%AD%A6%E8%AE%A1%E7%AE%97%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B.html" target="_self">科学计算环境配置教程</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/%E9%AB%98%E7%BA%A7%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8BI.html" target="_self">高级特征工程I</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

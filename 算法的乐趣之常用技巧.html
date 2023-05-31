@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>算法的乐趣之常用技巧 | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="算法,经典算法,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>算法的乐趣之常用技巧</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-01-22
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E7%AE%97%E6%B3%95/">
+            算法
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="算法的乐趣之常用技巧.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <h1 id="常用技巧"><a href="#常用技巧" class="headerlink" title="常用技巧"></a>常用技巧</h1><p>技巧、常识、策略、原则。</p>
+<h3 id="哨兵位"><a href="#哨兵位" class="headerlink" title="哨兵位"></a>哨兵位</h3><p>设置哨兵位是程序设计中常用的技巧之一，常用在线性表的处理过程中，比如查找和移动数据操作。</p>
+<p>哨兵位通常起到两个作用，一个是作为一个临时存储空间使用，另一个是减少不必要的越界判断，简化算法代码复杂度。比如环形链表通常会设置一个表头节点，无论向前或向后遍历，均以这个表头节点为遍历越界（重复）的依据，这样维护链表的时候就不需要专门存储一个表头指针，这个表头节点可以理解为哨兵位。<br>插入排序算法中也会利用表中的 0 号位置作为哨兵位使用，这个位置不仅起到一个临时存储空间的作用，还可以简化插入后移动数据的判断条件。<br>在一些查找操作中，有时候也会用到哨兵位，比如要查找某个值，可以在表中适当的位置预置一个等于这个值的哨兵位，这样在查找过程中就不用考虑边界越界，也不用考虑找不到的情况，查找遍历的算法实现就可以很简洁，只需在查找结束的时候，判断一下结果是否是哨兵位，如果是哨兵位，则说明没有找到。</p>
+<h3 id="巧用数组下标"><a href="#巧用数组下标" class="headerlink" title="巧用数组下标"></a>巧用数组下标</h3><p>巧用数组下标可用于统计元素出现次数，在某些情况下，问题域内的一些特殊数据元素，比如 ID、类型等标识性属性，如果能定义成从 0 开始的连续整数，也可以利用数组和数组下标的特殊关系，简化数据模型，优化代码结构。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">type_house &#x3D; 0,</span><br><span class="line">type_nation &#x3D; 1,</span><br><span class="line">type_drink &#x3D; 2,</span><br><span class="line">type_pet &#x3D; 3,</span><br><span class="line">type_cigaret &#x3D; 4</span><br></pre></td></tr></table></figure>
+
+<p>然后将这五种类型属性定义成数组：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">int itemValue[GROUPS_ITEMS];</span><br></pre></td></tr></table></figure>
+
+<p>现在要查看一个 GROUP 绑定组中房子的颜色是否是蓝色，就可以这样编写代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">if(group.itemValue[type_house] &#x3D;&#x3D; COLOR_BLUE)</span><br></pre></td></tr></table></figure>
+
+<p>这样的例子应用得非常广泛，只要控制好数组越界问题，巧妙地设计数据结构，定义有意义的常量名称，可以在不影响代码可读性的基础上极大地简化算法实现。</p>
+<h3 id="取余的用法"><a href="#取余的用法" class="headerlink" title="取余的用法"></a>取余的用法</h3><p>取余运算最常用的方法就是判断一个数能否被另一个数整除：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">if ((number % 5) &#x3D;&#x3D; 0)</span><br><span class="line">   &#123;</span><br><span class="line">       &#x2F;&#x2F;能被5整除</span><br><span class="line">   &#125;</span><br><span class="line">   else</span><br><span class="line">   &#123;</span><br><span class="line">       &#x2F;&#x2F;不能被5整除</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果仅仅是判断奇偶数，判断（number &amp; 1）是否等于 0 是更好的方法。更一般的情况，当取余运算的除数是 2 的 n 次方的时候，用 &amp; 运算符代替取余会更高效。比如当 x=2n 的时候，a % x 的结果与 a &amp; (x - 1) 的结果是等价的。</p>
+<h3 id="一重循环遍历二维数组"><a href="#一重循环遍历二维数组" class="headerlink" title="一重循环遍历二维数组"></a>一重循环遍历二维数组</h3><p>重循环遍历二维表关键是对下标的处理，对于一个 M × N 的二维表，可用以下方法解出对应的二维下标</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">int row &#x3D; i &#x2F; M</span><br><span class="line">int col &#x3D; i % N</span><br></pre></td></tr></table></figure>
+
+<p>反过来，也可以用以下公式将二维坐标还原为一维坐标：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">int i &#x3D; row * N + col</span><br></pre></td></tr></table></figure>
+
+<p>很多九宫格类型的游戏棋盘的初始化就是用的这种方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">for(int i &#x3D; 0; i &lt; 9; i++)</span><br><span class="line">&#123;</span><br><span class="line">    int row &#x3D; i &#x2F; 3;</span><br><span class="line">    int col &#x3D; i % 3;</span><br><span class="line">    game-&gt;cells[row][col].fixed &#x3D; false;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="棋盘（迷宫）类算法方向遍历"><a href="#棋盘（迷宫）类算法方向遍历" class="headerlink" title="棋盘（迷宫）类算法方向遍历"></a>棋盘（迷宫）类算法方向遍历</h3><p>棋盘或迷宫类游戏常常需要配合各种搜索算法，二维棋盘和迷宫的搜索常常是沿着与某个位置相临的 4 个或 8 个方向展开，对这些方向的遍历就是搜索算法的主要结构。我常常看到一些朋友给出的算法用了长长的 if-else 或 switch-case 语句，无非是这样的结构：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">switch(direction)</span><br><span class="line">&#123;</span><br><span class="line">case UP:</span><br><span class="line">……</span><br><span class="line">case DOWN:</span><br><span class="line">……</span><br><span class="line">case LEFT:</span><br><span class="line">……</span><br><span class="line">case RIGHT:</span><br><span class="line">……</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://images.gitbook.cn/ae617140-af31-11e8-9983-5f297d5325b8" target="_blank" rel="external nofollow noopener noreferrer"><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579698498426-a13a3895-d72f-477a-ace3-9101bacbf7bf.png#align=left&display=inline&height=399&originHeight=399&originWidth=450&size=0&status=done&style=none&width=450" alt=""></a><br>以二维数组定义的棋盘为例，如果从 i 行 j 列开始向上、下、左、右四个方向搜索，则这四个方向可转换为以下行、列坐标关系：</p>
+<ul>
+<li>向左搜索：行坐标 i 不变，列坐标 j-1</li>
+<li>向上搜索：行坐标 i-1，列坐标不变</li>
+<li>向右搜索：行坐标 i 不变，列坐标 j+1</li>
+<li>向下搜索：行坐标 i+1，列坐标不变</li>
+</ul>
+<p>根据以上关系，首先定义二维数组下标偏移量，然后定义一个偏移量数组，分别表示向四个方向的数组下标偏移量：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">typedef struct</span><br><span class="line">&#123;</span><br><span class="line">   int x_off;</span><br><span class="line">   int y_off;</span><br><span class="line">&#125;OFFSET;</span><br><span class="line"></span><br><span class="line">OFFSET dir_offset[] &#x3D; &#123;&#123;0,-1&#125;,&#123;-1,0&#125;,&#123;0,1&#125;,&#123;1,0&#125;&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>假设当前位置的二维数组下标是 x、y，则对此位置开始向四个方向搜索的代码可以如此实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">for(int i &#x3D; 0; i &lt; count_of(dir_offset); i++)</span><br><span class="line">&#123;</span><br><span class="line">    int new_x &#x3D; x + dir_offset[i].x_off;</span><br><span class="line">    int new_y &#x3D; y + dir_offset[i].y_off;</span><br><span class="line">    ……</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="单链表"><a href="#单链表" class="headerlink" title="单链表"></a>单链表</h3><ul>
+<li>“判断单链表是否有环”:</li>
+<li>如何一次遍历就找到链表中间位置节点”</li>
+<li>“单链表中倒数第 k 个节点”</li>
+</ul>
+<p>如第一个问题，设置一个“慢指针”和一个“快指针”，从链表头开始遍历，慢指针一次向后移动一个节点，快指针一次移动两个节点。如果链表没有环，则快指针会先到达最后一个节点（NULL），否则的话，快指针会追上慢指针（相遇）。</p>
+<p>第二个问题同样设置一快一慢两个指针，慢指针一次移动一个节点，快指针一次移动两个节点，当快指针移动到结尾时，慢指针指向的就是中间节点。</p>
+<p>第三个问题也是双指针，其中一个先移动 k 个节点，然后两个指针以相同的速度一起移动，当先移动的指针移动到结尾的时候，后移动的指针指向的就是倒数第 k 个节点。</p>
+<h4 id="单链表倒序"><a href="#单链表倒序" class="headerlink" title="单链表倒序"></a>单链表倒序</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">LINK_NODE *reverse_link(LINK_NODE *head)</span><br><span class="line">&#123;</span><br><span class="line">    LINK_NODE *newHead;</span><br><span class="line"></span><br><span class="line">    if ((head &#x3D;&#x3D; nullptr) || (head-&gt;next &#x3D;&#x3D; nullptr))</span><br><span class="line">        return head;</span><br><span class="line"></span><br><span class="line">    newHead &#x3D; reverse_link(head-&gt;next); &#x2F;*递归逆转子链表部分*&#x2F;</span><br><span class="line">    head-&gt;next-&gt;next &#x3D; head; &#x2F;*回朔部分*&#x2F;</span><br><span class="line">    head-&gt;next &#x3D; nullptr;</span><br><span class="line"></span><br><span class="line">    return newHead;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码的关键点是头节点 head 的下一个节点 head→next 将是逆序后的新链表的尾节点，也就是说，被摘除的头接点 head 需要被链接到 head→next 才能完成整个链表的逆序。</p>
+<h3 id="利用英文字母的-ASCII-编码特点"><a href="#利用英文字母的-ASCII-编码特点" class="headerlink" title="利用英文字母的 ASCII 编码特点"></a>利用英文字母的 ASCII 编码特点</h3><p>ASCII 表中 26 个英文字母是连续的，小写字母 a-z 对应的 ASCII 码值是 0x61-0x7A，大写字母 A-Z 对应的 ASCII 码值是 0x41-0x5A。如果将字母’A’以整数看待，它就是 0x41，同样，将整数 0x41 当作字符看待，它就是字母’A’。判断一个 char 是大写英文字母还是小写英文字母，就可以利用这种连续的特点，直接做范围判断：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">if ((c &gt;&#x3D; &#39;a&#39;) &amp;&amp; (c &lt;&#x3D; &#39;z&#39;))</span><br><span class="line">   &#123;</span><br><span class="line">       &#x2F;&#x2F;c是小写字母</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于题目中用 a、b、c、d 字母标识的事物，数据模型通常可用 0、1、2、3 这样连续的数字来对应，输出结果时，也可以利用这种连续性直接将数字编号转成字母标识：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for (int i &#x3D; 0; i &lt; 5; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        char object &#x3D; &#39;a&#39; + i;</span><br><span class="line">        std::cout &lt;&lt; &quot;object: &quot; &lt;&lt; object &lt;&lt; &quot; is good!&quot; &lt;&lt; std::endl; &#x2F;&#x2F;输出object：a(&#x2F;b&#x2F;c&#x2F;d） is good！</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>ASCII 码表中小写字母和对应的大写字母之间的 ASCII 码值相差 0x20，可以利用这个特点进行大小写的转换，小写字母减 0x20 可以得到对应的大写字母，大写字母加上 0x20 可以得到对应的小写字母：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">char A &#x3D; &#39;a&#39; - 0x20;</span><br><span class="line">char a &#x3D; A + 0x20;</span><br></pre></td></tr></table></figure>
+
+<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><h3 id="topN-问题和最小堆"><a href="#topN-问题和最小堆" class="headerlink" title="topN 问题和最小堆"></a>topN 问题和最小堆</h3><p>从大量的数据中找出符合条件的 n 个数据就是所谓的 topN 问题，常见的问题比如：从 N 个无序的数中找出最小的前 k 个数（或最大的前 k 个数）。对这种问题，如果 N 的规模不大，可以考虑先对 N 个数进行升序排序（或降序排序），然后输出前 k 个数。排序算法的时间复杂度最好就是 O(nlg(n))，这个方法基本上也是 O(nlg(n)) 的时间复杂度。但是当 N 的规模大到一定程度时，完整的对 N 个数进行排序仍然是个很大的开销，在这种情况下，通常采用的方法是用一个小的有序数据结构维护前 k 个被选出来的最小数，依次遍历 N 个数，如果某个数比选出来的前 K 个数中最大的那个数小，则将这个数插入到这个小的有序数据结构中，同时淘汰掉最大的那个数。当 N 个数都处理完，这个有序数据结构中的 k 个数就是最小的前 k 个数。这个方法的主要处理就是维护前 k 个有序的数需要的比较操作，有序表的比较操作次数是 lg(k) 次，因此这个方法的时间复杂度是 O(nlg(k))。一般情况下，k 都是远远小于 N 的，因此这种方法大大优于直接排序的方法。</p>
+<p>有很多种方法维护这前 k 个有序的数，比如数组，但是每次插入操作需要移动数据，k 稍微大一点开销也不少。大多数有追求的人会选择用最小堆来组织这 k 个数，堆是一棵完全二叉树，树的深度小，维护效率高。如果用前面介绍的数组方法存储树，则其子节点的数组索引可以直接用父节点的索引计算出来，还可以进一步提高数据访问的效率。</p>
+<p>使用最大最小堆来维护有序数据，在很多情况下可以提高某些操作的效率，在很多算法的改进算法中经常可以看到它们的“身影”。比如 Dijkstra 算法中每次需要从 dist 数组中寻找最小值 dist[Vi]，并将 Vi 加入到 T 集合中。如果用一个最小堆存放当前的各个 dist[Vi] 值，则每次不需要再做查找比较操作，直接从最小堆中 extract 出最小的那个值即可（当然，需要维护最小堆）。</p>
+<h3 id="常用的-hash-算法（字符串比较）"><a href="#常用的-hash-算法（字符串比较）" class="headerlink" title="常用的 hash 算法（字符串比较）"></a>常用的 hash 算法（字符串比较）</h3><p>在很多算法问题中，字符串常常作为关键字（key）属性存在，比如人名、地名和物品名称等。字符串的存储和处理也是 C 语言比较头疼的问题，字符串的直接比较更是效率不高，如果能将字符串的处理转化成整数的处理，则存储就变得简单，而且关键字的比较也更高效，排序和查找的处理算法也可以简化。将长度不一的字符串一一映射到各不相同的整数，通常需要进行 hash 计算，这一节我们就介绍几种常用的字符串 hash 算法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">unsigned int bkdr_hash(const char *str)</span><br><span class="line">&#123;</span><br><span class="line">    unsigned int hash &#x3D; 0;</span><br><span class="line">    while (*str !&#x3D; 0)</span><br><span class="line">    &#123;</span><br><span class="line">        int ch &#x3D; (int)*str++;</span><br><span class="line">        hash &#x3D; hash * 31 + ch;   &#x2F;&#x2F; 乘法因子还可以是 131、1313、13131、131313...</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return hash;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/%E7%AE%97%E6%B3%95%E7%9A%84%E4%B9%90%E8%B6%A3%E4%B9%8B%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/%E7%BB%8F%E5%85%B8%E7%AE%97%E6%B3%95/">
+              #经典算法
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/%E7%AE%97%E6%B3%95%E7%9A%84%E4%B9%90%E8%B6%A3%E4%B9%8B%E6%9E%9A%E4%B8%BE%E6%B3%95.html" target="_self">算法的乐趣之枚举法</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/%E7%AE%97%E6%B3%95%E7%9A%84%E4%B9%90%E8%B6%A3%E4%B9%8B%E5%88%86%E6%B2%BB%E6%B3%95.html" target="_self">算法的乐趣之分治法</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

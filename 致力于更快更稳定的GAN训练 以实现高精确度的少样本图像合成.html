@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>致力于更快更稳定的GAN训练 以实现高精确度的少样本图像合成 | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="GAN,笔记,高效GAN,SOTA,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>致力于更快更稳定的GAN训练 以实现高精确度的少样本图像合成</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2021-02-14
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/GAN/">
+            GAN
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="致力于更快更稳定的GAN训练 以实现高精确度的少样本图像合成.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <p>The datasets and code are available at: <a href="https://github.com/odegeasslbc/FastGAN-pytorch" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/odegeasslbc/FastGAN-pytorch</a></p>
+<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>在高保真图像上训练生成对抗网络（GAN）通常需要大规模的 GPU 集群和大量的训练图像。在本文中，我们以最低的计算成本研究了 GAN 的少量图像合成任务。我们提出了一种轻巧的 GAN 结构，该结构在 1024×1024 分辨率下可获得卓越的质量。值得注意的是，该模型仅需在单个 RTX-2080 GPU 上进行几个小时的培训即可从头开始收敛，即使在少于 100 个训练样本的情况下，也具有一致的性能。两种技术设计构成了我们的工作，一个是跳过层的通道激励模块，另一个是经过自我监督的，被识别为特征编码器的鉴别器。在数据和计算预算有限的情况下，在 13 个数据集，涵盖了广泛的图像域，与最先进的 StyleGAN2 相比，我们展示了该模型的优越性能。</p>
+<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>在现实生活中，用于训练 GAN 的可用样本可能很少，例如罕见疾病的医学图像，特定名人的肖像集和特定艺术家的艺术品。使用预先训练的模型进行转移学习（Mo 等人，2020； Wang 等人，2020）是缺乏训练图像的一种解决方案。然而，不能保证找到一个兼容的预训练数据集，此外，如果没有，微调可能会导致更差的性能（Zhao et al。，2020）。<br>在最近的一项研究中，强调了在艺术创作应用程序中，大多数艺术家更喜欢根据自己的图像从头开始训练模型，以避免微调的预训练模型产生偏差。此外，研究表明，在大多数情况下，艺术家都希望使用少于 100 张图像的数据集来训练他们的模型（Elgammal 等，2020）。动态数据增强（Karras 等，2020a; Zhao 等，2020）用更少的图像平滑了差距并稳定了 GAN 训练。然而，SOTA 模型（例如 StyleGAN2（Karras 等人，2020b）和 BigGAN（Brock 等人，2018））的计算成本仍然很高，尤其是在以 1024×1024 的图像分辨率训练时。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1613290401542-6c2fc759-fe00-4761-928b-3bac86b3ffae.png#align=left&display=inline&height=245&margin=%5Bobject%20Object%5D&name=image.png&originHeight=245&originWidth=533&size=37043&status=done&style=none&width=533" alt="image.png"><br>在本文中，我们的目标是在高分辨率图像上学习无条件 GAN，计算成本低，训练样本少。如图 2 所示，这些训练条件使模型面临过度拟合和模式崩溃的高风险  (Arjovsky &amp; Bottou, 2017; Zhang &amp; Khoreva, 2018)。在给定苛刻的训练条件下训练 GAN，我们需要能够快速学习的生成器 G 和可以不断提供有用信号来训练 G 的鉴别器 D。为解决这些挑战，我们总结出以下贡献：</p>
+<ul>
+<li>我们设计了 Skip-Layer channel-wise Excitation（SLE）模块，该模块利用低比例激活来修改高比例特征图上的通道响应。SLE 可在整个模型权重中提供更鲁棒的梯度流，以加快训练速度。它还可以自动学习样式/内容分解，例如 StyleGAN2。</li>
+<li>我们提出了一种自我监督的鉴别器 D，该鉴别器 D 被训练为具有额外解码器的特征编码器。我们迫使 D 从输入图像中学习更多描述性的特征图，覆盖更多区域，从而产生更全面的信号来训练 G。我们测试了 D 的多种自我监督策略，其中我们证明自动编码效果最好。</li>
+<li>我们基于两种提出的技术构建了一个计算效率高的 GAN 模型，并在多个高保真数据集上展示了该模型的鲁棒性，如图 1 所示。</li>
+</ul>
+<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><p>我们为模型采用了简约的设计。特别是，我们在 G 的每个分辨率上使用单个 conv 层，并且在 G 和 D 的高分辨率（≥512×512）的 conv 层上仅应用三个（输入和输出）通道。图 3 和图 4 说明了我们的 G 和 D 的模型结构，并描述了组件层和前向流。这些结构设计使我们的 GAN 比 SOTA 模型小得多，而且训练起来也快得多。同时，由于采用两种所提出技术的紧凑型模型，我们的模型在小型数据集上仍然保持稳健。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1613291439369-10acc823-09fd-41e9-a14a-94546225eb40.png#align=left&display=inline&height=564&margin=%5Bobject%20Object%5D&name=image.png&originHeight=564&originWidth=1337&size=127584&status=done&style=none&width=1337" alt="image.png"><br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1613291457257-dd2f2328-910c-4a95-8887-eb0a35e004ea.png#align=left&display=inline&height=471&margin=%5Bobject%20Object%5D&name=image.png&originHeight=471&originWidth=1346&size=107002&status=done&style=none&width=1346" alt="image.png"></p>
+<h3 id="SKIP-LAYER-CHANNEL-WISE-EXCITATION"><a href="#SKIP-LAYER-CHANNEL-WISE-EXCITATION" class="headerlink" title="SKIP-LAYER CHANNEL-WISE EXCITATION"></a>SKIP-LAYER CHANNEL-WISE EXCITATION</h3><p>作者认为，为了合成更高分辨率的图像，生成器 G 不可避免的需要被加深，更深的模型需要更长时间去训练，由于模型参数的大量增加，通过 G 的梯度流也会被弱化。为了更好的训练模型，残差结构 ResBlock 被提出用于增强层之间的梯度信号。ResBlock 被广泛使用在 GAN 的结构，但是它也增加了计算成本。<br>利用跳跃连接的思想，我们将两种独特的思想重新设计出 Skip-Layer Excitation module (SLE)。首先，ResBlock 实现的跳跃连接需要不同卷积层的激活之间进行 element-wise 的加法，它需要空间维度相同。取而代之的是在不同激活之间采用 channel-wise 的乘法，从而消除了繁琐的卷积计算。其次，在之前的工作中，跳跃连接只能在相同分辨率内使用。相比之下，由于不在需要相同空间维度的限制，我们可以在分辨率更大的范围之间进行跳跃连接。<br>这两个设计使得 SLE 继承了 ResBlock 的 shortcut gradient flow 的优点，并且没有额外的计算负担。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1613295824143-2969edeb-bc26-4747-8ae4-cd28edf8299e.png#align=left&display=inline&height=206&margin=%5Bobject%20Object%5D&name=image.png&originHeight=206&originWidth=1385&size=50799&status=done&style=none&width=1385" alt="image.png"><br>尽管 SLE 像 SE 一样带来了通道方式的特征重新校准的好处，但它也像 ResBlock 一样增强了整个模型的梯度流。<br>通过从另一个合成样本中替换 SLE 中的$X_{low}$，我们的 G 可以生成一个内容不变的图像，但样式与新替换图像相同。</p>
+<h3 id="SELF-SUPERVISED-DISCRIMINATOR"><a href="#SELF-SUPERVISED-DISCRIMINATOR" class="headerlink" title="SELF-SUPERVISED DISCRIMINATOR"></a>SELF-SUPERVISED DISCRIMINATOR</h3><p>我们将 D 视为编码器，并使用小型解码器对其进行训练。这种自动编码训练迫使 D 提取图像特征，解码器可以给出良好的重构。解码器与 D 一起在简单的重建 loss 上进行了优化，仅在真实样本上进行训练：</p>
+$$
+\mathcal{L}_{\text {recons }}=\mathbb{E}_{\mathbf{f} \sim D_{\text {encode }}(x), x \sim I_{\text {real }}}[\|\mathcal{G}(\mathbf{f})-\mathcal{T}(x)\|]
+$$
+
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1613380638713-0d12c8f5-eea5-4ae9-bc56-f6c05ef55ac6.png#align=left&display=inline&height=542&margin=%5Bobject%20Object%5D&name=image.png&originHeight=542&originWidth=1351&size=127157&status=done&style=none&width=1351" alt="image.png"><br>我们自监督 D 如上图所示，在这里使用两个解码器来处理两个尺度的特征图，$f_{1}$ on $16^{2}$ and $f_{2}$ on $8^{2}$。在$128x128$分辨率，解码器只有 4 个 卷积层，几乎不会引起额外的计算（比其他正则化方法少得多）。我们$\frac{1}{8}$高度和宽度，随机裁剪$f_1$，然后在相同位置裁剪 real image 对应的区域得到$I_{part}$。调整 real image 大小得到$I$。解码器从裁剪后的$f_1$得到$I^{'}_{part}$，从$f_2$得到$I^{'}$。 最后，将 D 和解码器一起训练，以最大程度降低式 2 的 loss。</p>
+<p>这样的重构训练确保 D 从输入中提取出更全面的表示，涵盖总体构图（来自 f2）和详细纹理（来自 f1）。注意 G 和 T 不被限制为裁剪，更多高效操作仍待探索。auto-encoding 方法是被自监督学习采用的典型方法，它可以提高模型的鲁棒性和泛化性能。在 GAN 的背景下，我们发现通过自我监督训练策略进行规则化的 D 可以显着提高 G 的合成质量，其中自动编码带来了最大的性能提升。<br>尽管我们针对 D 的自我监督策略采用自动编码器（AE）的形式，但是这种方法与尝试将 GAN 和 AE 结合在一起的工作从根本上不同。后者的工作主要是在从 D 获得的潜在空间上训练 G 作为编解码器，或者将 AE 的对抗训练视为 D 的对抗性损失。相反，我们的模型是具有简单得多的训练模式的纯 GAN。自动编码训练仅用于正则化 D，其中不涉及 G。<br>总结来说，我们采用对抗损失的 hinge version（Lim &amp; Ye (2017)），去迭代训练 D 和 G。我们发现，不同的 GAN loss 对性能的影响不大，而 hinge loss 的计算速度最快：</p>
+$$
+\begin{aligned}
+&\mathcal{L}_{D}=-\mathbb{E}_{x \sim I_{\text {real }}}[\min (0,-1+D(x))]-\mathbb{E}_{\hat{x} \sim G(z)}\left[\min (0,-1-D(\hat{x})]+\mathcal{L}_{\text {recons }}\right.\\
+&\mathcal{L}_{G}=-\mathbb{E}_{z \sim \mathcal{N}}[D(G(z))]
+\end{aligned}
+$$
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/%E8%87%B4%E5%8A%9B%E4%BA%8E%E6%9B%B4%E5%BF%AB%E6%9B%B4%E7%A8%B3%E5%AE%9A%E7%9A%84GAN%E8%AE%AD%E7%BB%83%20%E4%BB%A5%E5%AE%9E%E7%8E%B0%E9%AB%98%E7%B2%BE%E7%A1%AE%E5%BA%A6%E7%9A%84%E5%B0%91%E6%A0%B7%E6%9C%AC%E5%9B%BE%E5%83%8F%E5%90%88%E6%88%90.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/%E7%AC%94%E8%AE%B0/">
+              #笔记
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/%E9%AB%98%E6%95%88GAN/">
+              #高效GAN
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/SOTA/">
+              #SOTA
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/SuperFront%E4%BB%8E%E4%BD%8E%E5%88%86%E8%BE%A8%E7%8E%87%E4%BA%BA%E8%84%B8%E8%BF%9B%E8%A1%8C%E6%AD%A3%E9%9D%A2%E5%8C%96.html" target="_self">SuperFront从低分辨率人脸进行正面化</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/%E5%AD%A6%E4%B9%A0%E5%9F%BA%E4%BA%8E%E6%B5%81%E7%9A%84%E7%89%B9%E5%BE%81%E5%8F%98%E5%BD%A2%E4%BB%A5%E5%AE%9E%E7%8E%B0%E7%85%A7%E6%98%8E%E6%AD%A3%E9%9D%A2%E4%B8%8D%E4%B8%80%E8%87%B4%E7%9A%84%E4%BA%BA%E8%84%B8%E6%AD%A3%E9%9D%A2%E5%8C%96.html" target="_self">学习基于流的特征变形以实现照明正面不一致的人脸正面化</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

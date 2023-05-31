@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>路面裂缝分割相关论文笔记 | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="论文,笔记,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>路面裂缝分割相关论文笔记</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-01-29
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E8%AE%BA%E6%96%87/">
+            论文
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="路面裂缝分割相关论文笔记.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <p>最近在做路面裂缝分割相关工作，这里做相关论文的记录。<br><a href="http://ishero.net/Pavement%20Crack%20Segmentation%20Paper.html">paper 目录</a></p>
+<h1 id="阅读摘要"><a href="#阅读摘要" class="headerlink" title="阅读摘要"></a>阅读摘要</h1><h2 id="1-A-Deep-Neural-Networks-Approach-for-Pixel-Level-Runway-Pavement-Crack-Segmentation-Using-Drone-Captured-Images"><a href="#1-A-Deep-Neural-Networks-Approach-for-Pixel-Level-Runway-Pavement-Crack-Segmentation-Using-Drone-Captured-Images" class="headerlink" title="1.A Deep Neural Networks Approach for Pixel-Level Runway Pavement Crack Segmentation Using Drone-Captured Images"></a>1.A Deep Neural Networks Approach for Pixel-Level Runway Pavement Crack Segmentation Using Drone-Captured Images</h2><p><a href="https://arxiv.org/abs/2001.03257" target="_blank" rel="external nofollow noopener noreferrer">arXiv:2001.03257</a>  [<a href="./pdf/2001.03257">pdf</a>] cs.CV eess.IV<br>Authors: <a href="https://arxiv.org/search/?searchtype=author&query=Jiang%2C+L" target="_blank" rel="external nofollow noopener noreferrer">Liming Jiang</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Xie%2C+Y" target="_blank" rel="external nofollow noopener noreferrer">Yuanchang Xie</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Ren%2C+T" target="_blank" rel="external nofollow noopener noreferrer">Tianzhu Ren</a><br>Abstract: Pavement conditions are a critical aspect of asset management and directly affect safety. This study introduces a deep neural network method called U-Net for pavement crack segmentation based on drone-captured images to reduce the cost and time needed for airport runway inspection. The proposed approach can also be used for highway pavement conditions assessment during off-peak periods when there are few vehicles on the road. In this study, runway pavement images are collected using drone at various heights from the Fitchburg Municipal Airport (FMA) in Massachusetts to evaluate their quality and applicability for crack segmentation, from which an optimal height is determined. Drone images captured at the optimal height are then used to evaluate the crack segmentation performance of the U-Net model. Deep learning methods typically require a huge set of annotated training datasets for model development, which can be a major obstacle for their applications. An online annotated pavement image dataset is used together with the FMA data to train the U-Net model. The results show that U-Net performs well on the FMA testing data even with limited FMA training images, suggesting that it has good generalization ability and great potential to be used for both airport runways and highway pavements.<br>Submitted 9 January, 2020; originally announced January 2020.<br>Comments: 13 pages, 5 figures</p>
+<h3 id="1-简述"><a href="#1-简述" class="headerlink" title="1.简述"></a>1.简述</h3><p>提出了一种基于无人机图像的路面裂缝深度神经网络 U-Net 分割方法。该方法也可应用于车辆较少的非高峰期公路路面状况评估。<br>结果表明，在 FMA 训练图像有限的情况下 U-Net 在 FMA 测试数据上表现良好，具有良好的泛化能力，在机场跑道和高速公路路面上都有很大的应用潜力。</p>
+<h3 id="2-数据集"><a href="#2-数据集" class="headerlink" title="2.数据集"></a>2.数据集</h3><p>使用无人机在美国马萨诸塞州费奇堡机场（FMA）的不同高度采集的跑道路面图像、<br>使用在线标注的路面数据集和 FMA 数据对 U-Net 模型进行训练。<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289277486-15155b8e-97df-4cda-82d5-902a1b421b96.png#align=left&display=inline&height=259&name=1579509382227.png&originHeight=259&originWidth=1199&size=37310&status=done&style=none&width=1199" alt="1579509382227.png"><br>使用无人机拍摄图片尺寸为(5472 pixels x 3648 pixels) ，将其划分为(256 pixels x 256 pixels)的块，对其进行标注。</p>
+<h3 id="3-方法"><a href="#3-方法" class="headerlink" title="3.方法"></a>3.方法</h3><ul>
+<li>U-Net</li>
+</ul>
+<p>在将其应用于分析无人机收集的跑道路面图像之前，对原始 u 形网进行了一些超参数调整。在(4,5)的启发下，考虑更深层次的结构，每个卷积层的通道数增加 0.5 倍，提高模型拟合和泛化能力。另外，将图像输入维数设置为 256×256 像素。</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289289789-9bbb7735-aa09-4ea4-b980-28c1f54e7bda.png#align=left&display=inline&height=830&name=1579507355352.png&originHeight=830&originWidth=1291&size=145073&status=done&style=none&width=1291" alt="1579507355352.png"></p>
+<ul>
+<li>Data Augmentation</li>
+</ul>
+<p>使用数据增强，进一步增加训练集数量。</p>
+<ul>
+<li>Hyperparameters</li>
+</ul>
+<p>优化器：Adam 优化器的学习率为.0001。</p>
+<p>损失函数：binary cross entropy</p>
+<p>激活函数：最后一层使用 Sigmoid 函数，其他层使用 ReLu 激活函数。</p>
+<p>训练集(training episodes)设为 1000。</p>
+<p>Batch size:5</p>
+<h4 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h4><p>在 Crack500 训练集上训练，在 Crack500 和 FMA 测试集上测试、Crack500&amp;FMA 数据集上训练，在 FMA 测试集上测试。<br>构造 Crack500&amp;FMA 数据集是因为，FMA 数据集数量太少了，不足以训练 UNet 模型。</p>
+<h3 id="4-效果"><a href="#4-效果" class="headerlink" title="4.效果"></a>4.效果</h3><p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289302962-7fb8b6fd-3a34-4176-9756-26ffc17b29e3.png#align=left&display=inline&height=382&name=1579510998291.png&originHeight=382&originWidth=1221&size=91702&status=done&style=none&width=1221" alt="1579510998291.png"><br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289312406-c0f9ca82-6eaf-48b0-b866-8c6e730f8cb9.png#align=left&display=inline&height=672&name=1579511017802.png&originHeight=672&originWidth=1296&size=397686&status=done&style=none&width=1296" alt="1579511017802.png"><br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289322306-14130c4e-ad0b-4d3f-8869-e7c9ee0d5d91.png#align=left&display=inline&height=746&name=1579511036262.png&originHeight=746&originWidth=1298&size=498011&status=done&style=none&width=1298" alt="1579511036262.png"><br>U-Net_Crack500 模型还在高速公路，由激光路面扫描系统采集的图像，有着不错的表现。<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289332573-622fd54b-8344-4496-8942-db7555161a6d.png#align=left&display=inline&height=573&name=1579511182475.png&originHeight=573&originWidth=1305&size=275154&status=done&style=none&width=1305" alt="1579511182475.png"></p>
+<h2 id="2-Automated-Pavement-Crack-Segmentation-Using-Fully-Convolutional-U-Net-with-a-Pretrained-ResNet-34-Encoder"><a href="#2-Automated-Pavement-Crack-Segmentation-Using-Fully-Convolutional-U-Net-with-a-Pretrained-ResNet-34-Encoder" class="headerlink" title="2.Automated Pavement Crack Segmentation Using Fully Convolutional U-Net with a Pretrained ResNet-34 Encoder"></a>2.Automated Pavement Crack Segmentation Using Fully Convolutional U-Net with a Pretrained ResNet-34 Encoder</h2><p><a href="https://arxiv.org/abs/2001.01912" target="_blank" rel="external nofollow noopener noreferrer">arXiv:2001.01912</a>  [<a href="./pdf/2001.01912">pdf</a>]  cs.CV<br>Authors: <a href="https://arxiv.org/search/?searchtype=author&query=Lau%2C+S+L+H" target="_blank" rel="external nofollow noopener noreferrer">Stephen L. H. Lau</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Wang%2C+X" target="_blank" rel="external nofollow noopener noreferrer">Xin Wang</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Yang%2C+X" target="_blank" rel="external nofollow noopener noreferrer">Xu Yang</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Chong%2C+E+K+P" target="_blank" rel="external nofollow noopener noreferrer">Edwin K. P. Chong</a><br>Abstract: Automated pavement crack segmentation is a challenging task because of inherent irregular patterns and lighting conditions, in addition to the presence of noise in images. Conventional approaches require a substantial amount of feature engineering to differentiate crack regions from non-affected regions. In this paper, we propose a deep learning technique based on a convolutional neural network to perform segmentation tasks on pavement crack images. Our approach requires minimal feature engineering compared to other machine learning techniques. The proposed neural network architecture is a modified U-Net in which the encoder is replaced with a pretrained ResNet-34 network. To minimize the dice coefficient loss function, we optimize the parameters in the neural network by using an adaptive moment optimizer called AdamW. Additionally, we use a systematic method to find the optimum learning rate instead of doing parametric sweeps. We used a “one-cycle” training schedule based on cyclical learning rates to speed up the convergence. We evaluated the performance of our convolutional neural network on CFD, a pavement crack image dataset. Our method achieved an F1 score of about 96%. This is the best performance among all other algorithms tested on this dataset, outperforming the previous best method by a 1.7% margin.<br>Submitted 10 January, 2020; v1 submitted 7 January, 2020; originally announced January 2020.<br>Comments: 9 pages, 6 figures</p>
+<h3 id="1-描述"><a href="#1-描述" class="headerlink" title="1.描述"></a>1.描述</h3><p>提出的神经网络结构是一个改进的 U-Net，其编码器被一个预先训练的 ResNet-34 网络所取代。使用 dice coefficient 作为损失函数，使用 AdamW 自适应矩优化器来优化神经网络中的参数。还使用了一个系统的方法来寻找最佳学习率。最终 F1 Score 为 91%。</p>
+<h3 id="2-数据集-1"><a href="#2-数据集-1" class="headerlink" title="2.数据集"></a>2.数据集</h3><p>使用 CFD(320x480)数据集，用如下方法做了数据增强。以 20 pixels 为步长，在图像的水平和垂直轴上分别裁剪出 128x128、256x256、320x320 尺寸的图片，在其对应的 ground truth 也做同样的操作。最终图片对应尺寸数量如下：<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289462960-d4bafb1a-94f6-4ae5-bbe3-4c27ee8605e9.png#align=left&display=inline&height=285&name=1579531826428.png&originHeight=285&originWidth=774&size=62694&status=done&style=none&width=774" alt="1579531826428.png"><br>在训练时，每张图片执行三种类型的数据增强：旋转、翻转、改变亮度。</p>
+<h3 id="3-方法-1"><a href="#3-方法-1" class="headerlink" title="3.方法"></a>3.方法</h3><ul>
+<li>ResNet34 base U-Net</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289472986-5eac99b4-e019-4895-a683-f180106a6515.png#align=left&display=inline&height=809&name=1579532052186.png&originHeight=809&originWidth=1118&size=181311&status=done&style=none&width=1118" alt="1579532052186.png"><br>ResNet34 是在 ImageNet 上预训练的模型，去除其最后的平均池化层和全连接层。接上了上采样模块。解码器由重复上采样块(图 2 中的洋红色和紫色块)组成，它将输出激活的空间分辨率提高一倍，同时将特征通道的数量减半。每个上采样层由 1 个 BN 层，ReLU 层和 1 个转置卷积层组成（2*2kernel,2 stride）。在 BN 层个转置卷积层之间添加了 SCSE 模块(concurrent spatial and channel squeeze and excitation module)。</p>
+<ul>
+<li>dice coefficient loss</li>
+</ul>
+<p>dice coefficient loss 相当于 F1 score，将其作为损失函数，相当于对 F1 分数直接进行优化。</p>
+<h4 id="训练-1"><a href="#训练-1" class="headerlink" title="训练"></a>训练</h4><ul>
+<li>参数初始化：下文的初始化方法(高斯分布，其均值为 0、方差为$2/n_l$，其中$n_l$为卷积层通道数。)ResNet34 部分使用预训练参数。</li>
+</ul>
+<p>K. He, X. Zhang, S. Ren, and J. Sun, “Delving deep into rectifiers:surpassing human-level performance on ImageNet classification,” in IEEE ICCV, Santiago, Chile, Dec. 2015.</p>
+<ul>
+<li>优化器：AdamW 优化器($\lambda =0.01$, $\alpha$是学习率, $\epsilon =10^{-8}$)</li>
+</ul>
+$$
+
+\boldsymbol{\theta}_{t}=(1-\lambda) \boldsymbol{\theta}_{t-1}-\alpha\left(\frac{\widehat{\boldsymbol{m}_{t}}}{\sqrt{\widehat{\boldsymbol{v}}_{t}}+\epsilon}\right)
+
+
+$$
+
+<ul>
+<li>学习率：使用较大篇幅讲学习率</li>
+</ul>
+<h3 id="4-效果-1"><a href="#4-效果-1" class="headerlink" title="4.效果"></a>4.效果</h3><ul>
+<li>评价方法</li>
+</ul>
+$$
+
+\begin{aligned}
+
+\operatorname{Pr} &=\frac{T P}{T P+F P} \
+
+R e &=\frac{T P}{T P+F N} \
+
+F 1 &=\frac{2 \times \text { Pr } \times R e}{\text { Pr }+R e}
+
+\end{aligned}
+
+
+$$
+
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289494552-405455e1-1c3f-45f2-b5e5-4c84c3622fa0.png#align=left&display=inline&height=490&name=1579535311307.png&originHeight=490&originWidth=720&size=162587&status=done&style=none&width=720" alt="1579535311307.png"><br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289503601-b5d143ee-6a1a-4a95-90f0-50860dd78a6e.png#align=left&display=inline&height=476&name=1579535328566.png&originHeight=476&originWidth=1431&size=484232&status=done&style=none&width=1431" alt="1579535328566.png"><br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289512376-6cb7882a-bf64-4801-9a00-d36e50fa332f.png#align=left&display=inline&height=585&name=1579535350811.png&originHeight=585&originWidth=1459&size=385116&status=done&style=none&width=1459" alt="1579535350811.png"></p>
+<h2 id="3-CrackGAN-A-Labor-Light-Crack-Detection-Approach-Using-Industrial-Pavement-Images-Based-on-Generative-Adversarial-Learning"><a href="#3-CrackGAN-A-Labor-Light-Crack-Detection-Approach-Using-Industrial-Pavement-Images-Based-on-Generative-Adversarial-Learning" class="headerlink" title="3. CrackGAN: A Labor-Light Crack Detection Approach Using Industrial Pavement Images Based on Generative Adversarial Learning"></a>3. CrackGAN: A Labor-Light Crack Detection Approach Using Industrial Pavement Images Based on Generative Adversarial Learning</h2><p><a href="https://arxiv.org/abs/1909.08216" target="_blank" rel="external nofollow noopener noreferrer">arXiv:1909.08216</a>  [<a href="./pdf/1909.08216">pdf</a>, <a href="https://arxiv.org/format/1909.08216" target="_blank" rel="external nofollow noopener noreferrer">other</a>] cs.CV cs.LG eess.IV<br>Authors: <a href="https://arxiv.org/search/?searchtype=author&query=Zhang%2C+K" target="_blank" rel="external nofollow noopener noreferrer">Kaige Zhang</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Zhang%2C+Y" target="_blank" rel="external nofollow noopener noreferrer">Yingtao Zhang</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Cheng%2C+H" target="_blank" rel="external nofollow noopener noreferrer">Heng-Da Cheng</a><br>Abstract: Fully convolutional network is a powerful tool for per-pixel semantic segmentation/detection. However, it is problematic when coping with crack detection using industrial pavement images: the network may easily “converge” to the status that treats all the pixels as background (BG) and still achieves a very good loss, named “All Black” phenomenon, due to the data imbalance and the unavailability of accurate ground truths (GTs). To tackle this problem, we introduce crack-patch-only (CPO) supervision and generative adversarial learning for end-to-end training, which forces the network to always produce crack-GT images while reserves both crack and BG-image translation abilities by feeding a larger-size crack image into an asymmetric U-shape generator to overcome the “All Black” issue. The proposed approach is validated using four crack datasets; and achieves state-of-the-art performance comparing with that of the recently published works in efficiency and accuracy.<br>Submitted 18 September, 2019; originally announced September 2019.</p>
+<h3 id="1-简述-1"><a href="#1-简述-1" class="headerlink" title="1.简述"></a>1.简述</h3><p>FCN 网络是一个强有力的像素级分割网络，但用于工业级路面图像裂缝分割是有问题的。由于裂缝和背景的样本严重不平衡。网络很容易“收敛”到将所有像素作为背景(BG)的状态，但仍然会有很好的损失，称为“All Black”现象。<br>为了解决这一问题，我们引入了 crack-patch-only(CPO)监督和端到端训练的生成对抗学习，这迫使网络在保留裂纹和 BG 图像的同时，始终生成 crack-GT 图像。<br>该算法通过将较大尺寸的裂纹图像输入非对称 u 形发生器来克服裂纹“All Black”的问题。<br><strong>解决</strong></p>
+<ul>
+<li>1.All Black 问题：网络收敛到所有像素都是背景的状态</li>
+<li>2.提出 crack-patch-only (CPO) supervision and generative adversarial</li>
+</ul>
+<p>learning</p>
+<ul>
+<li>只需要少量劳动力标注的 GTs，减少标注的劳动力。即使网络在小图片块上训练，也可以有效的在全尺寸图片上检测。</li>
+</ul>
+<h3 id="2-数据集-2"><a href="#2-数据集-2" class="headerlink" title="2.数据集"></a>2.数据集</h3><p>自建 CrackGAN dataset （2048x4096 pixel），安装在时速 100 公里的汽车顶部的线扫描工业摄像机拍摄，摄像头扫描 4.096 米宽的路面，每扫描一次，得到 2048×4096 像素的路面图像（ 1 pixel represents 1×1 mm 2 area）</p>
+<h3 id="3-方法-2"><a href="#3-方法-2" class="headerlink" title="3.方法"></a>3.方法</h3><ul>
+<li>模型结构</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289642708-74eae35f-a150-49f3-b0f0-29819de90534.png#align=left&display=inline&height=742&name=1579767560440.png&originHeight=742&originWidth=1229&size=198585&status=done&style=none&width=1229" alt="1579767560440.png"><br>D 是一个预训练鉴别器，它从只在 crack-GT patches 上训练的 DC-GAN 得来。<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289651397-9012d8b8-b764-4159-9970-6b25f1937ec5.png#align=left&display=inline&height=555&name=1579768013248.png&originHeight=555&originWidth=708&size=129977&status=done&style=none&width=708" alt="1579768013248.png"><br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289659738-3f0ddf5f-6bdd-4cb6-9480-f17047591798.png#align=left&display=inline&height=690&name=1579768035344.png&originHeight=690&originWidth=1032&size=275838&status=done&style=none&width=1032" alt="1579768035344.png"></p>
+<h4 id="训练-2"><a href="#训练-2" class="headerlink" title="训练"></a>训练</h4><p>交替优化以下两个目标：</p>
+$$
+\begin{aligned}
+\max _{D} V(D, G) &=E_{x \sim p_{d}(x)}[\log D(x)] \
+&+E_{z \sim p_{d}(z)}[\log (1-D(G(z)))] \
+\max _{G} V(D, G) &=E_{z \sim p_{d}(z)}[\log (D(G(z)))]
+\end{aligned}
+$$
+
+<h3 id="4-效果-2"><a href="#4-效果-2" class="headerlink" title="4.效果"></a>4.效果</h3><p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289670264-468eb1f9-ab39-4fc2-8ee2-7512e483a850.png#align=left&display=inline&height=644&name=1579768935867.png&originHeight=644&originWidth=757&size=224662&status=done&style=none&width=757" alt="1579768935867.png"><br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289678157-4f026562-8e10-4b42-ae3f-ee48a759e859.png#align=left&display=inline&height=318&name=1579768988464.png&originHeight=318&originWidth=756&size=106737&status=done&style=none&width=756" alt="1579768988464.png"><br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289685667-823b991a-5353-4af0-a2a5-0f806bf80bcf.png#align=left&display=inline&height=207&name=1579768973457.png&originHeight=207&originWidth=669&size=55765&status=done&style=none&width=669" alt="1579768973457.png"><br>在这项工作中，我们提出了一种新的深层生成对抗网络，命名为 CrackGAN，用于路面裂缝检测。该方法解决了基于 fcn 的像素级裂纹检测中存在的全黑问题。引入了具有 CPO 监督的生成式对抗损失，使目标函数规范化，克服了类裂纹对象设计中固有的数据不平衡问题。提出了基于 cpo 监督训练的 BG 图像非对称 u 形结构。此外，该网络被设计成 FCN，可以用小图像块进行训练，但可以无缝地处理全尺寸图像。实验证明了该方法的有效性，并与最近发表的文献进行了比较，取得了较好的效果。此外，接受域神经元特性的理论分析可以用来解释深度学习中的许多现象，如语义分割[6]的边界模糊、生成的图像用 GAN[33]、[35]模糊等。我们相信，本文所讨论的对每个神经元特性的分析将成为未来设计有效的神经网络的常规方法。</p>
+<h2 id="4-A-Cost-Effective-Solution-for-Road-Crack-Inspection-using-Cameras-and-Deep-Neural-Networks"><a href="#4-A-Cost-Effective-Solution-for-Road-Crack-Inspection-using-Cameras-and-Deep-Neural-Networks" class="headerlink" title="4. A Cost Effective Solution for Road Crack Inspection using Cameras and Deep Neural Networks"></a>4. A Cost Effective Solution for Road Crack Inspection using Cameras and Deep Neural Networks</h2><p><a href="https://arxiv.org/abs/1907.06014" target="_blank" rel="external nofollow noopener noreferrer">arXiv:1907.06014</a>  [<a href="./pdf/1907.06014">pdf</a>] cs.CV cs.LG eess.IV<br>Authors: <a href="https://arxiv.org/search/?searchtype=author&query=Mei%2C+Q" target="_blank" rel="external nofollow noopener noreferrer">Qipei Mei</a>, <a href="https://arxiv.org/search/?searchtype=author&query=G%C3%BCl%2C+M" target="_blank" rel="external nofollow noopener noreferrer">Mustafa Gül</a><br>Abstract: Automatic crack detection on pavement surfaces is an important research field in the scope of developing an intelligent transportation infrastructure system. In this paper, a cost effective solution for road crack inspection by mounting commercial grade sport camera, GoPro, on the rear of the moving vehicle is introduced. Also, a novel method called ConnCrack combining conditional Wasserstein generative adversarial network and connectivity maps is proposed for road crack detection. In this method, a 121-layer densely connected neural network with deconvolution layers for multi-level feature fusion is used as generator, and a 5-layer fully convolutional network is used as discriminator. To overcome the scattered output issue related to deconvolution layers, connectivity maps are introduced to represent the crack information within the proposed ConnCrack. The proposed method is tested on a publicly available dataset as well our collected data. The results show that the proposed method achieves state-of-the-art performance compared with other existing methods in terms of precision, recall and F1 score.<br>Submitted 22 October, 2019; v1 submitted 13 July, 2019; originally announced July 2019.</p>
+<h3 id="1-简述-2"><a href="#1-简述-2" class="headerlink" title="1.简述"></a>1.简述</h3><p>使用 GoPro 运动相机采集图像。本文提出了一种结合条件瓦瑟斯坦生成对抗网络(conditional Wasserstein generative adversarial network)和连通图的道路裂缝检测方法。<br>该方法以 121 层密集连接的神经网络和 5 层全卷积网络为鉴别器，利用反卷积层进行多层特征融合。为了克服与反卷积层相关的离散输出问题，引入了连通图来表示拟合裂纹内的裂纹信息。<br>与现有的方法相比，该方法在精度、查全率和 F1 分数方面都达到了最新的水平。</p>
+<h3 id="2-数据集-3"><a href="#2-数据集-3" class="headerlink" title="2.数据集"></a>2.数据集</h3><p>相机后挡风玻璃安放：<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289793315-a2ad19a5-6990-44cf-938b-3e9e8e263cde.png#align=left&display=inline&height=508&name=1579774075928.png&originHeight=508&originWidth=931&size=371135&status=done&style=none&width=931" alt="1579774075928.png"><br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289800945-6ff72f10-5d76-4050-a90e-c7c3c3400f37.png#align=left&display=inline&height=591&name=1579774136892.png&originHeight=591&originWidth=715&size=139637&status=done&style=none&width=715" alt="1579774136892.png"><br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289808288-dba9c083-6301-4cb0-8bf0-4c9bab1f458e.png#align=left&display=inline&height=379&name=1579774163742.png&originHeight=379&originWidth=924&size=68418&status=done&style=none&width=924" alt="1579774163742.png"><br>使用后挂载配置有三个主要原因:</p>
+<ul>
+<li>挡风玻璃可以反射汽车内部的光线，降低前面安装配置的图像质量。</li>
+<li>前摄像头离地面较远，它的大部分视场(FOV)被汽车的引擎盖挡住了。因此，前面的安装配置牺牲了太多的空间分辨率与我们上面的分析。</li>
+<li>我们的最终目标是在车辆上直接使用备用摄像头进行行车时的裂纹检测。在这种情况下，不需要安装任何外部设备。</li>
+</ul>
+<p>数据是在车辆以 40 ~ 80 公里/小时的速度行驶时采集的，相机采用 240 帧/秒的帧率和 1/3840 秒的快门速度，每 6 帧提取一次图像。最终在 Edmonton, Canada 不同路面采集 3 个小时图像，构造 EdmCrack600 数据集。这是目前最大的数据集。</p>
+<ul>
+<li>数据集对比</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289816059-d65037fb-038a-48aa-beb5-c9ad62352d4a.png#align=left&display=inline&height=342&name=1579774626654.png&originHeight=342&originWidth=1056&size=92325&status=done&style=none&width=1056" alt="1579774626654.png"><br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289823356-6479bc92-a320-4f50-bdcd-56c31a808890.png#align=left&display=inline&height=355&name=1579774649721.png&originHeight=355&originWidth=1049&size=99639&status=done&style=none&width=1049" alt="1579774649721.png"></p>
+<h3 id="3-方法-3"><a href="#3-方法-3" class="headerlink" title="3.方法"></a>3.方法</h3><ul>
+<li>ConnCrack</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289830659-701a7f3e-d3d0-4b23-b83e-ba529006bb6b.png#align=left&display=inline&height=455&name=1579774743826.png&originHeight=455&originWidth=959&size=126703&status=done&style=none&width=959" alt="1579774743826.png"></p>
+<ul>
+<li>生成器：cWGAN<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289838669-ad7c58cc-0249-4996-9e74-0367342c7f8a.png#align=left&display=inline&height=769&name=1579775914595.png&originHeight=769&originWidth=1497&size=232233&status=done&style=none&width=1497" alt="1579775914595.png"></li>
+</ul>
+<h4 id="训练-3"><a href="#训练-3" class="headerlink" title="训练"></a>训练</h4><ul>
+<li>loss function</li>
+</ul>
+$$
+
+\begin{aligned}
+
+&L_{c \mathrm{WG}, A N}(G, D)=E_{x, y}[D(x, y)]-E_{x}[D(x, G(x))]\
+
+&G^{*}=\arg \min _{G} \max _{D}\left(\lambda L_{c W G A N}(G, D)+L_{\text {content }}(G)\right)
+
+\end{aligned}
+
+
+$$
+
+<ul>
+<li>预训练</li>
+</ul>
+<p>在 ImageNet 和 CFD 数据集</p>
+<p>学习率：$1x10^{-6}$</p>
+<ul>
+<li>EdmCrack600 数据集</li>
+</ul>
+<p>学习率：$1x10^{-5}$， λ is set to$5×10^{-6}$</p>
+<h3 id="4-效果-3"><a href="#4-效果-3" class="headerlink" title="4.效果"></a>4.效果</h3><ul>
+<li>预训练数据</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289848262-14d7662c-08a0-466b-bb62-b2fb6159ae65.png#align=left&display=inline&height=717&name=1579776227118.png&originHeight=717&originWidth=560&size=110887&status=done&style=none&width=560" alt="1579776227118.png"><br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289856255-e6c46197-368d-4cfd-938f-b71ad98e70e7.png#align=left&display=inline&height=497&name=1579776249755.png&originHeight=497&originWidth=720&size=137067&status=done&style=none&width=720" alt="1579776249755.png"><br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289863968-3869cfa3-a9bc-479e-a959-ffe7cb4b58d9.png#align=left&display=inline&height=500&name=1579776334046.png&originHeight=500&originWidth=950&size=235440&status=done&style=none&width=950" alt="1579776334046.png"></p>
+<ul>
+<li>EdmCrack600 数据集<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289871093-3e115685-d79d-4bf7-8575-2a75c5f2aa75.png#align=left&display=inline&height=843&name=1579776609645.png&originHeight=843&originWidth=451&size=153195&status=done&style=none&width=451" alt="1579776609645.png"><br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289879304-7a112d2a-9c7f-4ac9-bf11-2103ea9afecc.png#align=left&display=inline&height=431&name=1579776623377.png&originHeight=431&originWidth=796&size=118722&status=done&style=none&width=796" alt="1579776623377.png"><br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289887108-0a6f61bb-2293-4702-920a-3e27d8ab659a.png#align=left&display=inline&height=807&name=1579776697993.png&originHeight=807&originWidth=1088&size=456145&status=done&style=none&width=1088" alt="1579776697993.png"><br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289895666-f21f28fb-384a-4007-9c55-0408d506c202.png#align=left&display=inline&height=864&name=1579776714014.png&originHeight=864&originWidth=896&size=90276&status=done&style=none&width=896" alt="1579776714014.png"></li>
+</ul>
+<h2 id="5-FPCNet-Fast-Pavement-Crack-Detection-Network-Based-on-Encoder-Decoder-Architecture"><a href="#5-FPCNet-Fast-Pavement-Crack-Detection-Network-Based-on-Encoder-Decoder-Architecture" class="headerlink" title="5.FPCNet: Fast Pavement Crack Detection Network Based on Encoder-Decoder Architecture"></a>5.FPCNet: Fast Pavement Crack Detection Network Based on Encoder-Decoder Architecture</h2><p><a href="https://arxiv.org/abs/1907.02248" target="_blank" rel="external nofollow noopener noreferrer">arXiv:1907.02248</a>  [<a href="./pdf/1907.02248">pdf</a>, <a href="https://arxiv.org/format/1907.02248" target="_blank" rel="external nofollow noopener noreferrer">other</a>] cs.CV<br>Authors: <a href="https://arxiv.org/search/?searchtype=author&query=Liu%2C+W" target="_blank" rel="external nofollow noopener noreferrer">Wenjun Liu</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Huang%2C+Y" target="_blank" rel="external nofollow noopener noreferrer">Yuchun Huang</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Li%2C+Y" target="_blank" rel="external nofollow noopener noreferrer">Ying Li</a>, <a href="https://arxiv.org/search/?searchtype=author&query=Chen%2C+Q" target="_blank" rel="external nofollow noopener noreferrer">Qi Chen</a><br>Abstract: Timely, accurate and automatic detection of pavement cracks is necessary for making cost-effective decisions concerning road maintenance. Conventional crack detection algorithms focus on the design of single or multiple crack features and classifiers. However, complicated topological structures, varying degrees of damage and oil stains make the design of crack features difficult. In addition, the contextual information around a crack is not investigated extensively in the design process. Accordingly, these design features have limited discriminative adaptability and cannot fuse effectively with the classifiers. To solve these problems, this paper proposes a deep learning network for pavement crack detection. Using the Encoder-Decoder structure, crack characteristics with multiple contexts are automatically learned, and end-to-end crack detection is achieved. Specifically, we first propose the Multi-Dilation (MD) module, which can synthesize the crack features of multiple context sizes via dilated convolution with multiple rates. The crack MD features obtained in this module can describe cracks of different widths and topologies. Next, we propose the SE-Upsampling (SEU) module, which uses the Squeeze-and-Excitation learning operation to optimize the MD features. Finally, the above two modules are integrated to develop the fast crack detection network, namely, FPCNet. This network continuously optimizes the MD features step-by-step to realize fast pixel-level crack detection. Experiments are conducted on challenging public CFD datasets and G45 crack datasets involving various crack types under different shooting conditions. The distinct performance and speed improvements over all the datasets demonstrate that the proposed method outperforms other state-of-the-art crack detection methods.<br>Submitted 4 July, 2019; originally announced July 2019.</p>
+<h3 id="1-简述-3"><a href="#1-简述-3" class="headerlink" title="1.简述"></a>1.简述</h3><p>采用编译码器结构，自动学习多种环境下的裂纹特征，实现端到端的裂纹检测。<br>具体来说，我们首先提出了多扩展(Multi-Dilation, MD)模块，该模块可以通过与多个速率的扩展卷积来合成多个上下文大小的裂缝特征。该模块得到的裂纹 MD 特征可以描述不同宽度和拓扑结构的裂纹。<br>接下来，我们提出 Squeeze-and-Excitation(SEU)模块，利用挤压-激励学习操作优化 MD 特性。最后，将上述两个模块集成在一起，开发了快速裂纹检测网络 FPCNet。</p>
+<h3 id="2-数据集-4"><a href="#2-数据集-4" class="headerlink" title="2.数据集"></a>2.数据集</h3><ul>
+<li>CFD datasets</li>
+<li>G45 crack datasets</li>
+</ul>
+<h3 id="3-方法-4"><a href="#3-方法-4" class="headerlink" title="3.方法"></a>3.方法</h3><p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289990838-6edcf3e6-a66e-47a6-aa0a-c6c0b97888f8.png#align=left&display=inline&height=315&name=1579782781244.png&originHeight=315&originWidth=804&size=25519&status=done&style=none&width=804" alt="1579782781244.png"></p>
+<ul>
+<li>Multi-Dilation (MD)</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580289998293-d8b74edf-f551-4847-b11b-f90cb02baf0d.png#align=left&display=inline&height=557&name=1579782800843.png&originHeight=557&originWidth=1320&size=99739&status=done&style=none&width=1320" alt="1579782800843.png"><br>MD 模块通过结合不同速率的多个扩展卷积[23]和一个全局池，提取不同上下文大小的裂缝特征，检测不同宽度和拓扑结构的裂缝。</p>
+<ul>
+<li>rate=1:这种卷积适用于薄而简单的裂纹，但不能有效地检测宽裂纹和拓扑复杂的裂纹。</li>
+<li>这些裂纹可以用更大的 r 值(例如，4)的膨胀卷积来鲁棒检测。</li>
+<li>SE-Upsampling (SEU)</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580290008108-dcabbd52-3958-443b-842c-562c56b74b6b.png#align=left&display=inline&height=496&name=1579784610822.png&originHeight=496&originWidth=1352&size=140275&status=done&style=none&width=1352" alt="1579784610822.png"><br>具体来说，MD 特征首先通过转置卷积进行上采样，使其分辨率恢复 2 倍，通道数减少到原来值的一半。接下来，MC 具有与图 4 相同的分辨率。FPCNet 的网络结构。该方法使用 4 Convs(两个 33 个卷积和 ReLUs) +最大池作为编码器来提取特征。接下来，使用 MD 模块获取多个上下文大小的信息。随后，4 个 SEU 模块作为解码器运行。H 和 W 表示图像的原始大小。红色、绿色和蓝色箭头分别表示最大池、置换卷积和 11 个卷积+ s 形。MCF 表示编码器中提取的多卷积特征，MDF 表示 MD 特征。添加到 MD 特性。执行全局平均池，从添加的 MD 特性中获得每个通道的全局信息。随后，通过挤压操作(F sq)处理全局信息。使用全连接层来挤压具有一定比例的通道数量(在本研究中，我们使用的比例为 16)，并使用 ReLU 层对输出进行非线性化。我们在输出端进行一个激励过程(F ex)，利用全连通层将压缩后的输出恢复到原来的通道数。使用 sigmoid 层获取通道权值。较大的权值表明通道特征对裂纹检测的贡献较大。最后，将每个 MD 特征乘上相应的权值，得到最优的 MD 特征。</p>
+<ul>
+<li>FPCNet</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580290016611-40c033fa-b070-480c-823c-82f7b26d27a1.png#align=left&display=inline&height=386&name=1579784755668.png&originHeight=386&originWidth=1378&size=150146&status=done&style=none&width=1378" alt="1579784755668.png"></p>
+<h4 id="训练-4"><a href="#训练-4" class="headerlink" title="训练"></a>训练</h4><ul>
+<li>loss function: binary cross entropy (BCE) + dice coefficient loss</li>
+</ul>
+$$
+
+\begin{aligned}
+
+L\left(Y^{_}, Y\right)=& \frac{1}{N} \sum_{P \in N}\left(Y_{P}^{_} \cdot \lg Y_{P}+\left(1-Y_{P}^{*}\right) \cdot \lg \left(1-Y_{P}\right)\right.\
+
+&+1-\frac{2 \times T P}{2 \times T P+F P+F N}
+
+\end{aligned}
+
+
+$$
+
+<ul>
+<li>优化器：SGD with Momentum (0.9) a batch size of 1 and a weight decay of 0.0001.</li>
+<li>学习率：初始为 0.01，在第 50/80/110 epoch 分别缩小 10 倍，在 120epoch 终止。</li>
+</ul>
+<h3 id="4-效果-4"><a href="#4-效果-4" class="headerlink" title="4.效果"></a>4.效果</h3><p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580290026327-15e20d70-e743-4720-9df6-10834663ab7b.png#align=left&display=inline&height=365&name=1579784862206.png&originHeight=365&originWidth=727&size=96125&status=done&style=none&width=727" alt="1579784862206.png"></p>
+<ul>
+<li>效率</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580290034218-e311f4e5-780a-4d62-a112-da6e8f87b110.png#align=left&display=inline&height=588&name=1579785225006.png&originHeight=588&originWidth=743&size=77638&status=done&style=none&width=743" alt="1579785225006.png"><br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580290043477-7f63b6dd-ce9b-4679-92a1-753c274fdb47.png#align=left&display=inline&height=199&name=1579785243650.png&originHeight=199&originWidth=607&size=43348&status=done&style=none&width=607" alt="1579785243650.png"></p>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/%E8%B7%AF%E9%9D%A2%E8%A3%82%E7%BC%9D%E5%88%86%E5%89%B2%E7%9B%B8%E5%85%B3%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/%E7%AC%94%E8%AE%B0/">
+              #笔记
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/Pavement%20Crack%20Segmentation%20Paper.html" target="_self">Pavement Crack Segmentation Paper</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/%E9%AB%98%E6%95%88%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E8%AE%BE%E8%AE%A1II.html" target="_self">高效神经网络设计II</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

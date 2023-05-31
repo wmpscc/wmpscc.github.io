@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>高级集成学习技巧 | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="数据科学,总结,kaggle,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>高级集成学习技巧</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-01-22
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6/">
+            数据科学
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="高级集成学习技巧.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <h3 id="Examined-ensemble-methods"><a href="#Examined-ensemble-methods" class="headerlink" title="Examined ensemble methods"></a>Examined ensemble methods</h3><ul>
+<li>Averaging (or blending)</li>
+<li>Weighted averaging</li>
+<li>Conditional averaging</li>
+<li>Bagging</li>
+<li>Boosting</li>
+<li>Stacking</li>
+<li>StackNet</li>
+</ul>
+<h2 id="Averaging-ensemble-methods"><a href="#Averaging-ensemble-methods" class="headerlink" title="Averaging ensemble methods"></a>Averaging ensemble methods</h2><p>举个例子，假设我们有一个名为 age 的变量，就像年龄一样，我们试着预测它。我们有两个模型：</p>
+<ul>
+<li>低于 50，模型效果更好</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696337011-727e8b45-35ad-4490-893c-4f5c860136d6.png#align=left&display=inline&height=423&originHeight=423&originWidth=505&size=0&status=done&style=none&width=505" alt=""></p>
+<ul>
+<li>高于 50，模型效果更好</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696336953-dcc8fd46-4875-4a7c-bd38-e27f3a70a710.png#align=left&display=inline&height=409&originHeight=409&originWidth=519&size=0&status=done&style=none&width=519" alt=""></p>
+<p>那么如果我们试图结合它们将会发生什么呢？</p>
+<p><strong>Averaging(or blending)</strong></p>
+<ul>
+<li><strong>(model1 + model2) / 2</strong></li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696337134-ef53d6e5-a2d5-4638-b42b-3aea24fc7e7c.png#align=left&display=inline&height=417&originHeight=417&originWidth=622&size=0&status=done&style=none&width=622" alt=""></p>
+$R^2$上升到 0.95，较之前有所改善。但该模型并没有比单模型做的好的地方更好，尽管如此，它平均表现更好。也许可能会有更好的组合呢？来试试加权平均
+
+<p><strong>Weighted averaging</strong></p>
+<ul>
+<li><strong>(model1 x 0.7 + model 2 x 0.3)</strong></li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696337092-ebb7eb04-4303-4956-a407-bca1d6535772.png#align=left&display=inline&height=355&originHeight=355&originWidth=534&size=0&status=done&style=none&width=534" alt=""></p>
+<p>看起来没有之前的好</p>
+<p><strong>Conditional averaging</strong></p>
+<ul>
+<li><strong>各取好的部分</strong></li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696337049-76821083-3c80-4582-ade3-fc8765fc0495.png#align=left&display=inline&height=327&originHeight=327&originWidth=526&size=0&status=done&style=none&width=526" alt=""></p>
+<p>理想情况下，我们希望得到类似的结果</p>
+<h2 id="Bagging"><a href="#Bagging" class="headerlink" title="Bagging"></a>Bagging</h2><h3 id="Why-Bagging"><a href="#Why-Bagging" class="headerlink" title="Why Bagging"></a>Why Bagging</h3><p>建模中有两个主要误差来源</p>
+<ul>
+<li>1.由于偏差而存在误差（underfitting）</li>
+<li>2.由于方差而存在误差（overfitting）</li>
+</ul>
+<p>通过略微不同的模型，确保预测不会有读取非常高的方差。这通常使它更具普遍性。</p>
+<h3 id="Parameters-that-control-bagging"><a href="#Parameters-that-control-bagging" class="headerlink" title="Parameters that control bagging?"></a>Parameters that control bagging?</h3><ul>
+<li>Changing the seed</li>
+<li>Row(Sub) sampling or Bootstrapping</li>
+<li>Shuffling</li>
+<li>Column(Sub) sampling</li>
+<li>Model-specific parameters</li>
+<li>Number of models (or bags)</li>
+<li>(Optionally) parallelism</li>
+</ul>
+<p>###</p>
+<h3 id="Examples-of-bagging"><a href="#Examples-of-bagging" class="headerlink" title="Examples of bagging"></a>Examples of bagging</h3><p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696337070-4232c646-99ef-43f8-938b-be8660227f97.png#align=left&display=inline&height=453&originHeight=453&originWidth=872&size=0&status=done&style=none&width=872" alt=""></p>
+<p>##</p>
+<p>##</p>
+<h2 id="Boosting"><a href="#Boosting" class="headerlink" title="Boosting"></a>Boosting</h2><p>Boosting 是对每个模型构建的模型进行加权平均的一种形式，顺序地考虑以前的模型性能。</p>
+<h3 id="Weight-based-boosting"><a href="#Weight-based-boosting" class="headerlink" title="Weight based boosting"></a>Weight based boosting</h3><p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696337219-3d95505b-d553-4169-8643-572b49374971.png#align=left&display=inline&height=296&originHeight=296&originWidth=1086&size=0&status=done&style=none&width=1086" alt=""></p>
+<p>假设我们有一个表格数据集，有四个特征。 我们称它们为 x0，x1，x2 和 x3，我们希望使用这些功能来预测目标变量 y。<br>我们将预测值称为 pred，这些预测有一定的误差。我们可以计算这些绝对误差，<code>|y - pred|</code>。我们可以基于此生成一个新列或向量，在这里我们创建一个权重列，使用 1 加上绝对误差。当然有不同的方法来计算这个权重，现在我们只是以此为例。</p>
+<p>所有接下来要做的是用这些特征去拟合新的模型，但每次也要增加这个权重列。这就是按顺序添加模型的方法。</p>
+<h4 id="Weight-based-boosting-parameters"><a href="#Weight-based-boosting-parameters" class="headerlink" title="Weight based boosting parameters"></a>Weight based boosting parameters</h4><ul>
+<li>Learning rate (or shrinkage or eta)</li>
+<li>每个模型只相信一点点：<code>predictionN = pred0*eta + pred1*eta + ... + predN*eta</code></li>
+<li>Number of estimators</li>
+<li>estimators 扩大一倍，eta 减小一倍</li>
+<li>Input model - can be anything that accepts weights</li>
+<li>Sub boosting type:</li>
+<li>AdaBoost-Good implementation in sklearn(python)</li>
+<li>LogitBoost-Good implementation in Weka(Java)</li>
+</ul>
+<h3 id="Residual-based-boosting-amp"><a href="#Residual-based-boosting-amp" class="headerlink" title="Residual based boosting [&amp;]"></a>Residual based boosting [&amp;]</h3><p>我们使用同样的数据集做相同的事。预测出 pred 后<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696337131-1ca605ec-b257-4873-9872-547c069cb639.png#align=left&display=inline&height=299&originHeight=299&originWidth=849&size=0&status=done&style=none&width=849" alt=""></p>
+<p>接下来会计算误差<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696337177-b69fc0a4-c521-43c1-abef-a85b413a269e.png#align=left&display=inline&height=297&originHeight=297&originWidth=968&size=0&status=done&style=none&width=968" alt=""></p>
+<p>将 error 作为新的 y 得到新的预测 new_pred<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696336856-cfc55178-0738-4248-9084-480e57c69813.png#align=left&display=inline&height=292&originHeight=292&originWidth=968&size=0&status=done&style=none&width=968" alt=""></p>
+<p>以 Rownum=1 为例：</p>
+<p>最终预测=0.75 + 0.20 = 0.95 更接近于 1</p>
+<p>这种方法很有效，可以很好的减小误差。</p>
+<h4 id="Residual-based-boosting-parameters"><a href="#Residual-based-boosting-parameters" class="headerlink" title="Residual based boosting parameters"></a>Residual based boosting parameters</h4><ul>
+<li>Learning rate (or shrinkage or eta)</li>
+<li><code>predictionN = pred0 + pred1*eta + ... + predN*eta</code></li>
+<li>前面的例子，如果 eta 为 0.1，则 Prediction=0.75 + 0.2*(0.1) = 0.77</li>
+<li>Number of estimators</li>
+<li>Row (sub)sampling</li>
+<li>Column (sub)sampling</li>
+<li>Input model - better be trees.</li>
+<li>Sub boosting type:</li>
+<li>Full gradient based</li>
+<li>Dart</li>
+</ul>
+<h4 id="Residual-based-favourite-implementations"><a href="#Residual-based-favourite-implementations" class="headerlink" title="Residual based favourite implementations"></a>Residual based favourite implementations</h4><ul>
+<li>Xgboost</li>
+<li>Lightgbm</li>
+<li>H2O’s GBM</li>
+<li>Catboost</li>
+<li>Sklearn’s GBM</li>
+</ul>
+<h2 id="Stacking"><a href="#Stacking" class="headerlink" title="Stacking"></a>Stacking</h2><h3 id="Methodology"><a href="#Methodology" class="headerlink" title="Methodology"></a>Methodology</h3><ul>
+<li><p>Wolpert in 1992 introduced stacking. It involves:</p>
+</li>
+<li><ol>
+<li><strong>Splitting</strong> the train set into two disjoint sets.</li>
+</ol>
+</li>
+<li><ol start="2">
+<li><strong>Train</strong> several base learners on the first part.</li>
+</ol>
+</li>
+<li><ol start="3">
+<li><strong>Make predictions</strong> with the base learners on the second (validation) part.</li>
+</ol>
+</li>
+</ul>
+<h3 id="具体步骤"><a href="#具体步骤" class="headerlink" title="具体步骤"></a>具体步骤</h3><p>假设有 A,B,C 三个数据集，其中 A,B 的目标变量 y 已知。<br><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696337070-7551f2ea-bc2a-41c9-bc5f-5110ac2c4435.png#align=left&display=inline&height=188&originHeight=188&originWidth=971&size=0&status=done&style=none&width=971" alt=""></p>
+<p>然后</p>
+<ul>
+<li>算法 0 拟合 A，预测 B 和 C，然后保存 pred0 到 B1,C1</li>
+<li>算法 1 拟合 A，预测 B 和 C，然后保存 pred1 到 B1,C1</li>
+<li>算法 2 拟合 A，预测 B 和 C，然后保存 pred2 到 B1,C1</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696336934-b8bc8e0e-3971-49d4-8180-653c38ca7cb9.png#align=left&display=inline&height=187&originHeight=187&originWidth=699&size=0&status=done&style=none&width=699" alt=""></p>
+<ul>
+<li>算法 3 拟合 B1，预测 C1，得到最终结果 preds3</li>
+</ul>
+<h3 id="Stacking-example"><a href="#Stacking-example" class="headerlink" title="Stacking example"></a>Stacking example</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestRegressor</span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LinearRegression</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line">train = <span class="string">''</span> <span class="comment"># your training set</span></span><br><span class="line">y = <span class="string">''</span>     <span class="comment"># your target variable</span></span><br><span class="line"><span class="comment"># split train data in 2 part, training and valdiation.</span></span><br><span class="line">training, valid, ytraining, yvalid = train_test_split(train, y, test_size=<span class="number">0.5</span>)</span><br><span class="line"><span class="comment"># specify models</span></span><br><span class="line">model1 = RandomForestRegressor()</span><br><span class="line">model2 = LinearRegression()</span><br><span class="line"><span class="comment">#fit models</span></span><br><span class="line">model1.fit(training, ytraining)</span><br><span class="line">model2.fit(trainging, ytraining)</span><br><span class="line"><span class="comment"># make predictions for validation</span></span><br><span class="line">preds1 = model1.predict(valid)</span><br><span class="line">preds2 = model2.predict(valid)</span><br><span class="line"><span class="comment"># make predictions for test data</span></span><br><span class="line">test_preds1 = model1.predict(test)</span><br><span class="line">test_preds2 = model2.predict(test)</span><br><span class="line"><span class="comment"># From a new dataset for valid and test via stacking the predictions</span></span><br><span class="line">stacked_predictions = np.colum_stack((preds1, preds2))</span><br><span class="line">stacked_test_predictions = np.column_stack((test_preds1, test_preds2))</span><br><span class="line"><span class="comment"># specify meta model</span></span><br><span class="line">meta_model = LinearRegression()</span><br><span class="line">meta_model.fit(stacked_predictions, yvalid)</span><br><span class="line"><span class="comment"># make predictions on the stacked predictions of the test data</span></span><br><span class="line">final_predictions = meta_model.predict(stacked_test_predictions)</span><br></pre></td></tr></table></figure>
+
+<h3 id="Stacking-past-example"><a href="#Stacking-past-example" class="headerlink" title="Stacking(past) example"></a>Stacking(past) example</h3><p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1579696337116-be26d7f8-2af7-40ee-aaf1-e685c80523e2.png#align=left&display=inline&height=345&originHeight=345&originWidth=543&size=0&status=done&style=none&width=543" alt=""></p>
+<p>可以看到，它与我们使用<code>Conditional averaging</code>的结果非常近似。只是在 50 附件做的不够好，这是有道理的，因为模型没有见到目标变量，无法准确识别出 50 这个缺口。所以它只是尝试根据模型的输入来确定。</p>
+<h3 id="Things-to-be-mindful-of"><a href="#Things-to-be-mindful-of" class="headerlink" title="Things to be mindful of"></a>Things to be mindful of</h3><ul>
+<li>With time sensitive data - respect time</li>
+<li>如果你的数据带有时间元素，你需要指定你的 stacking，以便尊重时间。</li>
+<li>Diversity as important as performance</li>
+<li>单一模型表现很重要，但模型的多样性也非常重要。当模型是坏的或弱的情况，你不需太担心，stacking 实际上可以从每个预测中提取到精华，得到好的结果。因此，你真正需要关注的是，我正在制作的模型能给我带来哪些信息，即使它通常很弱。</li>
+<li>Diversity may come from:</li>
+<li>Different algorithms</li>
+<li>Different input features</li>
+<li>Performance plateauing after N models</li>
+<li>Meta model is normally modest</li>
+</ul>
+<h2 id="StackNet"><a href="#StackNet" class="headerlink" title="StackNet"></a>StackNet</h2><p><a href="https://github.com/kaz-Anova/StackNet" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/kaz-Anova/StackNet</a></p>
+<h2 id="Ensembling-Tips-and-Tricks"><a href="#Ensembling-Tips-and-Tricks" class="headerlink" title="Ensembling Tips and Tricks"></a>Ensembling Tips and Tricks</h2><h3 id="level-tips"><a href="#level-tips" class="headerlink" title=" level tips"></a>$1^{st}$ level tips</h3><ul>
+<li>Diversity based on algorithms:</li>
+<li>2-3 gradient boosted trees (lightgbm, xgboost, H2O, catboost)</li>
+<li>2-3 Neural nets (keras, pytorch)</li>
+<li>1-2 ExtraTrees/RandomForest (sklearn)</li>
+<li>1-2 linear models as in logistic/ridge regression, linear svm (sklearn)</li>
+<li>1-2 knn models (sklearn)</li>
+<li>1 Factorization machine (libfm)</li>
+<li>1 svm with nonlinear kernel(like RBF) if size/memory allows (sklearn)</li>
+<li>Diversity based on input data:</li>
+<li>Categorical features: One hot, label encoding, target encoding, likelihood encoding, frequency or counts</li>
+<li>Numerical features: outliers, binning, derivatives, percentiles, scaling</li>
+<li>Interactions: col1*/+-col2, groupby, unsupervised</li>
+</ul>
+<h3 id="level-tips-1"><a href="#level-tips-1" class="headerlink" title=" level tips"></a>$2^{st}$ level tips</h3><ul>
+<li>Simpler (or shallower) Algorithms:</li>
+<li>gradient boosted trees with small depth(like 2 or 3)</li>
+<li>Linear models with high regularization</li>
+<li>Extra Trees (just don’t make them too big)</li>
+<li>Shallow networks (as in 1 hidden layer, with not that many hidden neurons)</li>
+<li>knn with BrayCurtis Distance</li>
+<li>Brute forcing a search for best linear weights based on cv</li>
+<li>Feature engineering:</li>
+<li>pairwise differences between meta features</li>
+<li>row-wise statistics like averages or stds</li>
+<li>Standard feature selection techniques</li>
+<li>For every 7.5 models in previous level we add 1 in meta (经验)</li>
+<li>Be mindful to target leakage</li>
+</ul>
+<h2 id="Additional-materials"><a href="#Additional-materials" class="headerlink" title="Additional materials"></a>Additional materials</h2><ul>
+<li><a href="https://mlwave.com/kaggle-ensembling-guide/" target="_blank" rel="external nofollow noopener noreferrer">MLWave.com 的 Kaggle 集成指南（方法概述）</a></li>
+<li><a href="https://github.com/kaz-Anova/StackNet" target="_blank" rel="external nofollow noopener noreferrer">StackNet - 一个计算，可扩展和分析的元建模框架（KazAnova）</a></li>
+<li><a href="https://github.com/rushter/heamy" target="_blank" rel="external nofollow noopener noreferrer">Heamy - 一套用于竞争数据科学（包括整合）的有用工具</a></li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579696336967-907beee3-d2a7-4117-a452-1b016f013904.jpeg#align=left&display=inline&height=640&originHeight=640&originWidth=1080&size=0&status=done&style=none&width=1080" alt=""></p>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/%E9%AB%98%E7%BA%A7%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0%E6%8A%80%E5%B7%A7.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/%E6%80%BB%E7%BB%93/">
+              #总结
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/kaggle/">
+              #kaggle
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/%E9%AB%98%E7%BA%A7%E8%B0%83%E5%8F%82%E6%8A%80%E5%B7%A7.html" target="_self">高级调参技巧</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/TensorFlow-Serving%E9%83%A8%E7%BD%B2%E5%88%86%E7%B1%BB%E6%A8%A1%E5%9E%8B.html" target="_self">TensorFlow-Serving部署分类模型</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

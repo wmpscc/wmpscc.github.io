@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>高效神经网络设计II | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="深度学习,模型压缩,神经网络设计,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>高效神经网络设计II</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-01-29
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">
+            深度学习
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="高效神经网络设计II.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <h1 id="模型设计"><a href="#模型设计" class="headerlink" title="模型设计"></a>模型设计</h1><h3 id="卷积方式的使用和设计"><a href="#卷积方式的使用和设计" class="headerlink" title="卷积方式的使用和设计"></a>卷积方式的使用和设计</h3><ul>
+<li>通道拆分：<code>7*7-&gt;1*7+7*1</code>,<code>7*7*7-&gt;1*1*7+1*7*1+7*1*1</code></li>
+<li>提升单层通道利用率<ul>
+<li>特征通道补偿：输入通道取反和输入通道进行 concat（CReLU）</li>
+<li>密集连接网络：DenseNet</li>
+</ul>
+</li>
+<li>1 通道/2.3 多尺度分组卷积：<ul>
+<li>Depthwise conv + Pointwise conv</li>
+<li>BigLittleNet:将通道分为高分辨率网络和低分辨率网络</li>
+<li>Octave Convolution:将通道分解为低频+高频分量，低频使用更小的分辨率</li>
+</ul>
+</li>
+<li>多尺度卷积核与感受野卷积<ul>
+<li>Squeezenet：使用<code>1*1</code>和<code>3*3</code>的卷积核</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580306250483-012ca207-a300-42db-862c-a923b9045b1b.png#align=left&display=inline&height=326&name=1580300524822.png&originHeight=326&originWidth=576&size=145183&status=done&style=none&width=576" alt="1580300524822.png"></p>
+<ul>
+<li>MixNet：分组卷积时使用不同大小的卷积核</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580306259185-c308a0ee-c84a-4637-82f8-103317ced4ab.png#align=left&display=inline&height=336&name=1580300587261.png&originHeight=336&originWidth=562&size=79037&status=done&style=none&width=562" alt="1580300587261.png"></p>
+<ul>
+<li>ScaleNet：使用不同大小的特征图</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580306268259-d47cbe6d-c13b-4ba4-995a-1cf70d514854.png#align=left&display=inline&height=361&name=1580300636636.png&originHeight=361&originWidth=515&size=132263&status=done&style=none&width=515" alt="1580300636636.png"></p>
+<ul>
+<li>分数+整数的分组卷积<ul>
+<li>DSConv:VQK 只有整数值，不可训练，从预训练模型中来。KDS 是浮点数值，可训练。KDS 相当于学习 VQK 带来的残差。</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580306280479-4d7889b3-d46a-4d4c-8165-d2fa145f5a85.png#align=left&display=inline&height=467&name=1580301018628.png&originHeight=467&originWidth=1134&size=215885&status=done&style=none&width=1134" alt="1580301018628.png"></p>
+<ul>
+<li>剪枝与分组卷积<ul>
+<li>condensenet:去除权重小的层，重组，做分组卷积</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580306289280-9fbc55e9-41f6-42fb-adaa-3123c3cf8c77.png#align=left&display=inline&height=549&name=1580301281521.png&originHeight=549&originWidth=1140&size=688454&status=done&style=none&width=1140" alt="1580301281521.png"></p>
+<ul>
+<li>可学习的分组<ul>
+<li>FLGC、DGC</li>
+</ul>
+</li>
+</ul>
+<h3 id="剪枝"><a href="#剪枝" class="headerlink" title="剪枝"></a>剪枝</h3><ul>
+<li>剪枝维度</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580306298669-732e44a7-acf6-40d7-984e-712c79a1986e.png#align=left&display=inline&height=550&name=1580301574844.png&originHeight=550&originWidth=1632&size=475935&status=done&style=none&width=1632" alt="1580301574844.png"><br>通道级别的最常用</p>
+<ul>
+<li>Pruning Filters</li>
+<li>根据卷积核的 L1Norm(即绝对值)判断是否裁剪掉卷积核</li>
+<li>ThiNet:使用网络下一层来指导当前层的剪枝，通过最小化剪枝前后的下一层网络的输出。</li>
+<li>Network Slimming:利用 BN 中的缩放因子来对不重要的通道进行裁剪</li>
+</ul>
+<h3 id="量化"><a href="#量化" class="headerlink" title="量化"></a>量化</h3><ul>
+<li>二值量化：Binarized Neural Networks(BNN)</li>
+</ul>
+<p>权重和每层的激活值全部二值化</p>
+<ul>
+<li>三值量化：Ternary weight networks</li>
+</ul>
+<p>最小化全精度权值 W 和三元权值$W^t$之间的欧氏距离</p>
+$$
+ \left\{\begin{array}{rl}
+ {\alpha^{*}, \mathbf{W}^{t *}=} & {\underset{\alpha, \mathbf{W}^{t}}{\arg \min } J\left(\alpha, \mathbf{W}^{t}\right)=\left\|\mathbf{W}-\alpha \mathbf{W}^{t}\right\|_{2}^{2}} \\
+ {} & {\text { s.t. } \quad \alpha \geq 0, \mathbf{w}_{i}^{t} \in\{-1,0,1\}, i=1,2, \ldots, n}
+ \end{array} \quad \mathbf{W}_{i}^{t}=f_{t}\left(\mathbf{W}_{i} | \Delta\right)=\left\{\begin{aligned}
+ +1, & \text { if } \mathbf{W}_{i}>\Delta \\
+ 0, & \text { if }\left|\mathbf{W}_{i}\right| \leq \Delta \\
+ -1, & \text { if } \mathbf{W}_{i}<-\delta  \end{aligned}\right.\right.=""  ="" $$="" <ul="">
+<li>Google 的 8 位量化</li>
+
+<p>前向传播中使用量化，反向时仍然按照全进度的浮点进行计算</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580306310357-f5fbc538-6573-4784-b381-b39bfaa79fcf.png#align=left&display=inline&height=424&name=1580304949280.png&originHeight=424&originWidth=1782&size=374574&status=done&style=none&width=1782" alt="1580304949280.png"></p>
+<ul>
+<li>NVIDIA 的 8 位量化</li>
+</ul>
+<p>根据每一层的校准集上的激活值确定阈值 T</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580306318802-dbb3f821-62cd-44e0-a32c-7573a50f60d9.png#align=left&display=inline&height=562&name=1580305026789.png&originHeight=562&originWidth=1756&size=357550&status=done&style=none&width=1756" alt="1580305026789.png"></p>
+<ul>
+<li>混合精度量化 HAQ （AutoML 模型）</li>
+<li>剪枝与量化的结合：Deep Compression</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580306326520-40be8892-1ccd-4062-982d-fc561077bd3f.png#align=left&display=inline&height=524&name=1580305126891.png&originHeight=524&originWidth=1638&size=469094&status=done&style=none&width=1638" alt="1580305126891.png"></p>
+<h3 id="知识蒸馏"><a href="#知识蒸馏" class="headerlink" title="知识蒸馏"></a>知识蒸馏</h3><ul>
+<li>teacher 模型+更小的模型(studnet 模型)</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580306334672-590300ff-b79b-44f9-8e23-552cc5527b73.png#align=left&display=inline&height=502&name=1580305234095.png&originHeight=502&originWidth=1169&size=266022&status=done&style=none&width=1169" alt="1580305234095.png"></p>
+<ul>
+<li>FitNet:比较浅而宽的 teacher 模型的知识迁移到更窄更深的 student 模型</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580306342635-cc09cbaa-1c28-4626-84fa-7621120016cd.png#align=left&display=inline&height=328&name=1580305327225.png&originHeight=328&originWidth=466&size=70322&status=done&style=none&width=466" alt="1580305327225.png"></p>
+<ul>
+<li>ProjectNet:同时训练一个大模型和一个小模型，实现高比率的压缩</li>
+</ul>
+$$
+
+\mathcal{L}(\theta, p)=\lambda_{1} \cdot \mathcal{L}_{\theta}(.)+\lambda_{2} \cdot \mathcal{L}^{p}(.)+\lambda_{3} \cdot \widehat{\mathcal{L}}^{p}(.)
+
+
+$$
+
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580306351688-01230064-96d4-484d-9cfa-71410290b5b9.png#align=left&display=inline&height=535&name=1580305417713.png&originHeight=535&originWidth=979&size=255470&status=done&style=none&width=979" alt="1580305417713.png"></p>
+<ul>
+<li>量化与蒸馏的结合</li>
+</ul>
+<p>teacher 模型是一个全精度模型，Apprentice 模型是一个低精度模型</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580306360346-69097771-e04d-4cfb-83f9-b0929010fa95.png#align=left&display=inline&height=497&name=1580305523600.png&originHeight=497&originWidth=1181&size=224010&status=done&style=none&width=1181" alt="1580305523600.png"></p>
+<ul>
+<li>协同学习</li>
+</ul>
+<h3 id="动态推理"><a href="#动态推理" class="headerlink" title="动态推理"></a>动态推理</h3><ul>
+<li>BranchyNet：不同难度的样本，根据累积的熵来决定是否提前退出 inference</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580306369847-7c6f92fe-7208-4f95-a186-bb560abe61b3.png#align=left&display=inline&height=744&name=1580305673573.png&originHeight=744&originWidth=584&size=120011&status=done&style=none&width=584" alt="1580305673573.png"></p>
+<ul>
+<li>Blockdrop：训练一个网络来决定每一个 block 是否 drop 的概率</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/478234/1580306378868-96a05239-df37-45b3-aca0-ed4581b0ea2b.png#align=left&display=inline&height=697&name=1580305711353.png&originHeight=697&originWidth=933&size=400355&status=done&style=none&width=933" alt="1580305711353.png"></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://mp.weixin.qq.com/s/12QyFksKN6Di2U3G6J_I5w" target="_blank" rel="external nofollow noopener noreferrer">天池&amp;有三 AI 深度学习模型设计直播汇总-附赠 PPT 课件</a></li>
+</ul>
+</-\delta>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/%E9%AB%98%E6%95%88%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E8%AE%BE%E8%AE%A1II.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9/">
+              #模型压缩
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E8%AE%BE%E8%AE%A1/">
+              #神经网络设计
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/%E8%B7%AF%E9%9D%A2%E8%A3%82%E7%BC%9D%E5%88%86%E5%89%B2%E7%9B%B8%E5%85%B3%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0.html" target="_self">路面裂缝分割相关论文笔记</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/Depthwise-STFT%E5%8D%B7%E7%A7%AF%E5%A4%8D%E7%8E%B0.html" target="_self">Depthwise-STFT卷积复现</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>CvT  Introducing Convolutions to Vision Transformers | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="深度学习,CV,transformer vision,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>CvT  Introducing Convolutions to Vision Transformers</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2021-07-30
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">
+            深度学习
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="CvT  Introducing Convolutions to Vision Transformers.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <p>《CvT: Introducing Convolutions to Vision Transformers》论文笔记<br>本文提出了卷积视觉 Transformer（CvT），它设计了两个操作，Convolutional Token Embedding 和 Convolutional Projection，使得整个网络结构同时具备了卷积和 Transformer 的特点，去除了位置编码 embedding，简化了网络设计。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1627634759243-4730e38e-3306-440b-a9f6-95368dac995f.png#clientId=u3ce56341-18c9-4&from=paste&height=694&id=ua42084cd&margin=%5Bobject%20Object%5D&name=image.png&originHeight=694&originWidth=1552&originalType=binary%E2%88%B6=1&size=207248&status=done&style=none&taskId=u7c1c57e0-f031-4d63-89a6-6cae409de15&width=1552" alt="image.png"></p>
+<h1 id="3-Convolutional-vision-Transformer"><a href="#3-Convolutional-vision-Transformer" class="headerlink" title="3. Convolutional vision Transformer"></a>3. Convolutional vision Transformer</h1><p>图 2 展示了整个管道，我们引入了两个基于卷积的操作到 Vision Transformer，分别是 Convolutional Token Embedding 和 Convolutional Projection。Convolutional Token Embedding 的输入是图像或者被 reshaped-2D 的 token，它是由带有重叠区域的卷积实现了的，在它之后是一层正则化层。该模块后是 Convolutional Transformer Blocks，Convolutional Projection 是通过一个深度可分离卷积实现的，它被用于产生 query、key 和 value embedding。注意，只有在最后一层，用于分类的 classificaton token 才被添加，在最后的是一个 MLP 头，利用 classification token 进行分类，输出预测类别。</p>
+<h2 id="3-1-Convolutional-Token-Embedding"><a href="#3-1-Convolutional-Token-Embedding" class="headerlink" title="3.1 Convolutional Token Embedding"></a>3.1 Convolutional Token Embedding</h2><p>给定一个 2D image 或者一个来自上一层的 2D-reshaped 输出 $x_{i-1} \in \mathbb{R}^{H_{i-1} \times W_{i-1} \times C_{i-1}}$ 作为输入，学习一个函数$f(*)$，想输入映射到一个新的 token $f\left(x_{i-1}\right) \in \mathbb{R}^{H_{i} \times W_{i} \times C_{i}}$ ，它的高和宽如下（其中卷积核$s\times s$，步长$s-o$，padding$p$）：</p>
+$$
+H_{i}=\left\lfloor\frac{H_{i-1}+2 p-s}{s-o}+1\right\rfloor, W_{i}=\left\lfloor\frac{W_{i-1}+2 p-s}{s-o}+1\right\rfloor
+$$
+
+<p>之后$f(x_{i-1})$会被展平到$H_iW_i\times C_i$，使用 layer norm 之后输入到后续的 Transformer blocks。<br>Convolutional Token Embedding 允许我们通过使用不同的卷积参数，调整 token feature dimension 和每一阶段的 token 数量。以该方式，我们渐渐减少 token sequence length，同时增加 token feature dimension。这使得 token 能够以增加更大的空间脚印去表征增加的复杂视觉模式。</p>
+<h2 id="3-2-Convolutional-Projection-for-Attention"><a href="#3-2-Convolutional-Projection-for-Attention" class="headerlink" title="3.2 Convolutional Projection for Attention"></a>3.2 Convolutional Projection for Attention</h2><p>Convolutional Projection 层主要目标是实现额外的局部上下文建模，和提供高效的 K，V 矩阵采样方式。<br>从根本上来说，本文提出的带有 Convolutional Projection 的 Transformer block 是原始 Transformer block 的一般化表示。因为先前的工作都是尝试在 Transformer block 上添加额外的卷积模块，这增加了额外的计算代价。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1627712966334-c5fdbf3a-e6fc-4c2e-9429-37cd91da0c88.png#clientId=u64e6887a-7310-4&from=paste&height=458&id=ucb9e3310&margin=%5Bobject%20Object%5D&name=image.png&originHeight=458&originWidth=1562&originalType=binary%E2%88%B6=1&size=171961&status=done&style=none&taskId=u8da9b76a-2f3e-4880-a7df-52f95c9ca6a&width=1562" alt="image.png"></p>
+<h3 id="3-2-1-Implementation-Details"><a href="#3-2-1-Implementation-Details" class="headerlink" title="3.2.1 Implementation Details"></a>3.2.1 Implementation Details</h3><p>图 3(a)展示了 ViT 中使用的原始 position-wise 线性映射，图 3(b)展示了我们提出的$s\times s$Convolutional Projection。首先 token 被 reshape 到 2D token map，然后使用卷积核为 s 的深度可分离卷积进行处理，最后再将 token map 展平到 1D 用于子序列处理。它可以被公式化：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1627714072392-4e199fd4-1c1b-4338-8e5d-7e4d8d473766.png#clientId=u64e6887a-7310-4&from=paste&height=315&id=u9abbed6b&margin=%5Bobject%20Object%5D&name=image.png&originHeight=315&originWidth=725&originalType=binary%E2%88%B6=1&size=60649&status=done&style=none&taskId=u258ee98c-5867-42b0-b02f-36e285edfce&width=725" alt="image.png">​<br>带有 Convolutional Projection layer 的 Transformer Block 是原始 Transformer Block 的一般化设计，原始的 position-wise 线性映射层可以由$1\times 1$卷积核的卷积操作琐碎的进行实现。</p>
+<h3 id="3-2-2-Efficiency-Considerations"><a href="#3-2-2-Efficiency-Considerations" class="headerlink" title="3.2.2 Efficiency Considerations"></a>3.2.2 Efficiency Considerations</h3><p>效率主要受益于两个方面：</p>
+<ul>
+<li>1.首先使用效率更高的深度可分离卷积，它具有$\mathcal{O}\left(s^{2} C T\right)$FLOPS，普通卷积具有$\mathcal{O}\left(s^{2} C^{2} T\right)$FLOPS。其中 s 表示卷积核，C 表示 token 通道数，T 表示 token 数量。</li>
+<li>2.使用 Convolutional Projection，卷积投影可以改变步长，减少 token 长度。由于卷积投影本身可以为局部上下文建模，且临近的像素本身语义相近。这带来的损失很小。图 3(c)展示了原始长度的 query，key 和 value 长度减少了 4 倍，计算量也减少了 4 倍，这是相对 MHSA 操作而言的。</li>
+</ul>
+<p>​</p>
+<h1 id="4-Experiments"><a href="#4-Experiments" class="headerlink" title="4 Experiments"></a>4 Experiments</h1><p>实验网络结构分为了三个阶段：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1627716123011-9f354ecd-1411-4469-b8f2-a7cd64f87d15.png#clientId=u6b880549-0b1c-4&from=paste&height=649&id=ue3e95fcb&margin=%5Bobject%20Object%5D&name=image.png&originHeight=649&originWidth=1509&originalType=binary%E2%88%B6=1&size=170121&status=done&style=none&taskId=uef9887a9-96c4-4fab-89f4-c8bd73b7c0c&width=1509" alt="image.png"><br>实验结果如下：<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1627716030687-66e638af-8b5c-4a9b-9644-1e3ee7d5e704.png#clientId=u64e6887a-7310-4&from=paste&height=861&id=ue07faab7&margin=%5Bobject%20Object%5D&name=image.png&originHeight=861&originWidth=1028&originalType=binary%E2%88%B6=1&size=215005&status=done&style=none&taskId=u6f3af3be-54fe-4305-aebb-38a2b9672ac&width=1028" alt="image.png"></p>
+<h2 id="4-4-Ablation-Study"><a href="#4-4-Ablation-Study" class="headerlink" title="4.4 Ablation Study"></a>4.4 Ablation Study</h2><p><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1627715944075-1817e1fb-6d70-498e-9788-2739220b7452.png#clientId=u64e6887a-7310-4&from=paste&height=893&id=uc051903c&margin=%5Bobject%20Object%5D&name=image.png&originHeight=893&originWidth=750&originalType=binary%E2%88%B6=1&size=130797&status=done&style=none&taskId=uf0ae31c6-8b28-4f37-9a50-3ca651966aa&width=750" alt="image.png"><br>由于卷积具备局部空间结构，模型不需要添加位置编码，这简化了模型结构。表 5 进行了消融实验。<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1627715960765-de7938dc-a6e7-4cee-8d31-7dd2f4ebff57.png#clientId=u64e6887a-7310-4&from=paste&height=704&id=u9264c06c&margin=%5Bobject%20Object%5D&name=image.png&originHeight=704&originWidth=731&originalType=binary%E2%88%B6=1&size=97982&status=done&style=none&taskId=u462d2512-0336-4df8-b801-3f1082e9182&width=731" alt="image.png"><br>降低 KV length，准确率下降了，计算量减少了更多<br><img src="https://cdn.nlark.com/yuque/0/2021/png/478234/1627715984732-99ed04df-d740-42b9-829f-38945a59eed0.png#clientId=u64e6887a-7310-4&from=paste&height=476&id=u1067f7d2&margin=%5Bobject%20Object%5D&name=image.png&originHeight=476&originWidth=747&originalType=binary%E2%88%B6=1&size=58268&status=done&style=none&taskId=u5f1b53b3-80f3-4888-bb16-793456202f1&width=747" alt="image.png"></p>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/CvT%20%20Introducing%20Convolutions%20to%20Vision%20Transformers.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/CV/">
+              #CV
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/transformer-vision/">
+              #transformer vision
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/Controllable%20Descendant%20Face%20Synthesis.html" target="_self">Controllable Descendant Face Synthesis</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/DNANet%20Age%20and%20Gender%20Aware%20Kin%20Face%20Synthesizer.html" target="_self">DNANet Age and Gender Aware Kin Face Synthesizer</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

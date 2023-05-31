@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>SKlearn模型评估方法 | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="机器学习,kaggle,sklearn,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>SKlearn模型评估方法</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-01-23
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">
+            机器学习
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="SKlearn模型评估方法.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <h3 id="准确率"><a href="#准确率" class="headerlink" title="准确率"></a>准确率</h3><h4 id="1-accuracy-score-1"><a href="#1-accuracy-score-1" class="headerlink" title="1.accuracy_score"></a>1.accuracy_score</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 准确率</span><br><span class="line">import numpy as np</span><br><span class="line">from sklearn.metrics import accuracy_score</span><br><span class="line">y_pred &#x3D; [0, 2, 1, 3,9,9,8,5,8]</span><br><span class="line">y_true &#x3D; [0, 1, 2, 3,2,6,3,5,9]</span><br><span class="line"></span><br><span class="line">accuracy_score(y_true, y_pred)</span><br><span class="line">Out[127]: 0.33333333333333331</span><br><span class="line"></span><br><span class="line">accuracy_score(y_true, y_pred, normalize&#x3D;False)  # 类似海明距离，每个类别求准确后，再求微平均</span><br><span class="line">Out[128]: 3</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-metrics"><a href="#2-metrics" class="headerlink" title="2.metrics"></a>2.metrics</h4><ul>
+<li>宏平均比微平均更合理，但也不是说微平均一无是处，具体使用哪种评测机制，还是要取决于数据集中样本分布</li>
+<li>宏平均（Macro-averaging），是先对每一个类统计指标值，然后在对所有类求算术平均值。</li>
+<li>微平均（Micro-averaging），是对数据集中的每一个实例不分类别进行统计建立全局混淆矩阵，然后计算相应指标。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">from sklearn import metrics</span><br><span class="line">metrics.precision_score(y_true, y_pred, average&#x3D;&#39;micro&#39;)  # 微平均，精确率</span><br><span class="line">Out[130]: 0.33333333333333331</span><br><span class="line"></span><br><span class="line">metrics.precision_score(y_true, y_pred, average&#x3D;&#39;macro&#39;)  # 宏平均，精确率</span><br><span class="line">Out[131]: 0.375</span><br><span class="line"></span><br><span class="line">metrics.precision_score(y_true, y_pred, labels&#x3D;[0, 1, 2, 3], average&#x3D;&#39;macro&#39;)  # 指定特定分类标签的精确率</span><br><span class="line">Out[133]: 0.5</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>其中 average 参数有五种：(None, ‘micro’, ‘macro’, ‘weighted’, ‘samples’)<br>召回率</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">metrics.recall_score(y_true, y_pred, average&#x3D;&#39;micro&#39;)</span><br><span class="line">Out[134]: 0.33333333333333331</span><br><span class="line"></span><br><span class="line">metrics.recall_score(y_true, y_pred, average&#x3D;&#39;macro&#39;)</span><br><span class="line">Out[135]: 0.3125</span><br></pre></td></tr></table></figure>
+
+<h3 id="F1"><a href="#F1" class="headerlink" title="F1"></a>F1</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">metrics.f1_score(y_true, y_pred, average&#x3D;&#39;weighted&#39;)</span><br><span class="line">Out[136]: 0.37037037037037035</span><br></pre></td></tr></table></figure>
+
+<h3 id="F2"><a href="#F2" class="headerlink" title="F2"></a>F2</h3><p>根据公式计算</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.metrics import precision_score, recall_score</span><br><span class="line">def calc_f2(label, predict):</span><br><span class="line">    p &#x3D; precision_score(label, predict)</span><br><span class="line">    r &#x3D; recall_score(label, predict)</span><br><span class="line">    f2_score &#x3D; 5*p*r &#x2F; (4*p + r)</span><br><span class="line">    return f2_score</span><br></pre></td></tr></table></figure>
+
+<h3 id="混淆矩阵"><a href="#混淆矩阵" class="headerlink" title="混淆矩阵"></a>混淆矩阵</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.metrics import confusion_matrix</span><br><span class="line">confusion_matrix(y_true, y_pred)</span><br><span class="line"></span><br><span class="line">Out[137]:</span><br><span class="line">array([[1, 0, 0, ..., 0, 0, 0],</span><br><span class="line">       [0, 0, 1, ..., 0, 0, 0],</span><br><span class="line">       [0, 1, 0, ..., 0, 0, 1],</span><br><span class="line">       ...,</span><br><span class="line">       [0, 0, 0, ..., 0, 0, 1],</span><br><span class="line">       [0, 0, 0, ..., 0, 0, 0],</span><br><span class="line">       [0, 0, 0, ..., 0, 1, 0]])</span><br></pre></td></tr></table></figure>
+
+<h3 id="分类报告"><a href="#分类报告" class="headerlink" title="分类报告"></a>分类报告</h3><p>包含：precision/recall/fi-score/均值/分类个数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 分类报告：precision&#x2F;recall&#x2F;fi-score&#x2F;均值&#x2F;分类个数</span><br><span class="line"> from sklearn.metrics import classification_report</span><br><span class="line"> y_true &#x3D; [0, 1, 2, 2, 0]</span><br><span class="line"> y_pred &#x3D; [0, 0, 2, 2, 0]</span><br><span class="line"> target_names &#x3D; [&#39;class 0&#39;, &#39;class 1&#39;, &#39;class 2&#39;]</span><br><span class="line"> print(classification_report(y_true, y_pred, target_names&#x3D;target_names))</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">              precision    recall  f1-score   support</span><br><span class="line"></span><br><span class="line">    class 0       0.67      1.00      0.80         2</span><br><span class="line">    class 1       0.00      0.00      0.00         1</span><br><span class="line">    class 2       1.00      1.00      1.00         2</span><br><span class="line"></span><br><span class="line">avg &#x2F; total       0.67      0.80      0.72         5</span><br></pre></td></tr></table></figure>
+
+<h3 id="kappa-score"><a href="#kappa-score" class="headerlink" title="kappa score"></a>kappa score</h3><ul>
+<li>kappa score 是一个介于(-1, 1)之间的数. score&gt;0.8 意味着好的分类；0 或更低意味着不好（实际是随机标签）</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.metrics import cohen_kappa_score</span><br><span class="line">y_true &#x3D; [2, 0, 2, 2, 0, 1]</span><br><span class="line">y_pred &#x3D; [0, 0, 2, 2, 0, 2]</span><br><span class="line">cohen_kappa_score(y_true, y_pred)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ROC 1.计算 ROC 值</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line">from sklearn.metrics import roc_auc_score</span><br><span class="line">y_true &#x3D; np.array([0, 0, 1, 1])</span><br><span class="line">y_scores &#x3D; np.array([0.1, 0.4, 0.35, 0.8])</span><br><span class="line">roc_auc_score(y_true, y_scores)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>2.ROC 曲线</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">y &#x3D; np.array([1, 1, 2, 2])</span><br><span class="line">scores &#x3D; np.array([0.1, 0.4, 0.35, 0.8])</span><br><span class="line">fpr, tpr, thresholds &#x3D; roc_curve(y, scores, pos_label&#x3D;2)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>海明距离</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.metrics import hamming_loss</span><br><span class="line">y_pred &#x3D; [1, 2, 3, 4]</span><br><span class="line">y_true &#x3D; [2, 2, 3, 4]</span><br><span class="line">hamming_loss(y_true, y_pred)</span><br><span class="line">0.25</span><br></pre></td></tr></table></figure>
+
+<h3 id="Jaccard-距离"><a href="#Jaccard-距离" class="headerlink" title="Jaccard 距离"></a>Jaccard 距离</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line">from sklearn.metrics import jaccard_similarity_score</span><br><span class="line">y_pred &#x3D; [0, 2, 1, 3,4]</span><br><span class="line">y_true &#x3D; [0, 1, 2, 3,4]</span><br><span class="line">jaccard_similarity_score(y_true, y_pred)</span><br><span class="line">0.5</span><br><span class="line">jaccard_similarity_score(y_true, y_pred, normalize&#x3D;False)</span><br><span class="line">2</span><br></pre></td></tr></table></figure>
+
+<h3 id="可释方差值（Explained-variance-score）"><a href="#可释方差值（Explained-variance-score）" class="headerlink" title="可释方差值（Explained variance score）"></a>可释方差值（Explained variance score）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.metrics import explained_variance_score</span><br><span class="line">y_true &#x3D; [3, -0.5, 2, 7]</span><br><span class="line">y_pred &#x3D; [2.5, 0.0, 2, 8]</span><br><span class="line">explained_variance_score(y_true, y_pred)</span><br></pre></td></tr></table></figure>
+
+<h3 id="平均绝对误差（Mean-absolute-error）"><a href="#平均绝对误差（Mean-absolute-error）" class="headerlink" title="平均绝对误差（Mean absolute error）"></a>平均绝对误差（Mean absolute error）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.metrics import mean_absolute_error</span><br><span class="line">y_true &#x3D; [3, -0.5, 2, 7]</span><br><span class="line">y_pred &#x3D; [2.5, 0.0, 2, 8]</span><br><span class="line">mean_absolute_error(y_true, y_pred)</span><br></pre></td></tr></table></figure>
+
+<h3 id="均方误差（Mean-squared-error）"><a href="#均方误差（Mean-squared-error）" class="headerlink" title="均方误差（Mean squared error）"></a>均方误差（Mean squared error）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.metrics import mean_squared_error</span><br><span class="line">y_true &#x3D; [3, -0.5, 2, 7]</span><br><span class="line">y_pred &#x3D; [2.5, 0.0, 2, 8]</span><br><span class="line">mean_squared_error(y_true, y_pred)</span><br></pre></td></tr></table></figure>
+
+<h3 id="中值绝对误差（Median-absolute-error）"><a href="#中值绝对误差（Median-absolute-error）" class="headerlink" title="中值绝对误差（Median absolute error）"></a>中值绝对误差（Median absolute error）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.metrics import median_absolute_error</span><br><span class="line">y_true &#x3D; [3, -0.5, 2, 7]</span><br><span class="line">y_pred &#x3D; [2.5, 0.0, 2, 8]</span><br><span class="line">median_absolute_error(y_true, y_pred)</span><br></pre></td></tr></table></figure>
+
+<h3 id="R-方值，确定系数"><a href="#R-方值，确定系数" class="headerlink" title="R 方值，确定系数"></a>R 方值，确定系数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.metrics import r2_score</span><br><span class="line">y_true &#x3D; [3, -0.5, 2, 7]</span><br><span class="line">y_pred &#x3D; [2.5, 0.0, 2, 8]</span><br><span class="line">r2_score(y_true, y_pred)</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
+<li><a href="https://blog.csdn.net/sinat_26917383/article/details/75199996" target="_blank" rel="external nofollow noopener noreferrer">python + sklearn ︱分类效果评估——acc、recall、F1、ROC、回归、距离</a></li>
+<li><a href="http://d0evi1.com/sklearn/model_evaluation/" target="_blank" rel="external nofollow noopener noreferrer">sklearn 中的模型评估</a></li>
+</ul>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/SKlearn%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E6%96%B9%E6%B3%95.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/kaggle/">
+              #kaggle
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="/tags/sklearn/">
+              #sklearn
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98%E4%B9%8B%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0.html" target="_self">数据挖掘之机器学习</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/Kaggle%E6%9D%82%E8%AE%B0.html" target="_self">Kaggle杂记</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>

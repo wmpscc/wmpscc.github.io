@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Crossover and Mutation of Region-Level Facial Genes for Kinship Face Synthesis">
+  <meta name="keywords" content="StyleGene, Kinship, Face">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StyleGene: Crossover and Mutation of Region-Level Facial Genes for Kinship Face Synthesis</title>
+
+
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">StyleGene: Crossover and Mutation of Region-Level Facial Genes for Kinship Face Synthesis</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://github.com/wmpscc">Hao Li </a>,</span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=oK8Q-HwAAAAJ">Xianxu Hou </a>,</span>
+            <span class="author-block">
+              <a href="https://github.com/josephzpng">Zepeng Huang</a>,
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=AZ_y9HgAAAAJ">Linlin Shen </a>,
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Shenzhen University</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://openaccess.thecvf.com/content/CVPR2023/html/Li_StyleGene_Crossover_and_Mutation_of_Region-Level_Facial_Genes_for_Kinship_CVPR_2023_paper.html"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <span class="link-block">
+                <a href="https://youtu.be/TDqGaL79_pg"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/CVI-SZU/StyleGene"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+              <!-- Dataset Link. -->
+              <span class="link-block">
+                <a href="https://drive.google.com/file/d/1CrhpHv8t0EDD4X4UwrYMBNYVAyyzUBF1/view?usp=share_link"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Slide</span>
+                  </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <img src="./static/images/pic_top.jpg" style="width: 100%; max-height: auto;">
+      <h2 class="subtitle has-text-centered">
+The first row is the input grandparents, and the second and third rows are their descendants generated by our method. Our StyleGene method synthesizes kinship faces with resemblance to parents, exhibiting diversity and reasonable variations.
+      </h2>
+    </div>
+
+    <div class="hero-body">
+      <img src="./static/images/framework.png" style="width: 100%; max-height: auto;">
+      <h2 class="subtitle has-text-centered">
+        The overall framework of our method.
+      </h2>
+    </div>
+  </div>
+</section>
+
+
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            High-fidelity kinship face synthesis has many potential applications, such as kinship verification, missing child identification, and social media analysis. However, it is challenging to synthesize high-quality descendant faces with genetic relations due to the lack of large-scale, high-quality annotated kinship data.
+          </p>
+          <p>
+            This paper proposes RFG (Region-level Facial Gene) extraction framework to address this issue. We propose to use IGE (Image-based Gene Encoder), LGE (Latent-based Gene Encoder) and Gene Decoder to learn the RFGs of a given face image, and the relationships between RFGs and the latent space of StyleGAN2. As cycle-like losses are designed to measure the L2 distances between the output of Gene Decoder and image encoder, and that between the output of LGE and IGE, only face images are required to train our framework, i.e. no paired kinship face data is required. Based upon the proposed RFGs, a crossover and mutation module is further designed to inherit the facial parts of parents. A Gene Pool has also been used to introduce the variations into the mutation of RFGs. The diversity of the faces of descendants can thus be significantly increased.
+          </p>
+          <p>
+            Qualitative, quantitative, and subjective experiments on FIW, TSKinFace, and FF-Databases clearly show that the quality and diversity of kinship faces generated by our approach are much better than the existing state-of-the-art methods.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+    <!-- Paper video. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Video</h2>
+        <div class="publication-video">
+          <iframe src="https://www.youtube.com/embed/TDqGaL79_pg"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+    <!--/ Paper video. -->
+    <!-- Experiments. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Experiments</h2>
+        <p>Comparison of children faces synthesized by StyleGene and baselines.</p><br>
+        <h3 class="title is-4">FIW dataset</h3>
+        <img src="./static/images/pic_cmp_fiw.jpg" style="width: 100%; max-height: auto;">
+        <br>
+        <h3 class="title is-4">FF-Database</h3>
+        <img src="./static/images/pic_cmp_ff_race.jpg" style="width: 100%; max-height: auto;">
+        <br>
+        <h3 class="title is-4">TSKinFace dataset</h3>
+        <img src="./static/images/pic_cmp_tsk.jpg" style="width: 100%; max-height: auto;">
+        <br>
+      </div>
+    </div>
+    <!--/ Experiments. -->
+
+
+  </div>
+</section>
+
+
+
+  </div>
+</section>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@InProceedings{Li_2023_CVPR,
+      author    = {Li, Hao and Hou, Xianxu and Huang, Zepeng and Shen, Linlin},
+      title     = {StyleGene: Crossover and Mutation of Region-Level Facial Genes for Kinship Face Synthesis},
+      booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+      month     = {June},
+      year      = {2023},
+      pages     = {20960-20969}
+}</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link"
+         href="https://openaccess.thecvf.com/content/CVPR2023/papers/Li_StyleGene_Crossover_and_Mutation_of_Region-Level_Facial_Genes_for_Kinship_CVPR_2023_paper.pdf">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/wmpscc" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is adapted from <a
+            href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>, licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

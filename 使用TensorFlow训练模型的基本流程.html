@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="baidu-site-verification" content="5CxA73ejrD">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>使用TensorFlow训练模型的基本流程 | 鸢尾花开</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="机器学习,tensorflow1.x,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://ishero.net/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+    <meta name="description" content="CV&amp;ML技术新人的博客，记录我的学习成长过程！">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  
+<script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+
+  
+    
+<link rel="stylesheet" href="/custom/style.css">
+
+  
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+  <body>
+    <meta name="referrer" content="no-referrer">
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">isHero.net</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="">
+          
+            <a href="javascript:void(0);" v-else="">寻我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/wmpscc" target="_blank" rel="external nofollow noopener noreferrer">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.jianshu.com/u/fde2534da842" target="_blank" rel="external nofollow noopener noreferrer">
+                    简书
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://toutiao.io/subjects/345107" target="_blank" rel="external nofollow noopener noreferrer">
+                    开发者头条
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>使用TensorFlow训练模型的基本流程</span>
+  </h1>
+  <meta name="referrer" content="no-referrer">
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2020-01-22
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">
+            机器学习
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="使用TensorFlow训练模型的基本流程.html"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <h1 id="使用-TensorFlow-的基本流程"><a href="#使用-TensorFlow-的基本流程" class="headerlink" title="使用 TensorFlow 的基本流程"></a>使用 TensorFlow 的基本流程</h1><p>本篇文章将介绍使用 tensorflow 的训练模型的基本流程，包括制作读取 TFRecord，训练和保存模型，读取模型。</p>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><ul>
+<li>语言:Python3</li>
+<li>库:tensorflow、cv2、numpy、matplotlib</li>
+<li>数据集:Chars74K dataset 的数字部分</li>
+<li>网络:CNN</li>
+</ul>
+<p>所有代码已经上传至 github：<a href="https://github.com/wmpscc/TensorflowBaseDemo" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/wmpscc/TensorflowBaseDemo</a></p>
+<h2 id="TFRecord"><a href="#TFRecord" class="headerlink" title="TFRecord"></a>TFRecord</h2><p>TensorFlow 提供了一种统一的格式来存储数据，这个格式就是 TFRecord.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">message Example &#123;</span><br><span class="line"> Features features = <span class="number">1</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">message Features&#123;</span><br><span class="line"> map&lt;string,Feature&gt; featrue = <span class="number">1</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">message Feature&#123;</span><br><span class="line">    oneof kind&#123;</span><br><span class="line">        BytesList bytes_list = <span class="number">1</span>;</span><br><span class="line">        FloatList float_list = <span class="number">2</span>;</span><br><span class="line">        Int64List int64_list = <span class="number">3</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>从代码中我们可以看到， tf.train.Example 包含了一个字典，它的键是一个字符串，值为 Feature，Feature 可以取值为字符串（BytesList）、浮点数列表（FloatList）、整型数列表（Int64List）。</p>
+<h3 id="写入一个-TFRecord-一般分为三步："><a href="#写入一个-TFRecord-一般分为三步：" class="headerlink" title="写入一个 TFRecord 一般分为三步："></a>写入一个 TFRecord 一般分为三步：</h3><ul>
+<li>读取需要转化的数据</li>
+<li>将数据转化为 Example Protocol Buffer，并写入这个数据结构</li>
+<li>通过将数据转化为字符串后，通过 TFRecordWriter 写出</li>
+</ul>
+<h4 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h4><p>这次我们的数据是分别保存在多个文件夹下的，因此读取数据最直接的方法是遍历目录下所有文件，然后读入写出 TFRecord 文件。该方法对应文件<code>MakeTFRecord.py</code>，我们来看关键代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">filenameTrain = <span class="string">'TFRecord/train.tfrecords'</span></span><br><span class="line">filenameTest = <span class="string">'TFRecord/test.tfrecords'</span></span><br><span class="line">writerTrain = tf.python_io.TFRecordWriter(filenameTrain)</span><br><span class="line">writerTest = tf.python_io.TFRecordWriter(filenameTest)</span><br><span class="line">folders = os.listdir(HOME_PATH)</span><br><span class="line"><span class="keyword">for</span> subFoldersName <span class="keyword">in</span> folders:</span><br><span class="line">    label = transform_label(subFoldersName)</span><br><span class="line">    path = os.path.join(HOME_PATH, subFoldersName)  <span class="comment"># 文件夹路径</span></span><br><span class="line">    subFoldersNameList = os.listdir(path)</span><br><span class="line">    i = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> imageName <span class="keyword">in</span> subFoldersNameList:</span><br><span class="line">        imagePath = os.path.join(path, imageName)</span><br><span class="line">        images = cv2.imread(imagePath)</span><br><span class="line">        res = cv2.resize(images, (<span class="number">128</span>, <span class="number">128</span>), interpolation=cv2.INTER_CUBIC)</span><br><span class="line">        image_raw_data = res.tostring()</span><br><span class="line">        example = tf.train.Example(features=tf.train.Features(feature=&#123;</span><br><span class="line">            <span class="string">'label'</span>: _int64_feature(label),</span><br><span class="line">            <span class="string">'image_raw'</span>: _bytes_feature(image_raw_data)</span><br><span class="line">        &#125;))</span><br><span class="line">        <span class="keyword">if</span> i &lt;= len(subFoldersNameList) * <span class="number">3</span> / <span class="number">4</span>:</span><br><span class="line">            writerTrain.write(example.SerializeToString())</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            writerTest.write(example.SerializeToString())</span><br><span class="line">        i += <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>在做数据的时候，我打算将 3/4 的数据用做训练集，剩下的 1/4 数据作为测试集，方便起见，将其保存为两个文件。</p>
+<p>基本流程就是遍历 Fnt 目录下的所有文件夹，再进入子文件夹遍历其目录下的图片文件，然后用 OpenCV 的<code>imread</code>方法将其读入，再将图片数据转化为字符串。在 TFRecord 提供的数据结构中`_bytes_feature’是存储字符串的。</p>
+<p>以上将图片成功读入并写入了 TFRecord 的数据结构中，那图片对应的标签怎么办呢？</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">transform_label</span><span class="params">(folderName)</span>:</span></span><br><span class="line">    label_dict = &#123;</span><br><span class="line">        <span class="string">'Sample001'</span>: <span class="number">0</span>,</span><br><span class="line">        <span class="string">'Sample002'</span>: <span class="number">1</span>,</span><br><span class="line">        <span class="string">'Sample003'</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="string">'Sample004'</span>: <span class="number">3</span>,</span><br><span class="line">        <span class="string">'Sample005'</span>: <span class="number">4</span>,</span><br><span class="line">        <span class="string">'Sample006'</span>: <span class="number">5</span>,</span><br><span class="line">        <span class="string">'Sample007'</span>: <span class="number">6</span>,</span><br><span class="line">        <span class="string">'Sample008'</span>: <span class="number">7</span>,</span><br><span class="line">        <span class="string">'Sample009'</span>: <span class="number">8</span>,</span><br><span class="line">        <span class="string">'Sample010'</span>: <span class="number">9</span>,</span><br><span class="line">        <span class="string">'Sample011'</span>: <span class="number">10</span>,</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> label_dict[folderName]</span><br></pre></td></tr></table></figure>
+
+<p>我建立了一个字典，由于一个文件下的图片都是同一类的，所以将图片对应的文件夹名字与它所对应的标签，产生映射关系。代码中<code>label = transform_label(subFoldersName)</code>通过该方法获得，图片的标签。</p>
+<h4 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h4><p>在使用方法一产生的数据训练模型，会发现非常容易产生过拟合。因为我们在读数据的时候是将它打包成 batch 读入的，虽然可以使用<code>tf.train.shuffle_batch</code>方法将队列中的数据打乱再读入，但是由于一个类中的数据过多，会导致即便打乱后也是同一个类中的数据。例如：数字 0 有 1000 个样本，假设你读取的队列长达 1000 个，这样即便打乱队列后读取的图片任然是 0。这在训练时容易过拟合。为了避免这种情况发生，我的想法是在做数据时将图片打乱后写入。对应文件<code>MakeTFRecord2.py</code>，关键代码如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">folders = os.listdir(HOME_PATH)</span><br><span class="line"><span class="keyword">for</span> subFoldersName <span class="keyword">in</span> folders:</span><br><span class="line">    path = os.path.join(HOME_PATH, subFoldersName)  <span class="comment"># 文件夹路径</span></span><br><span class="line">    subFoldersNameList = os.listdir(path)</span><br><span class="line">    <span class="keyword">for</span> imageName <span class="keyword">in</span> subFoldersNameList:</span><br><span class="line">        imagePath = os.path.join(path, imageName)</span><br><span class="line">        totalList.append(imagePath)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 产生一个长度为图片总数的不重复随机数序列</span></span><br><span class="line">dictlist = random.sample(range(<span class="number">0</span>, len(totalList)), len(totalList))</span><br><span class="line">print(totalList[<span class="number">0</span>].split(<span class="string">'\\'</span>)[<span class="number">1</span>].split(<span class="string">'-'</span>)[<span class="number">0</span>])    <span class="comment"># 这是图片对应的类别</span></span><br><span class="line"></span><br><span class="line">i = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> path <span class="keyword">in</span> totalList:</span><br><span class="line">    images = cv2.imread(totalList[dictlist[i]])</span><br><span class="line">    res = cv2.resize(images, (<span class="number">128</span>, <span class="number">128</span>), interpolation=cv2.INTER_CUBIC)</span><br><span class="line">    image_raw_data = res.tostring()</span><br><span class="line">    label = transform_label(totalList[dictlist[i]].split(<span class="string">'\\'</span>)[<span class="number">1</span>].split(<span class="string">'-'</span>)[<span class="number">0</span>])</span><br><span class="line">    print(label)</span><br><span class="line">    example = tf.train.Example(features=tf.train.Features(feature=&#123;</span><br><span class="line">        <span class="string">'label'</span>: _int64_feature(label),</span><br><span class="line">        <span class="string">'image_raw'</span>: _bytes_feature(image_raw_data)</span><br><span class="line">    &#125;))</span><br><span class="line">    <span class="keyword">if</span> i &lt;= len(totalList) * <span class="number">3</span> / <span class="number">4</span>:</span><br><span class="line">        writerTrain.write(example.SerializeToString())</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        writerTest.write(example.SerializeToString())</span><br><span class="line">    i += <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>基本过程：遍历目录下所有的图片，将它的路径加入一个大的列表。通过一个不重复的随机数序列，来控制使用哪张图片。这就达到随机的目的。</p>
+<p>怎么获取标签呢？图片文件都是<code>类型-序号</code>这个形式命名的，这里通过获取它的<code>类型</code>名，建立字典产生映射关系。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">transform_label</span><span class="params">(imgType)</span>:</span></span><br><span class="line">    label_dict = &#123;</span><br><span class="line">        <span class="string">'img001'</span>: <span class="number">0</span>,</span><br><span class="line">        <span class="string">'img002'</span>: <span class="number">1</span>,</span><br><span class="line">        <span class="string">'img003'</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="string">'img004'</span>: <span class="number">3</span>,</span><br><span class="line">        <span class="string">'img005'</span>: <span class="number">4</span>,</span><br><span class="line">        <span class="string">'img006'</span>: <span class="number">5</span>,</span><br><span class="line">        <span class="string">'img007'</span>: <span class="number">6</span>,</span><br><span class="line">        <span class="string">'img008'</span>: <span class="number">7</span>,</span><br><span class="line">        <span class="string">'img009'</span>: <span class="number">8</span>,</span><br><span class="line">        <span class="string">'img010'</span>: <span class="number">9</span>,</span><br><span class="line">        <span class="string">'img011'</span>: <span class="number">10</span>,</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> label_dict[imgType]</span><br></pre></td></tr></table></figure>
+
+<h3 id="原尺寸图片-CNN"><a href="#原尺寸图片-CNN" class="headerlink" title="原尺寸图片 CNN"></a>原尺寸图片 CNN</h3><p>对应<code>CNN_train.py</code>文件<br>训练的时候怎么读取 TFRecord 数据呢，参考以下代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 读训练集数据</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read_train_data</span><span class="params">()</span>:</span></span><br><span class="line">    reader = tf.TFRecordReader()</span><br><span class="line">    filename_train = tf.train.string_input_producer([<span class="string">"TFRecord128/train.tfrecords"</span>])</span><br><span class="line">    _, serialized_example_test = reader.read(filename_train)</span><br><span class="line">    features = tf.parse_single_example(</span><br><span class="line">        serialized_example_test,</span><br><span class="line">        features=&#123;</span><br><span class="line">            <span class="string">'label'</span>: tf.FixedLenFeature([], tf.int64),</span><br><span class="line">            <span class="string">'image_raw'</span>: tf.FixedLenFeature([], tf.string),</span><br><span class="line">        &#125;</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    img_train = features[<span class="string">'image_raw'</span>]</span><br><span class="line">    images_train = tf.decode_raw(img_train, tf.uint8)</span><br><span class="line">    images_train = tf.reshape(images_train, [<span class="number">128</span>, <span class="number">128</span>, <span class="number">3</span>])</span><br><span class="line">    labels_train = tf.cast(features[<span class="string">'label'</span>], tf.int64)</span><br><span class="line">    labels_train = tf.cast(labels_train, tf.int64)</span><br><span class="line">    labels_train = tf.one_hot(labels_train, <span class="number">10</span>)</span><br><span class="line">    <span class="keyword">return</span> images_train, labels_train</span><br></pre></td></tr></table></figure>
+
+<p>通过<code>features[键名]</code>的方式将存入的数据读取出来，键名和数据类型要与写入的保持一致。</p>
+<p>关于这里的卷积神经网络，我是参考王学长培训时的代码写的。当然照搬肯定不行，会遇到 loss NaN 的情况，我解决的方法是仿照<code>AlexNet</code>中，在卷积后加入 LRN 层，进行局部响应归一化。在设置参数时，加入 l2 正则项。关键代码如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">weights_with_loss</span><span class="params">(shape, stddev, wl)</span>:</span></span><br><span class="line">    var = tf.truncated_normal(stddev=stddev, shape=shape)</span><br><span class="line">    <span class="keyword">if</span> wl <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">        weight_loss = tf.multiply(tf.nn.l2_loss(var), wl, name=<span class="string">'weight_loss'</span>)</span><br><span class="line">        tf.add_to_collection(<span class="string">'losses'</span>, weight_loss)</span><br><span class="line">    <span class="keyword">return</span> tf.Variable(var)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">net</span><span class="params">(image, drop_pro)</span>:</span></span><br><span class="line">    W_conv1 = weights_with_loss([<span class="number">5</span>, <span class="number">5</span>, <span class="number">3</span>, <span class="number">32</span>], <span class="number">5e-2</span>, wl=<span class="number">0.0</span>)</span><br><span class="line">    b_conv1 = biasses([<span class="number">32</span>])</span><br><span class="line">    conv1 = tf.nn.relu(conv(image, W_conv1) + b_conv1)</span><br><span class="line">    pool1 = max_pool_2x2(conv1)</span><br><span class="line">    norm1 = tf.nn.lrn(pool1, <span class="number">4</span>, bias=<span class="number">1</span>, alpha=<span class="number">0.001</span> / <span class="number">9.0</span>, beta=<span class="number">0.75</span>)</span><br><span class="line"></span><br><span class="line">    W_conv2 = weights_with_loss([<span class="number">5</span>, <span class="number">5</span>, <span class="number">32</span>, <span class="number">64</span>], stddev=<span class="number">5e-2</span>, wl=<span class="number">0.0</span>)</span><br><span class="line">    b_conv2 = biasses([<span class="number">64</span>])</span><br><span class="line">    conv2 = tf.nn.relu(conv(norm1, W_conv2) + b_conv2)</span><br><span class="line">    norm2 = tf.nn.lrn(conv2, <span class="number">4</span>, bias=<span class="number">1</span>, alpha=<span class="number">0.001</span> / <span class="number">9.0</span>, beta=<span class="number">0.75</span>)</span><br><span class="line">    pool2 = max_pool_2x2(norm2)</span><br><span class="line"></span><br><span class="line">    W_conv3 = weights_with_loss([<span class="number">5</span>, <span class="number">5</span>, <span class="number">64</span>, <span class="number">128</span>], stddev=<span class="number">0.04</span>, wl=<span class="number">0.004</span>)</span><br><span class="line">    b_conv3 = biasses([<span class="number">128</span>])</span><br><span class="line">    conv3 = tf.nn.relu(conv(pool2, W_conv3) + b_conv3)</span><br><span class="line">    pool3 = max_pool_2x2(conv3)</span><br><span class="line"></span><br><span class="line">    W_conv4 = weights_with_loss([<span class="number">5</span>, <span class="number">5</span>, <span class="number">128</span>, <span class="number">256</span>], stddev=<span class="number">1</span> / <span class="number">128</span>, wl=<span class="number">0.004</span>)</span><br><span class="line">    b_conv4 = biasses([<span class="number">256</span>])</span><br><span class="line">    conv4 = tf.nn.relu(conv(pool3, W_conv4) + b_conv4)</span><br><span class="line">    pool4 = max_pool_2x2(conv4)</span><br><span class="line"></span><br><span class="line">    image_raw = tf.reshape(pool4, shape=[<span class="number">-1</span>, <span class="number">8</span> * <span class="number">8</span> * <span class="number">256</span>])</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 全连接层</span></span><br><span class="line">    fc_w1 = weights_with_loss(shape=[<span class="number">8</span> * <span class="number">8</span> * <span class="number">256</span>, <span class="number">1024</span>], stddev=<span class="number">1</span> / <span class="number">256</span>, wl=<span class="number">0.0</span>)</span><br><span class="line">    fc_b1 = biasses(shape=[<span class="number">1024</span>])</span><br><span class="line">    fc_1 = tf.nn.relu(tf.matmul(image_raw, fc_w1) + fc_b1)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># drop-out层</span></span><br><span class="line">    drop_out = tf.nn.dropout(fc_1, drop_pro)</span><br><span class="line"></span><br><span class="line">    fc_2 = weights_with_loss([<span class="number">1024</span>, <span class="number">10</span>], stddev=<span class="number">0.01</span>, wl=<span class="number">0.0</span>)</span><br><span class="line">    fc_b2 = biasses([<span class="number">10</span>])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> tf.matmul(drop_out, fc_2) + fc_b2</span><br></pre></td></tr></table></figure>
+
+<p><code>128x128x3</code>原图训练过程<br><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695727824-ea6af648-cacd-4fb3-8b25-85d1357331d0.jpeg#align=left&display=inline&height=759&originHeight=759&originWidth=577&size=0&status=done&style=none&width=577" alt=""><br>在验证集上的正确率<br><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695727814-2cf0b1d4-df3c-483b-8dea-1a0ff09b2172.jpeg#align=left&display=inline&height=29&originHeight=29&originWidth=770&size=0&status=done&style=none&width=770" alt=""><br>这里使用的是 128_128_3 的图片，图片比较大，所以我产生了一个想法。在做 TFRecord 数据的时候，将图片尺寸减半。所以就有了第二种方法。</p>
+<h3 id="图片尺寸减半-CNN"><a href="#图片尺寸减半-CNN" class="headerlink" title="图片尺寸减半 CNN"></a>图片尺寸减半 CNN</h3><p>对应文件<code>CNN_train2.py</code><br>与上面那种方法唯一的区别是将图片尺寸<code>128*128*3</code>改成了<code>64*64*3</code>所以我这里就不重复说明了。<br><code>64x64x3</code>图片训过程<br><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695727831-c076367c-784e-455a-8ca4-57b69dc72f70.jpeg#align=left&display=inline&height=758&originHeight=758&originWidth=644&size=0&status=done&style=none&width=644" alt=""><br>在验证集上的正确率<br><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695727826-5eb35c87-1a84-48de-97f3-e493c1afc00b.jpeg#align=left&display=inline&height=31&originHeight=31&originWidth=760&size=0&status=done&style=none&width=760" alt=""></p>
+<h3 id="保存模型"><a href="#保存模型" class="headerlink" title="保存模型"></a>保存模型</h3><p>在<code>CNN_train.py</code>中，对应保存模型的代码是</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">save_model</span><span class="params">(sess, step)</span>:</span></span><br><span class="line">    MODEL_SAVE_PATH = <span class="string">"./model128/"</span></span><br><span class="line">    MODEL_NAME = <span class="string">"model.ckpt"</span></span><br><span class="line">    saver = tf.train.Saver()</span><br><span class="line">    saver.save(sess, os.path.join(MODEL_SAVE_PATH, MODEL_NAME), global_step=step)</span><br><span class="line"></span><br><span class="line">save_model(sess, i)</span><br></pre></td></tr></table></figure>
+
+<p><code>i</code>是迭代的次数，可以不填其对应的参数<code>global_step</code></p>
+<h3 id="在测试集上检验准确率"><a href="#在测试集上检验准确率" class="headerlink" title="在测试集上检验准确率"></a>在测试集上检验准确率</h3><p>对应文件<code>AccuracyTest.py</code><br>代码基本与训练的代码相同，这里直接讲怎么恢复模型。关键代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ckpt = tf.train.get_checkpoint_state(MODEL_PATH)</span><br><span class="line"><span class="keyword">if</span> ckpt <span class="keyword">and</span> ckpt.model_checkpoint_path:</span><br><span class="line">    <span class="comment">#加载模型</span></span><br><span class="line">    saver.restore(sess, ckpt.model_checkpoint_path)</span><br></pre></td></tr></table></figure>
+
+<p>值得一提的是<code>tf.train.get_checkpoint_state</code>该方法会自动找到文件夹下迭代次数最多的模型，然后读入。而<code>saver.restore(sess, ckpt.model_checkpoint_path)</code>方法将恢复，模型在训练时最后一次迭代的变量参数。</p>
+<h3 id="查看读入的-TFRecord-图片"><a href="#查看读入的-TFRecord-图片" class="headerlink" title="查看读入的 TFRecord 图片"></a>查看读入的 TFRecord 图片</h3><p>对应文件<code>ReadTest.py</code><br>如果你想检查下在制作 TFRecord 时，图片是否处理的正确，最简单的方法就是将图片显示出来。关键代码如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">plot_images</span><span class="params">(images, labels)</span>:</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> np.arange(<span class="number">0</span>, <span class="number">20</span>):</span><br><span class="line">        plt.subplot(<span class="number">5</span>, <span class="number">5</span>, i + <span class="number">1</span>)</span><br><span class="line">        plt.axis(<span class="string">'off'</span>)</span><br><span class="line">        plt.title(labels[i], fontsize=<span class="number">14</span>)</span><br><span class="line">        plt.subplots_adjust(top=<span class="number">1.5</span>)</span><br><span class="line">        plt.imshow(images[i])</span><br><span class="line">    plt.show()</span><br><span class="line"></span><br><span class="line">plot_images(image, label</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695727828-1abdb2f9-78f0-4859-a547-b0ac2ed155c5.jpeg#align=left&display=inline&height=589&originHeight=589&originWidth=642&size=0&status=done&style=none&width=642" alt=""></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在摸索过程中遇到很多问题，多亏了王学长耐心帮助，也希望这篇文章能帮助更多人吧。<br>新手上路，如果有错，欢迎指正，谢谢。</p>
+<p>代码已上传 github：<a href="https://github.com/wmpscc/TensorflowBaseDemo" target="_blank" rel="external nofollow noopener noreferrer">https://github.com/wmpscc/TensorflowBaseDemo</a></p>
+<p><a href="http://ishero.net/%E4%BD%BF%E7%94%A8TensorFlow%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B.html">阅读原文</a><br><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/478234/1579695727918-0f993eed-367f-4390-9566-2ef8318d4fac.jpeg#align=left&display=inline&height=640&originHeight=640&originWidth=1080&size=0&status=done&style=none&width=1080" alt=""></p>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : HeoLis <br>
+        
+        原文链接 : <a href="">https://ishero.net/%E4%BD%BF%E7%94%A8TensorFlow%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B.html</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="external nofollow noopener noreferrer">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">学习、记录、分享、获得</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/donate-qr.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/tensorflow1-x/">
+              #tensorflow1.x
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/TensorFlow%202.0%E9%AB%98%E6%95%88%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97.html" target="_self">TensorFlow 2.0高效开发指南</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/%E5%A4%A7%E6%95%B0%E5%8A%A0%E6%B3%95.html" target="_self">大数加法</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Epge4Qisj9i3E08wl1q1cSWB-gzGzoHsz", "ClV5c29GDRy9RkLPqrac09OT");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw" target="_blank" rel="external nofollow noopener noreferrer">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/" target="_blank" rel="external nofollow noopener noreferrer">GodBMW</a>
+    <br>
+    ICP证:<a href="http://www.beian.miit.gov.cn" target="_blank" rel="external nofollow noopener noreferrer">粤ICP备19011977号-1</a> 
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2017, 8, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+      
+         
+          <script src="/custom/script.js" async></script>
+        
+      
+    
+  </body>
+
+</html>
